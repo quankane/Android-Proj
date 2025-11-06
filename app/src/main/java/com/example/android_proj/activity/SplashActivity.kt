@@ -1,12 +1,9 @@
-package com.example.android_proj.Activity
+package com.example.android_proj.activity
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.example.android_proj.R
 import com.example.android_proj.databinding.ActivitySplashBinding
 
 class SplashActivity : AppCompatActivity() {
