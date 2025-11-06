@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Android-Proj</string>
+    <string name="intro_title">Make \nYour Style \nCome \nTrue Here</string>
+    <string name="go">GO</string>
 </resources>
