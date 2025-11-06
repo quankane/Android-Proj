@@ -2,4 +2,7 @@
     <string name="app_name">Android-Proj</string>
     <string name="intro_title">Make \nYour Style \nCome \nTrue Here</string>
     <string name="go">GO</string>
+    <string name="what_are_you_looking_for">What are you looking for?</string>
+    <string name="recommendation">Recommendation</string>
+    <string name="see_all">See all</string>
 </resources>
