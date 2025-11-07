@@ -1,6 +1,7 @@
 package com.example.android_proj.activity
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -10,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.android_proj.R
+import com.example.android_proj.adapter.ColorAdapter
 import com.example.android_proj.adapter.PicsAdapter
 import com.example.android_proj.databinding.ActivityDetailBinding
 import com.example.android_proj.helper.ManagementCart
@@ -33,6 +35,7 @@ class DetailActivity : AppCompatActivity() {
 
         setupViews()
         setupPicsList()
+        setupColorsList()
     }
 
     @SuppressLint("SetTextI18n")
@@ -83,6 +86,15 @@ class DetailActivity : AppCompatActivity() {
             }
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
+    }
+
+    private fun setupColorsList() {
+        binding.colorList.adapter = ColorAdapter(item.color)
+        binding.colorList.layoutManager = LinearLayoutManager(
+            this,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
     }
 
     @SuppressLint("SetTextI18n")
