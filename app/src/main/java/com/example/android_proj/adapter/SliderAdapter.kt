@@ -1,22 +1,20 @@
 package com.example.android_proj.adapter
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.request.RequestOptions
 import com.example.android_proj.R
 import com.example.android_proj.model.SliderModel
 
+// ĐÃ LOẠI BỎ 'viewPager2' KHỎI CONSTRUCTOR
 class SliderAdapter(
-    private var sliderItems: List<SliderModel>,
-    private val viewPager2: ViewPager2
+    private val sliderItems: List<SliderModel>
 ) : RecyclerView.Adapter<SliderAdapter.SliderViewHolder>()
 {
     class SliderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -43,19 +41,12 @@ class SliderAdapter(
     }
 
     override fun onBindViewHolder(holder: SliderAdapter.SliderViewHolder, position: Int) {
+        // CHỈ GỌI HÀM SET IMAGE. ĐÃ LOẠI BỎ LOGIC TỰ ĐỘNG CUỘN
         holder.setImage(sliderItems[position], holder.itemView.context)
-        if (position == sliderItems.lastIndex - 1) {
-            viewPager2.post(runnable)
-        }
     }
 
     override fun getItemCount(): Int {
         return sliderItems.size
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private val runnable = Runnable {
-        sliderItems = sliderItems
-        notifyDataSetChanged()
-    }
 }
