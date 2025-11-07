@@ -3,7 +3,7 @@ package com.example.android_proj.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.android_proj.model.BrandModel
-import com.example.android_proj.model.ItemModel
+import com.example.android_proj.model.ItemsModel
 import com.example.android_proj.model.SliderModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -13,13 +13,13 @@ import com.google.firebase.database.ValueEventListener
 class MainRepository {
     private val firebaseDatabase = FirebaseDatabase.getInstance();
 
-    var _populars = MutableLiveData<MutableList<ItemModel>>()
+    var _populars = MutableLiveData<MutableList<ItemsModel>>()
     private val _brands = MutableLiveData<MutableList<BrandModel>>()
     private val _banners = MutableLiveData<List<SliderModel>>()
 
     val banners: LiveData<List<SliderModel>> get() = _banners
     val brands: LiveData<MutableList<BrandModel>> get() = _brands
-    val populars: LiveData<MutableList<ItemModel>> get() = _populars
+    val populars: LiveData<MutableList<ItemsModel>> get() = _populars
 
     fun loadBrands() {
         val ref = firebaseDatabase.getReference("Category")
@@ -65,9 +65,9 @@ class MainRepository {
         val ref = firebaseDatabase.getReference("Items")
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val list = mutableListOf<ItemModel>()
+                val list = mutableListOf<ItemsModel>()
                 for (childSnapshot in snapshot.children) {
-                    childSnapshot.getValue(ItemModel::class.java)?.let {
+                    childSnapshot.getValue(ItemsModel::class.java)?.let {
                         list.add(it)
                     }
                 }

@@ -8,16 +8,16 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.request.RequestOptions
 import com.example.android_proj.databinding.ViewholderRecommendationBinding
-import com.example.android_proj.model.ItemModel
+import com.example.android_proj.model.ItemsModel
 
 class PopularAdapter(
-    private val items : MutableList<ItemModel>
+    private val items : MutableList<ItemsModel>
 ) : RecyclerView.Adapter<PopularAdapter.ViewHolder>() {
     inner class ViewHolder(val binding: ViewholderRecommendationBinding)
         : RecyclerView.ViewHolder(binding.root)
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateData(newData: List<ItemModel>) {
+    fun updateData(newData: List<ItemsModel>) {
         items.clear()
         items.addAll(newData)
         notifyDataSetChanged()

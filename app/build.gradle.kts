@@ -48,7 +48,8 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     //noinspection NewerVersionAvailable
     annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
-
+    //noinspection NewerVersionAvailable
+    implementation("com.google.code.gson:gson:2.13.2")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

@@ -2,7 +2,7 @@ package com.example.android_proj.model
 
 import java.io.Serializable
 
-data class ItemModel(
+data class ItemsModel(
     var title: String = "",
     var description: String = "",
     var picUrl: ArrayList<String> = ArrayList(),
