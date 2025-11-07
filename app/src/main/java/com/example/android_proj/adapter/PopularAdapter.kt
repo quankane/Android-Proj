@@ -17,7 +17,7 @@ class PopularAdapter(
         : RecyclerView.ViewHolder(binding.root)
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateDate(newData: List<ItemModel>) {
+    fun updateData(newData: List<ItemModel>) {
         items.clear()
         items.addAll(newData)
         notifyDataSetChanged()

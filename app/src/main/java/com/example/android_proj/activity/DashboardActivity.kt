@@ -5,11 +5,13 @@ import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import com.example.android_proj.adapter.BrandsAdapter
+import com.example.android_proj.adapter.PopularAdapter
 import com.example.android_proj.adapter.SliderAdapter
 import com.example.android_proj.databinding.ActivityMainBinding
 import com.example.android_proj.model.SliderModel
@@ -24,6 +26,7 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
 
     private val brandsAdapter = BrandsAdapter(mutableListOf())
+    private val popularAdapter = PopularAdapter(mutableListOf())
 
     // KHAI BÁO BIẾN RUNNABLE VÀ THỜI GIAN
     private val SLIDE_DELAY_MS = 3000L // 3 giây
@@ -144,6 +147,17 @@ class DashboardActivity : AppCompatActivity() {
             // Loại bỏ tất cả các callback để ngăn rò rỉ bộ nhớ
             binding.viewPagerSlider.removeCallbacks(sliderRunnable)
             isAutoScrolling = false
+        }
+    }
+
+    private fun initRecommendation() {
+        binding.recyclerViewRecommendation.layoutManager = GridLayoutManager(this, 2)
+        binding.recyclerViewRecommendation.adapter = popularAdapter
+        binding.progressBarRecommendation.visibility = View.VISIBLE
+
+        viewModel.populars.observe(this) {
+            data ->
+            popularAdapter.
         }
     }
 }
