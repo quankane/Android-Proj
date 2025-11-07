@@ -7,8 +7,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.android_proj.R
+import com.example.android_proj.adapter.PicsAdapter
 import com.example.android_proj.databinding.ActivityDetailBinding
 import com.example.android_proj.helper.ManagementCart
 import com.example.android_proj.model.ItemsModel
@@ -30,6 +32,7 @@ class DetailActivity : AppCompatActivity() {
         item = intent.getSerializableExtra("object")!! as ItemsModel
 
         setupViews()
+        setupPicsList()
     }
 
     @SuppressLint("SetTextI18n")
@@ -66,6 +69,19 @@ class DetailActivity : AppCompatActivity() {
 
         addToCartBtn.setOnClickListener {
             managementCart.insertFood(item)
+        }
+    }
+
+    private fun setupPicsList() {
+        val picList = item.picUrl.toList()
+        binding.picList.apply {
+            adapter = PicsAdapter(picList as MutableList<String>) {
+                imageUrl ->
+                Glide.with(this@DetailActivity)
+                    .load(imageUrl)
+                    .into(binding.picMain)
+            }
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
     }
 

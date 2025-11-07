@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.android_proj.R
 import com.example.android_proj.databinding.ViewholderPicsBinding
 import com.google.firebase.database.core.Context
 
@@ -34,7 +35,7 @@ class PicsAdapter(
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: PicsAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PicsAdapter.ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         Glide.with(holder.itemView.context)
             .load(items[position])
             .into(holder.binding.pic)
@@ -44,11 +45,17 @@ class PicsAdapter(
             selectedPosition = position
             notifyItemChanged(lastSelectedPosition)
             notifyItemChanged(selectedPosition)
-            onImageSelected(item[position])
+            onImageSelected(items[position])
+        }
+
+        if (selectedPosition == position) {
+            holder.binding.colorLayout.setBackgroundResource(R.drawable.grey_bg_selected)
+        } else {
+            holder.binding.colorLayout.setBackgroundResource(R.drawable.grey_bg)
         }
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+        return items.size
     }
 }
