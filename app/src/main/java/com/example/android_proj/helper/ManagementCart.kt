@@ -5,7 +5,7 @@ import android.widget.Toast
 import com.example.android_proj.model.ItemsModel
 
 
-class ManagmentCart(val context: Context) {
+class ManagementCart(val context: Context) {
 
     private val tinyDB = TinyDB(context)
 
