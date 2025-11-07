@@ -1,12 +1,14 @@
 package com.example.android_proj.adapter
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.request.RequestOptions
+import com.example.android_proj.activity.DetailActivity
 import com.example.android_proj.databinding.ViewholderRecommendationBinding
 import com.example.android_proj.model.ItemsModel
 
@@ -49,6 +51,13 @@ class PopularAdapter(
                 .load(item.picUrl.firstOrNull())
                 .apply(RequestOptions().transform(CenterCrop()))
                 .into(pic)
+
+            root.setOnClickListener {
+                val intent = Intent(holder.itemView.context,
+                    DetailActivity::class.java)
+                intent.putExtra("object", item)
+                holder.itemView.context.startActivity(intent)
+            }
         }
     }
 

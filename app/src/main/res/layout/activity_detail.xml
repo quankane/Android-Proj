@@ -15,7 +15,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:paddingBottom="50dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -46,7 +47,7 @@
 
             <ImageView
                 android:id="@+id/picMain"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="290dp"
                 android:layout_margin="16dp"
                 android:background="@drawable/grey_bg"
@@ -55,26 +56,25 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/picList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:paddingEnd="8dp" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_marginHorizontal="16dp"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="16dp">
 
                 <TextView
                     android:id="@+id/titleTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
                     android:text="@string/title_main"
-                    android:textStyle="bold"
-                    android:textSize="23sp"
                     android:textColor="@color/black"
+                    android:textSize="23sp"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -96,8 +96,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="@string/_0_main2"
-                    android:textSize="16sp"
                     android:textColor="@color/red"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/priceTxt"
@@ -170,16 +170,17 @@
                         app:layout_constraintTop_toBottomOf="@+id/plusBtn" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
+
             <TextView
                 android:id="@+id/textView13"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/select_color"
-                android:textSize="14sp"
-                android:textColor="@color/black"
-                android:textStyle="bold"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="8dp"
+                android:text="@string/select_color"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/colorList"
@@ -193,12 +194,12 @@
                 android:id="@+id/textView14"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/select_size"
-                android:textSize="14sp"
-                android:textColor="@color/black"
-                android:textStyle="bold"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="8dp"
+                android:text="@string/select_size"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/sizeList"
@@ -232,9 +233,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/total_price"
-                        android:textStyle="bold"
+                        android:textColor="@color/black"
                         android:textSize="16sp"
-                        android:textColor="@color/black"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/totalPriceTxt"
@@ -243,19 +244,20 @@
                         android:text="@string/_0"
                         android:textColor="@color/black"
                         android:textSize="21sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/addToCartBtn"
                     style="@android:style/Widget.Button"
-                    android:background="@drawable/blue_bg"
-                    android:id="@+id/button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
+                    android:background="@drawable/blue_bg"
                     android:text="@string/buy_now"
                     android:textColor="@color/white"
-                    android:textSize="18sp"/>
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
