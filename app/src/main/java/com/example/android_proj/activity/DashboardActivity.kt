@@ -75,6 +75,7 @@ class DashboardActivity : AppCompatActivity() {
     private fun initUI() {
         initBrands()
         initBanners()
+        initRecommendation()
     }
 
     private fun initBrands() {
@@ -157,7 +158,9 @@ class DashboardActivity : AppCompatActivity() {
 
         viewModel.populars.observe(this) {
             data ->
-            popularAdapter.
+            popularAdapter.updateData(data)
+            binding.progressBarRecommendation.visibility = View.GONE
         }
+        viewModel.loadPopulars()
     }
 }
