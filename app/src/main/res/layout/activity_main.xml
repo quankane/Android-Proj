@@ -76,7 +76,7 @@
                 android:layout_height="match_parent">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
+                    android:id="@+id/recyclerViewBrands"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
@@ -89,13 +89,13 @@
                 </androidx.recyclerview.widget.RecyclerView>
 
                 <ProgressBar
-                    android:id="@+id/progressBarCategory"
+                    android:id="@+id/progress_bar_brands"
                     style="?android:attr/progressBarStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/recyclerView"
+                    app:layout_constraintStart_toStartOf="@+id/recyclerViewBrands"
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -196,21 +196,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
+        <com.google.android.material.navigation.NavigationView
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_gravity="bottom"
-            android:background="@drawable/blue_bg">
+            android:layout_height="match_parent"
+            android:background="@drawable/blue_bg"
+            app:layout_anchorGravity="center_vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:weightSum="4">
 
                 <ImageView
                     android:id="@+id/imageView6"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:layout_margin="8dp"
                     android:layout_weight="1"
                     android:padding="18dp"
@@ -242,9 +245,10 @@
                     android:layout_height="60dp"
                     android:layout_gravity="center"
                     android:layout_margin="8dp"
+                    android:layout_weight="1"
                     android:padding="18dp"
                     android:src="@drawable/btn_5" />
             </LinearLayout>
-        </com.google.android.material.bottomnavigation.BottomNavigationView>
+        </com.google.android.material.navigation.NavigationView>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
