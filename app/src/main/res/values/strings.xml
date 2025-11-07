@@ -6,4 +6,7 @@
     <string name="recommendation">Recommendation</string>
     <string name="see_all">See all</string>
     <string name="todo">TODO</string>
+    <string name="_0">$0</string>
+    <string name="_5">5</string>
+    <string name="title">title</string>
 </resources>
