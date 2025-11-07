@@ -9,4 +9,14 @@
     <string name="_0">$0</string>
     <string name="_5">5</string>
     <string name="title">title</string>
+    <string name="title_main">title</string>
+    <string name="_0_main">$0</string>
+    <string name="_0_main2">$0</string>
+    <string name="plus">+</string>
+    <string name="subtraction">-</string>
+    <string name="_quantity">1</string>
+    <string name="select_color">Select Color</string>
+    <string name="select_size">Select Size</string>
+    <string name="total_price">Total Price</string>
+    <string name="buy_now">Buy Now</string>
 </resources>
