@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.example.android_proj.R
 import com.example.android_proj.adapter.ColorAdapter
 import com.example.android_proj.adapter.PicsAdapter
+import com.example.android_proj.adapter.SizeAdapter
 import com.example.android_proj.databinding.ActivityDetailBinding
 import com.example.android_proj.helper.ManagementCart
 import com.example.android_proj.model.ItemsModel
@@ -36,6 +37,7 @@ class DetailActivity : AppCompatActivity() {
         setupViews()
         setupPicsList()
         setupColorsList()
+        setupSizeList()
     }
 
     @SuppressLint("SetTextI18n")
@@ -95,6 +97,14 @@ class DetailActivity : AppCompatActivity() {
             LinearLayoutManager.HORIZONTAL,
             false
         )
+    }
+
+    private fun setupSizeList() {
+        val sizeList = item.size.map { it }
+        binding.sizeList.apply {
+            adapter = SizeAdapter(sizeList as MutableList<String>)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        }
     }
 
     @SuppressLint("SetTextI18n")
