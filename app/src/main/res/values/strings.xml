@@ -19,4 +19,9 @@
     <string name="select_size">Select Size</string>
     <string name="total_price">Total Price</string>
     <string name="buy_now">Buy Now</string>
+    <string name="order_detail">Order Detail</string>
+    <string name="your_cart_is_empty">Your Cart Is Empty</string>
+    <string name="check_out">Check Out</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="free_delivery">Free Delivery</string>
 </resources>
