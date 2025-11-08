@@ -1,5 +1,6 @@
 package com.example.android_proj.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
@@ -76,6 +77,7 @@ class DashboardActivity : AppCompatActivity() {
         initBrands()
         initBanners()
         initRecommendation()
+        initBottomNavigation()
     }
 
     private fun initBrands() {
@@ -162,5 +164,11 @@ class DashboardActivity : AppCompatActivity() {
             binding.progressBarRecommendation.visibility = View.GONE
         }
         viewModel.loadPopulars()
+    }
+
+    private fun initBottomNavigation() {
+        binding.cartBtn.setOnClickListener {
+            startActivity(Intent(this, CartActivity::class.java))
+        }
     }
 }

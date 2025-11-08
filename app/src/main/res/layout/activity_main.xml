@@ -222,7 +222,7 @@
                     android:src="@drawable/btn_1" />
 
                 <ImageView
-                    android:id="@+id/imageView5"
+                    android:id="@+id/cartBtn"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
