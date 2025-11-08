@@ -24,4 +24,6 @@
     <string name="check_out">Check Out</string>
     <string name="subtotal">Subtotal</string>
     <string name="free_delivery">Free Delivery</string>
+    <string name="total_tax">Total Tax</string>
+    <string name="total">Total</string>
 </resources>
