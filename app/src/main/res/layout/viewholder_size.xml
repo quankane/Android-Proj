@@ -3,11 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="35dp"
     android:layout_height="35dp"
+    android:id="@+id/colorLayout"
     android:background="@drawable/stroke_bg_blue"
     android:layout_margin="8dp">
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/sizeTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/_0"
