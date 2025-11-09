@@ -50,7 +50,8 @@ dependencies {
     annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
     //noinspection NewerVersionAvailable
     implementation("com.google.code.gson:gson:2.13.2")
-    implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    // Thêm dependency cho Firebase Authentication
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

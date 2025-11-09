@@ -9,7 +9,15 @@ import kotlin.math.log
 class ManagementCart(val context: Context) {
 
     private val tinyDB = TinyDB(context)
+    private val managementWishList = ManagementWishList(context)
+//Wishlist
+    fun getWishlistItems(): ArrayList<ItemsModel> {
+        return managementWishList.getListWishlist()
+    }
 
+    fun toggleWishlistItem(item: ItemsModel): Boolean {
+        return managementWishList.toggleWishlistItem(item)
+    }
     fun insertFood(item: ItemsModel) {
         var listFood = getListCart()
         val existAlready = listFood.any { it.title == item.title &&
