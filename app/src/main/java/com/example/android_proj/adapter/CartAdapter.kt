@@ -2,8 +2,10 @@ package com.example.android_proj.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -47,6 +49,9 @@ class CartAdapter(
         holder.binding.numberItemTxt.text = item.numberInCart.toString()
         holder.binding.sizeTxt.text = "Size: ${item.selectedSize}"
         holder.binding.colorTxt.text = "Color: ${item.selectedColor}"
+        val color = item.selectedColor.toColorInt()
+        holder.binding.colorCircle.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+
 
         Glide.with(holder.itemView.context)
             .load(item.picUrl[0])

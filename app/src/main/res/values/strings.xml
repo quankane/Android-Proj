@@ -26,4 +26,6 @@
     <string name="free_delivery">Free Delivery</string>
     <string name="total_tax">Total Tax</string>
     <string name="total">Total</string>
+    <string name="wish_list_is_empty">Wish List Is Empty</string>
+    <string name="you_wish_list">You Wish list</string>
 </resources>

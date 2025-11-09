@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -52,6 +53,8 @@ class DetailActivity : AppCompatActivity() {
         oldPriceTxt.paintFlags = priceTxt.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         ratingTxt.text = "${item.rating} Rating"
         numberItemTxt.text = item.numberInCart.toString()
+        selectedColor = item.selectedColor.toString()
+        selectedSize = item.selectedSize.toString()
 
         updateTotalPrice()
 
@@ -77,17 +80,26 @@ class DetailActivity : AppCompatActivity() {
 
         addToCartBtn.setOnClickListener {
             // Lấy giá trị đã được cập nhật từ biến lưu trữ (String?)
-            val chosenSize = item.
-            val chosenColor =
+            val hasSizes = item.size.isNotEmpty()
+            val hasColors = item.color.isNotEmpty()
 
-            // Kiểm tra và chuyển đổi số lượng sang Int
-            val quantityText = binding.numberItemTxt.text.toString()
-            val quantity = quantityText.toIntOrNull() ?: 1
+            val chosenSize = selectedSize
+            val chosenColor = selectedColor
+
+            // Nếu có tùy chọn size/color nhưng người dùng chưa chọn
+            if (hasSizes && chosenSize == null) {
+                Toast.makeText(this@DetailActivity, "Vui lòng chọn Size!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (hasColors && chosenColor == null) {
+                Toast.makeText(this@DetailActivity, "Vui lòng chọn Màu!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             // 3. Sử dụng các biến String đã lưu
-            item.selectedSize = chosenSize
-            item.selectedColor = chosenColor
-            item.numberInCart = quantity
+            item.selectedSize = chosenSize.toString()
+            item.selectedColor = chosenColor.toString()
+            item.numberInCart = numberItemTxt.text.toString().toInt();
 
             managementCart.insertFood(item)
             // ... hiển thị thông báo thành công
