@@ -43,7 +43,7 @@ class CartActivity : AppCompatActivity() {
         binding.apply {
             viewCart.layoutManager = LinearLayoutManager(
                 this@CartActivity,
-                LinearLayoutManager.HORIZONTAL,
+                LinearLayoutManager.VERTICAL,
                 false
             )
 

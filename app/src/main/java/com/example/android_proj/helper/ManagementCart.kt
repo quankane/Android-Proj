@@ -3,6 +3,7 @@ package com.example.android_proj.helper
 import android.content.Context
 import android.widget.Toast
 import com.example.android_proj.model.ItemsModel
+import kotlin.math.log
 
 
 class ManagementCart(val context: Context) {
@@ -14,9 +15,18 @@ class ManagementCart(val context: Context) {
         val existAlready = listFood.any { it.title == item.title }
         val index = listFood.indexOfFirst { it.title == item.title }
 
+        for (food in listFood) {
+            println(food.toString());
+        }
+
+        println("==================")
+        println("item title = " + item.title)
+
         if (existAlready) {
+            println("1")
             listFood[index].numberInCart = item.numberInCart
         } else {
+            println("2")
             listFood.add(item)
         }
         tinyDB.putListObject("CartList", listFood)
