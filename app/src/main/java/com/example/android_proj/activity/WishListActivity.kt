@@ -1,21 +1,64 @@
+// FILE: activity/WishlistActivity.kt (NEW)
+
 package com.example.android_proj.activity
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.example.android_proj.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.android_proj.adapter.WishlistAdapter
+import com.example.android_proj.databinding.ActivityWishListBinding
+import com.example.android_proj.helper.ManagementWishList
+import com.example.android_proj.model.ItemsModel
 
-class WishListActivity : AppCompatActivity() {
+class WishlistActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityWishListBinding
+    private lateinit var managementWishList: ManagementWishList
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_wish_list)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        binding = ActivityWishListBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        managementWishList = ManagementWishList(this)
+
+        initView()
+        initWishlist()
+    }
+
+    private fun initView() {
+        binding.backBtn.setOnClickListener {
+            finish()
         }
+    }
+
+    private fun initWishlist() {
+        val wishlistItems = managementWishList.getListWishlist()
+
+        binding.viewWishlist.apply {
+            layoutManager = LinearLayoutManager(
+                this@WishlistActivity,
+                LinearLayoutManager.VERTICAL, // Danh sách dọc
+                false
+            )
+
+            // Thiết lập Adapter và Callback để xử lý khi WishList thay đổi
+            adapter = WishlistAdapter(
+                wishlistItems,
+                this@WishlistActivity,
+                onWishlistChanged = {
+                    checkEmptyState(wishlistItems.isEmpty())
+                }
+            )
+        }
+
+        checkEmptyState(wishlistItems.isEmpty())
+    }
+
+    // Hàm kiểm tra trạng thái trống/có dữ liệu
+    private fun checkEmptyState(isEmpty: Boolean) {
+        binding.emptyTxt.visibility = if (isEmpty) View.VISIBLE else View.GONE
+        binding.viewWishlist.visibility = if (isEmpty) View.GONE else View.VISIBLE
     }
 }
