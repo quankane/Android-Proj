@@ -29,6 +29,7 @@ class CartActivity : AppCompatActivity() {
         managementCart = ManagementCart(this)
 
         initView()
+        initCartItemList()
         calculateCart()
     }
 
@@ -76,7 +77,7 @@ class CartActivity : AppCompatActivity() {
             totalFeeTxt.text = "$$itemTotal"
             taxTxt.text = "$$tax"
             deliveryTxt.text = "$$delivery"
-            totalTxt.text = "$$totalTxt"
+            totalTxt.text = "$$total"
         }
     }
 }
