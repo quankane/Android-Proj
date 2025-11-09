@@ -232,7 +232,7 @@
                     android:src="@drawable/btn_2" />
 
                 <ImageView
-                    android:id="@+id/imageView4"
+                    android:id="@+id/wishlistBtn"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_gravity="center"

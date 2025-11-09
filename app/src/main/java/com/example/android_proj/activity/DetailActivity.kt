@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.android_proj.R
@@ -18,6 +19,7 @@ import com.example.android_proj.adapter.SizeAdapter
 import com.example.android_proj.databinding.ActivityDetailBinding
 import com.example.android_proj.helper.ManagementCart
 import com.example.android_proj.model.ItemsModel
+import com.example.android_proj.viewmodel.MainViewModel
 
 class DetailActivity : AppCompatActivity() {
 
@@ -27,6 +29,11 @@ class DetailActivity : AppCompatActivity() {
 
     private var selectedSize: String? = null
     private var selectedColor: String? = null
+
+    private val viewModel : MainViewModel by lazy {
+        val factory = ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+        ViewModelProvider(this, factory)[MainViewModel::class.java]
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +49,24 @@ class DetailActivity : AppCompatActivity() {
         setupPicsList()
         setupColorsList()
         setupSizeList()
+    }
+
+    // HÀM KIỂM TRA VÀ CẬP NHẬT TRẠNG THÁI YÊU THÍCH BAN ĐẦU
+    private fun checkFavoriteStatus() {
+        val wishlist = viewModel.getWishlistItems()
+        // Kiểm tra xem item hiện tại có tồn tại trong wishlist không (chỉ cần so sánh title/id)
+        val isFavorite = wishlist.any { it.title == item.title }
+
+        updateFavoriteIcon(isFavorite)
+    }
+
+    // HÀM CẬP NHẬT BIỂU TƯỢNG (Giả định R.drawable.fav_icon_filled và R.drawable.fav_icon)
+    private fun updateFavoriteIcon(isFavorite: Boolean) {
+        if (isFavorite) {
+            binding.favBtn.setImageResource(R.drawable.fav_icon_filled) // Màu đỏ/Đã đầy
+        } else {
+            binding.favBtn.setImageResource(R.drawable.fav_icon) // Màu trắng/Trống
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -76,6 +101,17 @@ class DetailActivity : AppCompatActivity() {
                 numberItemTxt.text = item.numberInCart.toString()
                 updateTotalPrice()
             }
+        }
+
+        favBtn.setOnClickListener {
+            // Gọi ViewModel để thay đổi trạng thái
+            val isAdded = viewModel.toggleWishlistItem(item)
+
+            // Cập nhật biểu tượng UI ngay lập tức
+            updateFavoriteIcon(isAdded)
+
+            val message = if (isAdded) "Đã thêm vào danh sách yêu thích!" else "Đã xóa khỏi danh sách yêu thích!"
+            Toast.makeText(this@DetailActivity, message, Toast.LENGTH_SHORT).show()
         }
 
         addToCartBtn.setOnClickListener {

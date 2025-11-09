@@ -16,12 +16,16 @@ import com.example.android_proj.adapter.PopularAdapter
 import com.example.android_proj.adapter.SliderAdapter
 import com.example.android_proj.databinding.ActivityMainBinding
 import com.example.android_proj.model.SliderModel
-import com.example.android_proj.viewModel.MainViewModel
+import com.example.android_proj.viewmodel.MainViewModel
 
 class DashboardActivity : AppCompatActivity() {
 
     private val viewModel : MainViewModel by lazy {
-        ViewModelProvider(this)[MainViewModel::class.java]
+        // 1. Lấy Application Context
+        val factory = ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+
+        // 2. Sử dụng Factory để tạo ViewModel
+        ViewModelProvider(this, factory)[MainViewModel::class.java]
     }
 
     private lateinit var binding : ActivityMainBinding
@@ -169,6 +173,9 @@ class DashboardActivity : AppCompatActivity() {
     private fun initBottomNavigation() {
         binding.cartBtn.setOnClickListener {
             startActivity(Intent(this, CartActivity::class.java))
+        }
+        binding.wishlistBtn.setOnClickListener {
+            startActivity(Intent(this, WishlistActivity::class.java))
         }
     }
 }

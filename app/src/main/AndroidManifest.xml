@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidProj">
         <activity
-            android:name=".activity.WishListActivity"
+            android:name=".activity.WishlistActivity"
             android:exported="false" />
         <activity
             android:name=".activity.CartActivity"
