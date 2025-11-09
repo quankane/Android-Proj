@@ -31,19 +31,20 @@
         android:layout_height="wrap_content"
         android:text="$0"
         android:textColor="@color/black"
-        app:layout_constraintStart_toStartOf="@+id/titleTxt"
-        app:layout_constraintTop_toBottomOf="@+id/titleTxt" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/titleTxt" />
 
     <TextView
         android:id="@+id/totalEachItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:text="$0"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/feeEachItemTxt" />
+        app:layout_constraintStart_toEndOf="@+id/feeEachItemTxt" />
 
     <TextView
         android:id="@+id/plusCartBtn"
@@ -79,4 +80,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/plusCartBtn"
         app:layout_constraintTop_toBottomOf="@+id/plusCartBtn" />
+
+    <TextView
+        android:id="@+id/sizeTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="@+id/titleTxt"
+        app:layout_constraintTop_toBottomOf="@+id/titleTxt" />
+
+    <TextView
+        android:id="@+id/colorTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="@+id/sizeTxt"
+        app:layout_constraintTop_toBottomOf="@+id/sizeTxt" />
 </androidx.constraintlayout.widget.ConstraintLayout>

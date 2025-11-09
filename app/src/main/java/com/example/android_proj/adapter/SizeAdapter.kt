@@ -1,12 +1,16 @@
 package com.example.android_proj.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android_proj.R
 import com.example.android_proj.databinding.ViewholderSizeBinding
 
-class SizeAdapter(val items: MutableList<String>) :
+class SizeAdapter(
+    val items: MutableList<String>,
+    private val onSizeSelected: (String) -> Unit
+) :
     RecyclerView.Adapter<SizeAdapter.ViewHolder>() {
     inner class ViewHolder(val binding: ViewholderSizeBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -27,7 +31,7 @@ class SizeAdapter(val items: MutableList<String>) :
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: SizeAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SizeAdapter.ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         holder.binding.sizeTxt.text = items[position]
 
         holder.binding.root.setOnClickListener {

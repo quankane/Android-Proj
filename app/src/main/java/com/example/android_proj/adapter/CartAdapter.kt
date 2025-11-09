@@ -45,6 +45,8 @@ class CartAdapter(
         holder.binding.feeEachItemTxt.text = "$${item.price}"
         holder.binding.totalEachItem.text = "$${(item.numberInCart * item.price).roundToLong()}"
         holder.binding.numberItemTxt.text = item.numberInCart.toString()
+        holder.binding.sizeTxt.text = "Size: ${item.selectedSize}"
+        holder.binding.colorTxt.text = "Color: ${item.selectedColor}"
 
         Glide.with(holder.itemView.context)
             .load(item.picUrl[0])

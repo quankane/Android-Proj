@@ -24,6 +24,9 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var item: ItemsModel
     private lateinit var managementCart : ManagementCart
 
+    private var selectedSize: String? = null
+    private var selectedColor: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -73,7 +76,21 @@ class DetailActivity : AppCompatActivity() {
         }
 
         addToCartBtn.setOnClickListener {
+            // Lấy giá trị đã được cập nhật từ biến lưu trữ (String?)
+            val chosenSize = item.size.
+            val chosenColor =
+
+            // Kiểm tra và chuyển đổi số lượng sang Int
+            val quantityText = binding.numberItemTxt.text.toString()
+            val quantity = quantityText.toIntOrNull() ?: 1
+
+            // 3. Sử dụng các biến String đã lưu
+            item.selectedSize = chosenSize
+            item.selectedColor = chosenColor
+            item.numberInCart = quantity
+
             managementCart.insertFood(item)
+            // ... hiển thị thông báo thành công
         }
     }
 
@@ -91,7 +108,11 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun setupColorsList() {
-        binding.colorList.adapter = ColorAdapter(item.color)
+        binding.colorList.adapter = ColorAdapter(
+            item.color,
+            onColorSelected = { color ->
+                selectedColor = color // Cập nhật biến lưu trữ
+            })
         binding.colorList.layoutManager = LinearLayoutManager(
             this,
             LinearLayoutManager.HORIZONTAL,
@@ -102,7 +123,13 @@ class DetailActivity : AppCompatActivity() {
     private fun setupSizeList() {
         val sizeList = item.size.map { it }
         binding.sizeList.apply {
-            adapter = SizeAdapter(sizeList as MutableList<String>)
+            adapter = SizeAdapter(
+                sizeList as MutableList<String>,
+                onSizeSelected = { size ->
+                    selectedSize = size // Cập nhật biến lưu trữ
+                    // Cập nhật lại tổng giá nếu cần
+                }
+            )
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
     }

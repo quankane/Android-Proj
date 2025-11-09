@@ -1,5 +1,6 @@
 package com.example.android_proj.adapter
 
+import android.annotation.SuppressLint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.view.LayoutInflater
@@ -10,7 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android_proj.databinding.ViewholderColorBinding
 
 class ColorAdapter(
-    private val items: ArrayList<String>
+    private val items: ArrayList<String>,
+    private val onColorSelected: (String) -> Unit
 ) : RecyclerView.Adapter<ColorAdapter.ViewHolder>()
 {
 
@@ -32,7 +34,7 @@ class ColorAdapter(
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ColorAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ColorAdapter.ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val color = items[position].toColorInt()
         holder.binding.colorCircle.setColorFilter(color, PorterDuff.Mode.SRC_IN)
         holder.binding.strokeView.visibility = if (selectedPosition == position)

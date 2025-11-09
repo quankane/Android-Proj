@@ -12,11 +12,17 @@ class ManagementCart(val context: Context) {
 
     fun insertFood(item: ItemsModel) {
         var listFood = getListCart()
-        val existAlready = listFood.any { it.title == item.title }
-        val index = listFood.indexOfFirst { it.title == item.title }
+        val existAlready = listFood.any { it.title == item.title &&
+                it.selectedSize == item.selectedSize &&
+                it.selectedColor == item.selectedColor}
+        val index = listFood.indexOfFirst { it.title == item.title &&
+                it.selectedSize == item.selectedSize &&
+                it.selectedColor == item.selectedColor}
 
-        for (food in listFood) {
-            println(food.toString());
+        if (listFood != null && !listFood.isEmpty()) {
+            for (food in listFood) {
+                println(food.toString());
+            }
         }
 
         println("==================")
