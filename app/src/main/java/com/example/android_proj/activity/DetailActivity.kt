@@ -77,7 +77,7 @@ class DetailActivity : AppCompatActivity() {
 
         addToCartBtn.setOnClickListener {
             // Lấy giá trị đã được cập nhật từ biến lưu trữ (String?)
-            val chosenSize = item.size.
+            val chosenSize = item.
             val chosenColor =
 
             // Kiểm tra và chuyển đổi số lượng sang Int

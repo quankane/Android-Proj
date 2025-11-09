@@ -35,15 +35,27 @@ class ColorAdapter(
     }
 
     override fun onBindViewHolder(holder: ColorAdapter.ViewHolder, @SuppressLint("RecyclerView") position: Int) {
-        val color = items[position].toColorInt()
+        val colorString = items[position] // Giá trị màu sắc thực tế (ví dụ: "#FF0000")
+
+        // 2. Chuyển đổi và thiết lập màu cho View
+        val color = colorString.toColorInt()
         holder.binding.colorCircle.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+
+        // 3. Logic highlight (Giữ nguyên)
         holder.binding.strokeView.visibility = if (selectedPosition == position)
             View.VISIBLE else View.GONE
 
         holder.binding.root.setOnClickListener {
             if (selectedPosition != position) {
+
+                // Cập nhật vị trí đã chọn
                 lastSelectedPosition = selectedPosition
                 selectedPosition = position
+
+                // Gọi callback để thông báo màu đã chọn cho DetailActivity
+                onColorSelected(colorString) // <-- THÊM DÒNG NÀY
+
+                // Cập nhật UI
                 if (lastSelectedPosition != -1) notifyItemChanged(lastSelectedPosition)
                 notifyItemChanged(selectedPosition)
             }
