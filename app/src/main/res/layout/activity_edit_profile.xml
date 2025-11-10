@@ -115,6 +115,18 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/logoutBtn"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="40dp"
+                android:background="@drawable/red_bg"
+                android:text="Logout"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

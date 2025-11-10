@@ -188,6 +188,8 @@ class DashboardActivity : AppCompatActivity() {
         binding.wishlistBtn.setOnClickListener {
             startActivity(Intent(this, WishlistActivity::class.java))
         }
-        binding.
+        binding.profileBtn.setOnClickListener {
+            startActivity(Intent(this, EditProfileActivity::class.java))
+        }
     }
 }

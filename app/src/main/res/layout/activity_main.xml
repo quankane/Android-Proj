@@ -242,7 +242,7 @@
                     android:src="@drawable/btn_3" />
 
                 <ImageView
-                    android:id="@+id/imageView3"
+                    android:id="@+id/profileBtn"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_gravity="center"

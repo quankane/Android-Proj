@@ -1,5 +1,6 @@
 package com.example.android_proj.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -46,6 +47,21 @@ class EditProfileActivity : AppCompatActivity() {
             // Chức năng này được xử lý bằng cách gửi email reset password
             sendPasswordResetEmail()
         }
+
+        logoutBtn.setOnClickListener {
+            performLogout()
+        }
+    }
+
+    private fun performLogout() {
+        auth.signOut()
+        Toast.makeText(this, "Đã đăng xuất thành công!", Toast.LENGTH_SHORT).show()
+
+        // Chuyển hướng về Login Activity và xóa stack Activity
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finishAffinity() // Đóng tất cả Activity trên stack
     }
 
     private fun saveProfileChanges() = with(binding) {
