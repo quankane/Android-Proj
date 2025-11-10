@@ -43,7 +43,7 @@ class RegisterActivity : AppCompatActivity() {
 
         if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this@RegisterActivity, "Vui lòng điền đầy đủ thông tin.", Toast.LENGTH_SHORT).show()
-            return
+            return@with
         }
 
         setLoading(true)

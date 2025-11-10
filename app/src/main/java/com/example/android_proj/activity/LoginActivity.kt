@@ -49,7 +49,7 @@ class LoginActivity : AppCompatActivity() {
 
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this@LoginActivity, "Vui lòng điền đầy đủ Email và Mật khẩu.", Toast.LENGTH_SHORT).show()
-            return
+            return@with
         }
 
         setLoading(true)

@@ -17,6 +17,8 @@ import com.example.android_proj.adapter.SliderAdapter
 import com.example.android_proj.databinding.ActivityMainBinding
 import com.example.android_proj.model.SliderModel
 import com.example.android_proj.viewmodel.MainViewModel
+import com.google.firebase.auth.FirebaseAuth
+
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -58,6 +60,15 @@ class DashboardActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        if (FirebaseAuth.getInstance().currentUser == null) {
+            // Nếu chưa đăng nhập, chuyển đến LoginActivity
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+            return // Dừng khởi tạo Dashboard
+        }
 
         initUI()
     }
@@ -177,5 +188,6 @@ class DashboardActivity : AppCompatActivity() {
         binding.wishlistBtn.setOnClickListener {
             startActivity(Intent(this, WishlistActivity::class.java))
         }
+        binding.
     }
 }
