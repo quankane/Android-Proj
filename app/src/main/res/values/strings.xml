@@ -28,4 +28,6 @@
     <string name="total">Total</string>
     <string name="wish_list_is_empty">Wish List Is Empty</string>
     <string name="you_wish_list">You Wish list</string>
+    <string name="profile_title">Profile title</string>
+    <string name="username_placeholder">Username Placeholder</string>
 </resources>

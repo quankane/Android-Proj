@@ -46,6 +46,10 @@ dependencies {
 
     //noinspection NewerVersionAvailable
     implementation ("com.github.bumptech.glide:glide:4.16.0")
+    implementation(libs.firebase.auth)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
     //noinspection NewerVersionAvailable
     annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
     //noinspection NewerVersionAvailable
