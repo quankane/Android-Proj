@@ -4,13 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.android_proj.R
 import com.example.android_proj.adapter.CartAdapter
 import com.example.android_proj.databinding.ActivityCartBinding
-import com.example.android_proj.databinding.ViewholderCartBinding
 import com.example.android_proj.helper.ChangeNumberItemsListener
 import com.example.android_proj.helper.ManagementCart
 

@@ -78,6 +78,8 @@ class DashboardActivity : AppCompatActivity() {
         }
 
         initUI()
+
+        loadUserRoleAndSetupDrawer()
     }
 
     // QUẢN LÝ VÒNG ĐỜI ĐỂ TRÁNH MEMORY LEAK

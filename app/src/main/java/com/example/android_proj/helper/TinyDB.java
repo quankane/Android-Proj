@@ -20,6 +20,7 @@
  */
 
 package com.example.android_proj.helper;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -29,7 +30,6 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
-
 
 import com.example.android_proj.model.ItemsModel;
 import com.google.gson.Gson;

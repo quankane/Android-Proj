@@ -2,7 +2,6 @@ package com.example.android_proj.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

@@ -1,13 +1,13 @@
 package com.example.android_proj.adapter
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.android_proj.R
 import com.example.android_proj.databinding.ViewholderPicsBinding
-import com.google.firebase.database.core.Context
 
 class PicsAdapter(
     val items: MutableList<String>,

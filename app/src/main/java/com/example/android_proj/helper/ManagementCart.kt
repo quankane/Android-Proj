@@ -3,7 +3,6 @@ package com.example.android_proj.helper
 import android.content.Context
 import android.widget.Toast
 import com.example.android_proj.model.ItemsModel
-import kotlin.math.log
 
 
 class ManagementCart(val context: Context) {

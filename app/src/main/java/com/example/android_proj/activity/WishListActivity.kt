@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.android_proj.adapter.WishlistAdapter
 import com.example.android_proj.databinding.ActivityWishListBinding
 import com.example.android_proj.helper.ManagementWishList
-import com.example.android_proj.model.ItemsModel
 
 class WishlistActivity : AppCompatActivity() {
 
