@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/nav_home" android:title="Home" android:icon="@drawable/ic_home" />
+        <item android:id="@+id/nav_orders" android:title="My Orders" android:icon="@drawable/ic_shopping_cart" />
+    </group>
+
+    <group android:id="@+id/admin_group" android:checkableBehavior="single" android:visible="false">
+        <item android:title="QUẢN TRỊ HỆ THỐNG" />
+        <item android:id="@+id/nav_admin_home" android:title="Home Admin" android:icon="@drawable/ic_admin" />
+        <item android:id="@+id/nav_product_management" android:title="Product Management" android:icon="@drawable/ic_product" />
+        <item android:id="@+id/nav_order_management" android:title="Order Management" android:icon="@drawable/ic_order_mgmt" />
+        <item android:id="@+id/nav_user_management" android:title="User Management" android:icon="@drawable/ic_user_management" />
+        <item android:id="@+id/nav_statistics" android:title="Statistics" android:icon="@drawable/ic_statistics" />
+    </group>
+
+    <item android:id="@+id/nav_logout" android:title="Log out" android:icon="@drawable/ic_logout" />
+</menu>

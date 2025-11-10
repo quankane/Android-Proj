@@ -24,9 +24,6 @@
             android:name=".activity.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.ProfileActivity"
-            android:exported="false" />
-        <activity
             android:name=".activity.WishlistActivity"
             android:exported="false" />
         <activity

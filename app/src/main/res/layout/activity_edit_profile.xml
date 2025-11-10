@@ -59,11 +59,10 @@
                 android:layout_marginBottom="24dp"
                 android:background="@drawable/white_bg_circle"
                 android:padding="8dp"
-                app:srcCompat="@drawable/ic_user_profile"
-                app:tint="@color/blue" />
+                app:srcCompat="@drawable/ic_user_profile" />
 
             <!-- Username Input -->
-            <TextView style="@style/LabelStyle" android:text="Username Label" />
+            <TextView style="@style/LabelStyle" android:text="Username" />
             <EditText
                 android:id="@+id/usernameEdt"
                 android:layout_width="match_parent"
@@ -77,7 +76,7 @@
                 android:inputType="textPersonName" />
 
             <!-- Email Input (Được làm mờ/không thể chỉnh sửa trực tiếp) -->
-            <TextView style="@style/LabelStyle" android:text="Email Label" />
+            <TextView style="@style/LabelStyle" android:text="Email" />
             <EditText
                 android:id="@+id/emailEdt"
                 android:layout_width="match_parent"
@@ -91,41 +90,48 @@
                 android:layout_marginBottom="16dp" />
 
             <!-- Password Change Option -->
-            <androidx.appcompat.widget.AppCompatButton
+            <TextView
+                android:layout_gravity="end"
                 android:id="@+id/changePasswordBtn"
-                style="@android:style/Widget.Button"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/stroke_bg_blue"
                 android:text="Change password"
                 android:textColor="@color/blue"
                 android:textSize="16sp"
-                android:layout_marginBottom="40dp"
+                android:layout_marginBottom="20dp"
                 android:textStyle="bold" />
 
             <!-- Save Button -->
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/saveBtn"
-                style="@android:style/Widget.Button"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/blue_bg"
-                android:text="Save Changes"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:orientation="horizontal"
+                android:weightSum="2">
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/logoutBtn"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="40dp"
-                android:background="@drawable/red_bg"
-                android:text="Logout"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/logoutBtn"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/red_bg"
+                    android:text="Logout"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/saveBtn"
+                    style="@android:style/Widget.Button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/blue_bg"
+                    android:text="Save Changes"
+                    android:layout_weight="1"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

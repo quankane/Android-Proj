@@ -57,6 +57,9 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     // Thêm dependency cho Firebase Authentication
     implementation("com.google.firebase:firebase-auth-ktx")
+    implementation ("com.google.firebase:firebase-storage")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.google.firebase:firebase-firestore-ktx")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

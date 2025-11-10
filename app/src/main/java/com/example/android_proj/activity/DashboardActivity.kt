@@ -3,6 +3,7 @@ package com.example.android_proj.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -11,14 +12,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
+import com.example.android_proj.R
 import com.example.android_proj.adapter.BrandsAdapter
 import com.example.android_proj.adapter.PopularAdapter
 import com.example.android_proj.adapter.SliderAdapter
 import com.example.android_proj.databinding.ActivityMainBinding
 import com.example.android_proj.model.SliderModel
 import com.example.android_proj.viewmodel.MainViewModel
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
-
+import com.google.firebase.firestore.FirebaseFirestore
+-
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -190,6 +194,66 @@ class DashboardActivity : AppCompatActivity() {
         }
         binding.profileBtn.setOnClickListener {
             startActivity(Intent(this, EditProfileActivity::class.java))
+        }
+    }
+
+    private fun loadUserRoleAndSetupDrawer() {
+        val user = FirebaseAuth.getInstance().currentUser ?: return
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("users").document(user.uid)
+            .get()
+            .addOnSuccessListener { document ->
+                // Mặc định là "user" nếu role chưa được đặt
+                val role = document.getString("role") ?: "user"
+                setupNavDrawer(role)
+            }
+            .addOnFailureListener { e ->
+                // Xử lý lỗi (ví dụ: mất mạng) và setup với quyền user mặc định
+                Log.e("Drawer", "Không thể tải vai trò: ${e.message}")
+                setupNavDrawer("user")
+            }
+    }
+
+    private fun setupNavDrawer(role: String) {
+        // 1. Lấy tham chiếu đến NavigationView
+        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+        val menu = navigationView.menu
+
+        // 2. Tìm Header View để cập nhật tên
+        val headerView = navigationView.getHeaderView(0)
+        val userNameTv = headerView.findViewById<TextView>(R.id.user_name_text_view) // Thay ID TextView tên người dùng
+
+        val isUserAdmin = role == "admin"
+
+        // 3. ẨN/HIỆN các mục quản trị
+
+        // Tìm nhóm Admin theo ID đã định nghĩa trong nav_drawer_menu.xml
+        val adminGroup = menu.findItem(R.id.admin_group)
+
+        // Hoặc tìm từng mục riêng lẻ (Tùy thuộc vào cách bạn định nghĩa trong XML)
+        val adminHomeItem = menu.findItem(R.id.nav_admin_home)
+        val productMgmtItem = menu.findItem(R.id.nav_product_management)
+        val orderMgmtItem = menu.findItem(R.id.nav_order_management)
+        val userMgmtItem = menu.findItem(R.id.nav_user_management)
+        val statisticsItem = menu.findItem(R.id.nav_statistics)
+
+        if (adminGroup != null) {
+            adminGroup.isVisible = isUserAdmin
+        } else {
+            // Nếu không dùng group, hãy ẩn/hiện từng mục:
+            adminHomeItem?.isVisible = isUserAdmin
+            productMgmtItem?.isVisible = isUserAdmin
+            orderMgmtItem?.isVisible = isUserAdmin
+            userMgmtItem?.isVisible = isUserAdmin
+            statisticsItem?.isVisible = isUserAdmin
+        }
+
+        // 4. Cập nhật tên hiển thị trong Nav Header
+        if (isUserAdmin) {
+            userNameTv?.text = "Admin"
+        } else {
+            userNameTv?.text = FirebaseAuth.getInstance().currentUser?.displayName ?: "User"
         }
     }
 }
