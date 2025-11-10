@@ -51,15 +51,25 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
     //noinspection NewerVersionAvailable
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
-    //noinspection NewerVersionAvailable
-    implementation("com.google.code.gson:gson:2.13.2")
-    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
-    // Thêm dependency cho Firebase Authentication
+    implementation(platform("com.google.firebase:firebase-bom:33.0.0")) // Sử dụng phiên bản BOM mới nhất
+
+    // Thư viện Xác thực và Firestore (KHÔNG CẦN SỐ PHIÊN BẢN)
     implementation("com.google.firebase:firebase-auth-ktx")
-    implementation ("com.google.firebase:firebase-storage")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx") // Dùng bản Kotlin (ktx) cho Storage
+
+    // Glide (Thư viện Tải ảnh)
+    // Cập nhật lên phiên bản ổn định mới nhất (4.16.0)
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    // Annotation Processor (Bắt buộc cho Glide)
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+
+    // Gson (Phân tích JSON)
+    implementation("com.google.code.gson:gson:2.10.1") // Giảm xuống 2.10.1 (phổ biến) hoặc giữ 2.13.2 nếu đã hoạt động
+
+    // OkHttp (HTTP Networking)
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

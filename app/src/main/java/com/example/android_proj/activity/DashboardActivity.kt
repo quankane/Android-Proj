@@ -2,7 +2,9 @@ package com.example.android_proj.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.example.android_proj.R
 import com.example.android_proj.adapter.BrandsAdapter
 import com.example.android_proj.adapter.PopularAdapter
@@ -22,7 +26,6 @@ import com.example.android_proj.viewmodel.MainViewModel
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
--
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -216,44 +219,43 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun setupNavDrawer(role: String) {
-        // 1. Lấy tham chiếu đến NavigationView
-        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+        val user = FirebaseAuth.getInstance().currentUser ?: return
+
+        val navigationView = findViewById<NavigationView>(R.id.nav_view_drawer) // Thay ID thích hợp
         val menu = navigationView.menu
 
-        // 2. Tìm Header View để cập nhật tên
+        // 1. Lấy Header View
         val headerView = navigationView.getHeaderView(0)
-        val userNameTv = headerView.findViewById<TextView>(R.id.user_name_text_view) // Thay ID TextView tên người dùng
+
+        // 2. Tìm các ID mới
+        val userNameTv = headerView.findViewById<TextView>(R.id.user_name_text_view)
+        val userEmailTv = headerView.findViewById<TextView>(R.id.user_email_text_view)
+        val avatarImg = headerView.findViewById<ImageView>(R.id.nav_header_avatar) // ID mới cho ImageView
 
         val isUserAdmin = role == "admin"
 
-        // 3. ẨN/HIỆN các mục quản trị
-
-        // Tìm nhóm Admin theo ID đã định nghĩa trong nav_drawer_menu.xml
-        val adminGroup = menu.findItem(R.id.admin_group)
-
-        // Hoặc tìm từng mục riêng lẻ (Tùy thuộc vào cách bạn định nghĩa trong XML)
-        val adminHomeItem = menu.findItem(R.id.nav_admin_home)
-        val productMgmtItem = menu.findItem(R.id.nav_product_management)
-        val orderMgmtItem = menu.findItem(R.id.nav_order_management)
-        val userMgmtItem = menu.findItem(R.id.nav_user_management)
-        val statisticsItem = menu.findItem(R.id.nav_statistics)
-
-        if (adminGroup != null) {
-            adminGroup.isVisible = isUserAdmin
-        } else {
-            // Nếu không dùng group, hãy ẩn/hiện từng mục:
-            adminHomeItem?.isVisible = isUserAdmin
-            productMgmtItem?.isVisible = isUserAdmin
-            orderMgmtItem?.isVisible = isUserAdmin
-            userMgmtItem?.isVisible = isUserAdmin
-            statisticsItem?.isVisible = isUserAdmin
-        }
-
-        // 4. Cập nhật tên hiển thị trong Nav Header
+        // 3. Cập nhật Text và Email
         if (isUserAdmin) {
             userNameTv?.text = "Admin"
         } else {
-            userNameTv?.text = FirebaseAuth.getInstance().currentUser?.displayName ?: "User"
+            userNameTv?.text = user.displayName ?: "User"
         }
+        userEmailTv?.text = user.email // Hiển thị email
+
+        // 4. Tải Ảnh đại diện (Avatar)
+        if (user.photoUrl != null) {
+            Glide.with(this)
+                .load(user.photoUrl)
+                .placeholder(R.drawable.ic_user_profile)
+                .transform(CircleCrop()) // Giả sử bạn muốn ảnh tròn
+                .into(avatarImg)
+        } else {
+            // Đặt lại ảnh mặc định nếu không có photoUrl
+            avatarImg.setImageResource(R.drawable.ic_user_profile)
+        }
+
+        // 5. Ẩn/Hiện nhóm các mục quản trị (Logic phân quyền)
+        val adminGroup = menu.findItem(R.id.admin_group)
+        adminGroup?.isVisible = isUserAdmin
     }
 }
