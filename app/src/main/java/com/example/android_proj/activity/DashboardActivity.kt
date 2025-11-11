@@ -3,14 +3,12 @@ package com.example.android_proj.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.MenuItem // Cần cho onNavigationItemSelected
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat // Cần cho việc đóng/mở Drawer
-import androidx.drawerlayout.widget.DrawerLayout // Cần cho DrawerLayout
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,16 +28,17 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-// implements NavigationView.OnNavigationItemSelectedListener để xử lý các sự kiện click trong Nav Drawer
-class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class DashboardActivity : AppCompatActivity() {
 
     private val viewModel : MainViewModel by lazy {
+        // 1. Lấy Application Context
         val factory = ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+
+        // 2. Sử dụng Factory để tạo ViewModel
         ViewModelProvider(this, factory)[MainViewModel::class.java]
     }
 
     private lateinit var binding : ActivityMainBinding
-    private lateinit var drawerLayout: DrawerLayout // Tham chiếu đến DrawerLayout
 
     private val brandsAdapter = BrandsAdapter(mutableListOf())
     private val popularAdapter = PopularAdapter(mutableListOf())
@@ -65,14 +64,11 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.i("DASHBOARD ACTIVITY", "Đã chạy vào dashboard")
+        Log.i("DASHBOARD ACTIVITY", "Đã chạy vào dashboard")
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Tham chiếu DrawerLayout bằng ID chính xác trong XML
-        drawerLayout = findViewById(R.id.drawer_layout)
 
         if (FirebaseAuth.getInstance().currentUser == null) {
             // Nếu chưa đăng nhập, chuyển đến LoginActivity
@@ -84,56 +80,14 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         }
 
         initUI()
+
         loadUserRoleAndSetupDrawer()
     }
-
-    // Xử lý sự kiện khi người dùng chọn một mục trong Nav Drawer
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Đóng Drawer sau khi chọn mục
-        drawerLayout.closeDrawer(GravityCompat.START)
-
-        when (item.itemId) {
-            R.id.nav_home -> return true
-            R.id.nav_orders -> {
-                // Xử lý chuyển trang Order History
-            }
-            R.id.nav_product_management -> {
-                startActivity(Intent(this, ProductManagementActivity::class.java))
-            }
-            R.id.nav_order_management -> {
-                startActivity(Intent(this, OrderManagementActivity::class.java))
-            }
-            R.id.nav_user_management -> {
-                startActivity(Intent(this, UserManagementActivity::class.java))
-            }
-            R.id.nav_logout -> {
-                performLogout()
-            }
-        }
-        return true
-    }
-
-    // Xử lý nút Back (Đóng Drawer nếu đang mở)
-    override fun onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
-        }
-    }
-
-    private fun performLogout() {
-        FirebaseAuth.getInstance().signOut()
-        val intent = Intent(this, LoginActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
-        finishAffinity()
-    }
-
 
     // QUẢN LÝ VÒNG ĐỜI ĐỂ TRÁNH MEMORY LEAK
     override fun onResume() {
         super.onResume()
+        // Bắt đầu cuộn lại khi Activity hiển thị
         if ((binding.viewPagerSlider.adapter?.itemCount ?: 0) > 1) {
             startAutoScroll()
         }
@@ -141,6 +95,7 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
     override fun onPause() {
         super.onPause()
+        // Dừng cuộn khi Activity bị tạm dừng
         stopAutoScroll()
     }
 
@@ -149,11 +104,6 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         initBanners()
         initRecommendation()
         initBottomNavigation()
-        // XÓA setupDrawerOpener() vì đã dùng vuốt
-
-        // Gắn listener cho Navigation View
-        val navigationView = findViewById<NavigationView>(R.id.nav_view_drawer)
-        navigationView.setNavigationItemSelectedListener(this)
     }
 
     private fun initBrands() {
@@ -235,7 +185,7 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         binding.progressBarRecommendation.visibility = View.VISIBLE
 
         viewModel.populars.observe(this) {
-                data ->
+            data ->
             popularAdapter.updateData(data)
             binding.progressBarRecommendation.visibility = View.GONE
         }
@@ -265,31 +215,53 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 Log.i("DASHBOARD ACTIVITY", "SUCCESS")
                 // Mặc định là "user" nếu role chưa được đặt
                 val role = document.getString("role") ?: "user"
+                setupDrawerOpener(role)
                 setupNavDrawer(role)
             }
             .addOnFailureListener { e ->
-                Log.e("DASHBOARD ACTIVITY", "FAILURE", e)
+                Log.i("DASHBOARD ACTIVITY", "FAILURE")
+                // Xử lý lỗi (ví dụ: mất mạng) và setup với quyền user mặc định
+                Log.e("Drawer", "Không thể tải vai trò: ${e.message}")
                 setupNavDrawer("user")
             }
+    }
+
+    private fun setupDrawerOpener(role: String) {
+        val drawerLayout = findViewById<androidx.drawerlayout.widget.DrawerLayout>(R.id.drawer_layout)
+        Log.i("ROLE", "ROLLLLE " + role)
+        if (role == "admin") {
+            binding.menuIconBtn.isVisible = true
+            // Giả sử bạn muốn dùng imageView2 (biểu tượng chuông) để mở Drawer
+            binding.menuIconBtn.setOnClickListener {
+                // Mở Drawer từ phía START (trái)
+                drawerLayout.openDrawer(androidx.core.view.GravityCompat.START)
+            }
+        }
+
+        // HOẶC, nếu bạn muốn dùng một icon Menu riêng biệt (Tên là open_drawer_btn)
+        // binding.openDrawerBtn.setOnClickListener {
+        //     drawerLayout.openDrawer(androidx.core.view.GravityCompat.START)
+        // }
     }
 
     private fun setupNavDrawer(role: String) {
         Log.i("DASHBOARD ACTIVITY", "Set up Nav Drawer")
         val user = FirebaseAuth.getInstance().currentUser ?: return
 
-        val navigationView = findViewById<NavigationView>(R.id.nav_view_drawer)
+        val navigationView = findViewById<NavigationView>(R.id.nav_view_drawer) // Thay ID thích hợp
         val menu = navigationView.menu
 
         // 1. Lấy Header View
         val headerView = navigationView.getHeaderView(0)
 
-        // 2. Tìm các ID trong Header View
+        // 2. Tìm các ID mới
         val userNameTv = headerView.findViewById<TextView>(R.id.user_name_text_view)
         val userEmailTv = headerView.findViewById<TextView>(R.id.user_email_text_view)
-        val avatarImg = headerView.findViewById<ImageView>(R.id.nav_header_avatar)
+        val avatarImg = headerView.findViewById<ImageView>(R.id.nav_header_avatar) // ID mới cho ImageView
 
         val isUserAdmin = role == "admin"
-        Log.i("DASHBOARD ACTIVITY", "Is Admin: $isUserAdmin")
+
+        println("isUserAdmin = " + isUserAdmin.toString())
 
         // 3. Cập nhật Text và Email
         if (isUserAdmin) {
@@ -297,21 +269,23 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         } else {
             userNameTv?.text = user.displayName ?: "User"
         }
-        userEmailTv?.text = user.email
+        userEmailTv?.text = user.email // Hiển thị email
 
         // 4. Tải Ảnh đại diện (Avatar)
         if (user.photoUrl != null) {
             Glide.with(this)
                 .load(user.photoUrl)
                 .placeholder(R.drawable.ic_user_profile)
-                .transform(CircleCrop())
+                .transform(CircleCrop()) // Giả sử bạn muốn ảnh tròn
                 .into(avatarImg)
         } else {
             // Đặt lại ảnh mặc định nếu không có photoUrl
             avatarImg.setImageResource(R.drawable.ic_user_profile)
         }
 
-        // 5. Ẩn/Hiện nhóm các mục quản trị bằng Group ID
-        menu.setGroupVisible(R.id.admin_group, isUserAdmin)
+        // 5. Ẩn/Hiện nhóm các mục quản trị (Logic phân quyền)
+        val adminGroup = menu.setGroupVisible(R.id.admin_group, isUserAdmin)
+
+
     }
 }

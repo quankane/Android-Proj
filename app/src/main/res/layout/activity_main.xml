@@ -32,7 +32,16 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="48dp"
                     android:layout_marginEnd="16dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/menuIconBtn"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:visibility="gone"
+                        android:src="@drawable/outline_density_medium_24"
+                        android:layout_marginRight="10dp"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"

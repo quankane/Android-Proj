@@ -1,0 +1,153 @@
+{
+  "Banner": [
+    {
+      "url": "https://res.cloudinary.com/dkikc5ywq/image/upload/v1751616287/banner1_prcoeb.png"
+    },
+    {
+      "url": "https://firebasestorage.googleapis.com/v0/b/project175-f1c13.appspot.com/o/banner2.png?alt=media&token=2c2a98de-2240-4130-8a89-7fbe7e49fa21"
+    }
+  ],
+  "Category": [
+    {
+      "id": 0,
+      "picUrl": "https://res.cloudinary.com/dkikc5ywq/image/upload/v1751616285/cat1_j7sapo.png",
+      "title": "Adidas"
+    },
+    {
+      "id": 1,
+      "picUrl": "https://res.cloudinary.com/dkikc5ywq/image/upload/v1751616285/cat2_ymo8zq.png",
+      "title": "Nike"
+    },
+    {
+      "id": 2,
+      "picUrl": "https://res.cloudinary.com/dkikc5ywq/image/upload/v1751616286/cat3_m4pop3.png",
+      "title": "Puma"
+    },
+    {
+      "id": 3,
+      "picUrl": "https://res.cloudinary.com/dkikc5ywq/image/upload/v1751616287/cat4_wzzhwp.png",
+      "title": "Skechers"
+    },
+    {
+      "id": 4,
+      "picUrl": "https://res.cloudinary.com/dkikc5ywq/image/upload/v1751616286/cat3_m4pop3.png",
+      "title": "Reebok"
+    },
+    {
+      "id": 5,
+      "picUrl": "https://res.cloudinary.com/dkikc5ywq/image/upload/v1751616285/cat6_hzne1k.png",
+      "title": "Lacoste"
+    }
+  ],
+  "Items": [
+    {
+      "description": "High abrasion tread pattern for added traction and enhanced durability. Progressive design language with signature Puma Hoops Jaws branding on the U throat. ",
+      "picUrl": [
+        "https://res.cloudinary.com/dkikc5ywq/image/upload/v1751617112/shoes_3_rcr13q.png",
+        "https://res.cloudinary.com/dkikc5ywq/image/upload/v1751616579/0_1_hrtgmv.png",
+        "https://res.cloudinary.com/dkikc5ywq/image/upload/v1751616589/0_2_h9qd98.png",
+        "https://res.cloudinary.com/dkikc5ywq/image/upload/v1751616593/0_4_vc5avl.png",
+        "https://res.cloudinary.com/dkikc5ywq/image/upload/v1751616593/0_3_ngwqaa.png",
+        "https://res.cloudinary.com/dkikc5ywq/image/upload/v1751616594/0_5_xt9j4i.png"
+      ],
+      "price": 35,
+      "oldPrice":37.5,
+      "rating": 4.6,
+      "size": [
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],  
+	  "color": [
+        "#A79CF9",
+        "#E63224",
+        "#17095F",
+        "#006FC4",
+        "#A7FCD2"
+      ],
+      "title": "adidas Men's Run Falcon"
+    },
+    {
+      "description": "High abrasion tread pattern for added traction and enhanced durability. Progressive design language with signature Puma Hoops Jaws branding on the U throat. ",
+      "picUrl": [
+        "https://res.cloudinary.com/dkikc5ywq/image/upload/v1751617107/shoes_2_xfq2jk.png"
+      ],
+      "price": 55.5,
+      "oldPrice":60.5,
+      "rating": 4.1,
+      "size": [
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
+    "color": [
+        "#A79CF9",
+        "#E63224",
+        "#17095F",
+        "#006FC4",
+        "#A7FCD2"
+      ],
+      "title": "Nike Men's Downshifter Sneaker"
+    },
+    {
+      "description": "High abrasion tread pattern for added traction and enhanced durability. Progressive design language with signature Puma Hoops Jaws branding on the U throat. ",
+      "picUrl": [
+        "https://res.cloudinary.com/dkikc5ywq/image/upload/v1751617108/shoes_1_nax9v3.png"
+      ],
+      "price": 75,
+      "oldPrice":37.5,
+      "rating": 4.5,
+      "size": [
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
+    "color": [
+        "#A79CF9",
+        "#E63224",
+        "#17095F",
+        "#006FC4",
+        "#A7FCD2"
+      ],
+      "title": "PUMA Men's"
+    },
+    {
+      "description": "High abrasion tread pattern for added traction and enhanced durability. Progressive design language with signature Puma Hoops Jaws branding on the U throat. ",
+      "picUrl": [
+        "https://res.cloudinary.com/dkikc5ywq/image/upload/v1751617111/shoes_4_sm06yy.png"
+      ],
+      "price": 40,
+      "oldPrice":46.5,
+      "rating": 4.2,
+      "size": [
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44"
+      ],
+    "color": [
+        "#A79CF9",
+        "#E63224",
+        "#17095F",
+        "#006FC4",
+        "#A7FCD2"
+      ],
+      "title": "Skechers Men's"
+    }
+  ]
+}
