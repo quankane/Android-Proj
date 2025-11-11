@@ -11,6 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidProj">
         <activity
+            android:name=".activity.OrderManagementActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.ProductManagementActivity"
             android:exported="false" />
 
