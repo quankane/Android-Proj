@@ -43,7 +43,7 @@
         android:id="@+id/fabAddProduct"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="25dp"
         android:src="@drawable/add"
         app:tint="@color/white"
         android:contentDescription="Thêm sản phẩm"
