@@ -71,6 +71,7 @@ class AddEditProductActivity : AppCompatActivity() {
         binding.etDescription.setText(item.description)
         binding.etPrice.setText(item.price.toString())
         binding.etOldPrice.setText(item.oldPrice.toString())
+        binding.etRating.setText(item.rating.toString()) // <-- THÊM DÒNG NÀY
 
         // Chuyển List<String> thành chuỗi "a, b, c"
         binding.etPicUrl.setText(item.picUrl.joinToString(","))
@@ -87,6 +88,7 @@ class AddEditProductActivity : AppCompatActivity() {
         val description = binding.etDescription.text.toString().trim()
         val price = binding.etPrice.text.toString().toDoubleOrNull() ?: 0.0
         val oldPrice = binding.etOldPrice.text.toString().toDoubleOrNull() ?: 0.0
+        val rating = binding.etRating.text.toString().toDoubleOrNull() ?: 0.0 // <-- THÊM DÒNG NÀY
 
         // 2. Chuyển chuỗi "a, b, c" thành List<String>
         val picUrlList = binding.etPicUrl.text.toString()
@@ -117,10 +119,10 @@ class AddEditProductActivity : AppCompatActivity() {
         product.description = description
         product.price = price
         product.oldPrice = oldPrice
+        product.rating = rating // <-- THÊM DÒNG NÀY
         product.picUrl = picUrlList
         product.size = sizeList
         product.color = colorList
-        // (Bạn có thể thêm rating nếu muốn, ở đây tôi để mặc định)
 
         // 5. Lưu lên Firestore
         saveToFirestore(product)

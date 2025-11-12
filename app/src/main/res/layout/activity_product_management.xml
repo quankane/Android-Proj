@@ -12,6 +12,10 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         app:title="Quản lý Sản phẩm"
+        android:paddingTop="48dp"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
         app:navigationIcon="@drawable/back"
         app:layout_constraintTop_toTopOf="parent" />
 
