@@ -32,6 +32,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import androidx.core.view.isVisible
 import com.example.android_proj.activity.MyOrdersActivity
+import com.example.android_proj.activity.admin.OrderManagementActivity
 import com.example.android_proj.activity.admin.ProductManagementActivity
 import com.example.android_proj.activity.admin.UserManagementActivity
 
@@ -357,11 +358,11 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             }
 
             // Order Management
-//            menu.findItem(R.id.nav_order_management)?.setOnMenuItemClickListener {
-//                drawerLayout.closeDrawer(GravityCompat.START)
-//                startActivity(Intent(this, OrderManagementActivity::class.java))
-//                true
-//            }
+            menu.findItem(R.id.nav_order_management)?.setOnMenuItemClickListener {
+                drawerLayout.closeDrawer(GravityCompat.START)
+                startActivity(Intent(this, OrderManagementActivity::class.java))
+                true
+            }
 
             // User Management
             menu.findItem(R.id.nav_user_management)?.setOnMenuItemClickListener {
