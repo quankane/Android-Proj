@@ -11,6 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidProj">
         <activity
+            android:name=".activity.admin.HomeAdminActivity"
+            android:exported="false" />
+        <activity
             android:name=".adapter.admin.StatisticsActivity"
             android:exported="false" />
         <activity

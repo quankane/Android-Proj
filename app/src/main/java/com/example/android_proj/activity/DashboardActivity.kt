@@ -34,6 +34,7 @@ import androidx.core.view.isVisible
 import com.example.android_proj.activity.MyOrdersActivity
 import com.example.android_proj.activity.admin.OrderManagementActivity
 import com.example.android_proj.activity.admin.ProductManagementActivity
+import com.example.android_proj.activity.admin.StatisticsActivity
 import com.example.android_proj.activity.admin.UserManagementActivity
 
 // implements NavigationView.OnNavigationItemSelectedListener để xử lý các sự kiện click trong Nav Drawer
@@ -382,7 +383,7 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             // Statistics
             menu.findItem(R.id.nav_statistics)?.setOnMenuItemClickListener {
                 drawerLayout.closeDrawer(GravityCompat.START)
-                // startActivity(Intent(this, StatisticsActivity::class.java)) // Cần tạo StatisticsActivity
+                 startActivity(Intent(this, StatisticsActivity::class.java)) // Cần tạo StatisticsActivity
                 true
             }
         }
