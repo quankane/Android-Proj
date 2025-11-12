@@ -100,6 +100,7 @@ class HomeAdminActivity : AppCompatActivity(), OrderManagementAdapter.OrderClick
             .addOnFailureListener { e ->
                 binding.progressBar.visibility = View.GONE
                 Log.e("HomeAdmin", "Lỗi tải đơn hàng Pending", e)
+                Log.e("HomeAdmin", "Lỗi tải đơn hàng Pending: " + e.message )
                 Toast.makeText(this, "Lỗi tải đơn hàng: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
@@ -133,7 +134,7 @@ class HomeAdminActivity : AppCompatActivity(), OrderManagementAdapter.OrderClick
             .update("status", newStatus)
             .addOnSuccessListener {
                 Toast.makeText(this, "Cập nhật trạng thái thành công", Toast.LENGTH_SHORT).show()
-                loadDashboardData() // Tải lại toàn bộ data
+                loadDashboardData() // Tải l    ại toàn bộ data
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Cập nhật thất bại: ${e.message}", Toast.LENGTH_SHORT).show()

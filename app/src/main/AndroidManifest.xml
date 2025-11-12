@@ -14,7 +14,7 @@
             android:name=".activity.admin.HomeAdminActivity"
             android:exported="false" />
         <activity
-            android:name=".adapter.admin.StatisticsActivity"
+            android:name=".activity.admin.StatisticsActivity"
             android:exported="false" />
         <activity
             android:name=".activity.admin.OrderManagementActivity"
@@ -34,16 +34,6 @@
         <activity
             android:name=".activity.MyOrdersActivity"
             android:exported="false" />
-        <activity
-            android:name=".activity.UserManagementActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activity.OrderManagementActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activity.ProductManagementActivity"
-            android:exported="false" />
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

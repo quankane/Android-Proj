@@ -5,6 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp">
 
@@ -32,8 +35,19 @@
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/userAvatar"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/editRoleBtn"
+            app:layout_constraintEnd_toStartOf="@id/deleteUserBtn"
             tools:text="user@example.com" />
+
+        <TextView
+            android:id="@+id/userNameTxt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@id/userEmailTxt"
+            app:layout_constraintTop_toBottomOf="@id/userEmailTxt"
+            app:layout_constraintEnd_toEndOf="@id/userEmailTxt"
+            tools:text="User Name" />
 
         <TextView
             android:id="@+id/userRoleTxt"
@@ -43,16 +57,16 @@
             android:textSize="14sp"
             android:textStyle="italic"
             app:layout_constraintStart_toStartOf="@id/userEmailTxt"
-            app:layout_constraintTop_toBottomOf="@id/userEmailTxt"
+            app:layout_constraintTop_toBottomOf="@id/userNameTxt"
             app:layout_constraintEnd_toEndOf="@id/userEmailTxt"
             tools:text="Role: admin" />
 
         <ImageButton
-            android:id="@+id/editRoleBtn"
+            android:id="@+id/deleteUserBtn"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/edit"
-            app:tint="@color/blue"
+            android:src="@drawable/delete"
+            app:tint="@color/red"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

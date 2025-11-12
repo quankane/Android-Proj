@@ -32,6 +32,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import androidx.core.view.isVisible
 import com.example.android_proj.activity.MyOrdersActivity
+import com.example.android_proj.activity.admin.HomeAdminActivity
 import com.example.android_proj.activity.admin.OrderManagementActivity
 import com.example.android_proj.activity.admin.ProductManagementActivity
 import com.example.android_proj.activity.admin.StatisticsActivity
@@ -375,8 +376,7 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             // Home Admin
             menu.findItem(R.id.nav_admin_home)?.setOnMenuItemClickListener {
                 drawerLayout.closeDrawer(GravityCompat.START)
-                // Giả định Home Admin sẽ chuyển đến một Activity khác hoặc chỉ là nav_home
-                // Nếu chỉ là Nav Home, bạn có thể bỏ qua hoặc xử lý lại logic này.
+                startActivity(Intent(this, HomeAdminActivity::class.java))
                 true
             }
 
