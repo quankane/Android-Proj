@@ -77,7 +77,7 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() = with(binding) {
-        backBtn.setOnClickListener { finish() }
+        toolbar.setNavigationOnClickListener { finish() }
 
         saveBtn.setOnClickListener {
             saveProfileChanges()
