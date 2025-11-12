@@ -1,5 +1,6 @@
 package com.example.android_proj.adapter
 
+import android.content.Intent // THÊM IMPORT NÀY
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android_proj.R
+import com.example.android_proj.activity.OrderDetailActivity // THÊM IMPORT NÀY
 import com.example.android_proj.databinding.ItemOrderBinding
 import com.example.android_proj.model.Order
 import java.text.SimpleDateFormat
@@ -69,9 +71,22 @@ class OrderAdapter(
         return OrderViewHolder(binding)
     }
 
+    // --- LOGIC ĐÃ ĐƯỢC THÊM Ở ĐÂY ---
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
-        holder.bind(orders[position])
+        val order = orders[position]
+        holder.bind(order)
+
+        // Thêm logic click vào item
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, OrderDetailActivity::class.java).apply {
+                // Chỉ truyền ID, Activity mới sẽ tự load data
+                putExtra("ORDER_ID", order.orderId)
+            }
+            context.startActivity(intent)
+        }
     }
+    // --- HẾT PHẦN THÊM LOGIC ---
 
     override fun getItemCount(): Int = orders.size
 

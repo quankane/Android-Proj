@@ -110,7 +110,7 @@ class OrderDetailActivity : AppCompatActivity() {
 
             Glide.with(this)
                 .load(item.picUrl)
-                .placeholder(R.drawable.logo) // Thay bằng ảnh placeholder của bạn
+                .placeholder(R.drawable.ic_product) // Thay bằng ảnh placeholder của bạn
                 .into(itemBinding.productImage)
 
             // Thêm view của item này vào LinearLayout
