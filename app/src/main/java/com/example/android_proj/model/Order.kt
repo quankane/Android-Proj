@@ -1,20 +1,20 @@
 package com.example.android_proj.model
 
 import com.google.firebase.Timestamp
+import com.google.firebase.database.Exclude
+import com.google.firebase.database.IgnoreExtraProperties
 
+@IgnoreExtraProperties
 data class Order(
-    // ID Firestore Document
-    val orderId: String = "",
-
-    // Liên kết với người dùng
+    @get:Exclude var orderId: String = "", // Document ID
     val userId: String = "",
-
-    // Tổng hợp đơn hàng
-    val items: List<OrderItem> = emptyList(),
-    val totalAmount: Double = 0.0,
-    val status: String = "Pending", // Trạng thái: Pending, Shipped, Delivered, Cancelled
-
-    // Thời gian và Địa chỉ
     val orderDate: Timestamp = Timestamp.now(),
-    val shippingAddress: ShippingAddress? = null
+    var status: String = "Pending",
+    val items: List<OrderItem> = listOf(),
+    val shippingAddress: ShippingAddress = ShippingAddress(),
+    val paymentMethod: String = "Cash on Delivery",
+    val subtotal: Double = 0.0,
+    val tax: Double = 0.0,
+    val deliveryFee: Double = 0.0,
+    val totalAmount: Double = 0.0
 )

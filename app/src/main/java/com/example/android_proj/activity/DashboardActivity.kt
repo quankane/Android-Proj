@@ -1,14 +1,17 @@
 package com.example.android_proj.activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,18 +30,19 @@ import com.example.android_proj.viewmodel.MainViewModel
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import androidx.core.view.isVisible
+import com.example.android_proj.activity.MyOrdersActivity
 
-class DashboardActivity : AppCompatActivity() {
+// implements NavigationView.OnNavigationItemSelectedListener để xử lý các sự kiện click trong Nav Drawer
+class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private val viewModel : MainViewModel by lazy {
-        // 1. Lấy Application Context
         val factory = ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-
-        // 2. Sử dụng Factory để tạo ViewModel
         ViewModelProvider(this, factory)[MainViewModel::class.java]
     }
 
     private lateinit var binding : ActivityMainBinding
+    private lateinit var drawerLayout: DrawerLayout // Tham chiếu đến DrawerLayout
 
     private val brandsAdapter = BrandsAdapter(mutableListOf())
     private val popularAdapter = PopularAdapter(mutableListOf())
@@ -64,11 +68,14 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.i("DASHBOARD ACTIVITY", "Đã chạy vào dashboard")
+        Log.i("DASHBOARD ACTIVITY", "Đã chạy vào dashboard")
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Tham chiếu DrawerLayout
+        drawerLayout = findViewById(R.id.drawer_layout)
 
         if (FirebaseAuth.getInstance().currentUser == null) {
             // Nếu chưa đăng nhập, chuyển đến LoginActivity
@@ -80,14 +87,49 @@ class DashboardActivity : AppCompatActivity() {
         }
 
         initUI()
-
         loadUserRoleAndSetupDrawer()
     }
+
+    // Xử lý sự kiện khi người dùng chọn một mục trong Nav Drawer
+    // Phương thức này chỉ xử lý các mục KHÔNG có setOnMenuItemClickListener
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        // Đóng Drawer sau khi chọn mục
+        drawerLayout.closeDrawer(GravityCompat.START)
+
+        when (item.itemId) {
+            R.id.nav_home -> return true
+
+            // R.id.nav_orders, R.id.nav_product_management, ... đã được xử lý bằng setOnMenuItemClickListener
+
+            R.id.nav_logout -> {
+                performLogout()
+            }
+        }
+        return true
+    }
+
+    // Xử lý nút Back (Đóng Drawer nếu đang mở)
+    @SuppressLint("GestureBackNavigation")
+    override fun onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    private fun performLogout() {
+        FirebaseAuth.getInstance().signOut()
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finishAffinity()
+    }
+
 
     // QUẢN LÝ VÒNG ĐỜI ĐỂ TRÁNH MEMORY LEAK
     override fun onResume() {
         super.onResume()
-        // Bắt đầu cuộn lại khi Activity hiển thị
         if ((binding.viewPagerSlider.adapter?.itemCount ?: 0) > 1) {
             startAutoScroll()
         }
@@ -95,7 +137,6 @@ class DashboardActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        // Dừng cuộn khi Activity bị tạm dừng
         stopAutoScroll()
     }
 
@@ -104,6 +145,10 @@ class DashboardActivity : AppCompatActivity() {
         initBanners()
         initRecommendation()
         initBottomNavigation()
+        // Gọi setupDrawerOpener để gán Listener cho nút Menu và Chuông
+        // Gắn listener cho Navigation View
+        val navigationView = findViewById<NavigationView>(R.id.nav_view_drawer)
+        navigationView.setNavigationItemSelectedListener(this)
     }
 
     private fun initBrands() {
@@ -185,7 +230,7 @@ class DashboardActivity : AppCompatActivity() {
         binding.progressBarRecommendation.visibility = View.VISIBLE
 
         viewModel.populars.observe(this) {
-            data ->
+                data ->
             popularAdapter.updateData(data)
             binding.progressBarRecommendation.visibility = View.GONE
         }
@@ -219,49 +264,51 @@ class DashboardActivity : AppCompatActivity() {
                 setupNavDrawer(role)
             }
             .addOnFailureListener { e ->
-                Log.i("DASHBOARD ACTIVITY", "FAILURE")
-                // Xử lý lỗi (ví dụ: mất mạng) và setup với quyền user mặc định
-                Log.e("Drawer", "Không thể tải vai trò: ${e.message}")
+                Log.e("DASHBOARD ACTIVITY", "FAILURE", e)
                 setupNavDrawer("user")
             }
     }
 
     private fun setupDrawerOpener(role: String) {
-        val drawerLayout = findViewById<androidx.drawerlayout.widget.DrawerLayout>(R.id.drawer_layout)
-        Log.i("ROLE", "ROLLLLE " + role)
-        if (role == "admin") {
-            binding.menuIconBtn.isVisible = true
-            // Giả sử bạn muốn dùng imageView2 (biểu tượng chuông) để mở Drawer
-            binding.menuIconBtn.setOnClickListener {
-                // Mở Drawer từ phía START (trái)
-                drawerLayout.openDrawer(androidx.core.view.GravityCompat.START)
+        val isUserAdmin = role == "admin"
+
+        // Tìm nút Menu (menuIconBtn)
+        val menuButton = findViewById<ImageView>(R.id.menuIconBtn)
+
+        // 1. Chỉ hiển thị nút Menu cho Admin
+        menuButton?.isVisible = isUserAdmin
+
+        if (isUserAdmin) {
+            // 2. Gán Listener cho ICON MENU (menuIconBtn)
+            menuButton?.setOnClickListener {
+                drawerLayout.openDrawer(GravityCompat.START)
             }
         }
 
-        // HOẶC, nếu bạn muốn dùng một icon Menu riêng biệt (Tên là open_drawer_btn)
-        // binding.openDrawerBtn.setOnClickListener {
-        //     drawerLayout.openDrawer(androidx.core.view.GravityCompat.START)
-        // }
+        // 3. Gán Listener cho ICON THÔNG BÁO (imageView2) - Luôn mở Drawer
+        binding.imageView2.setOnClickListener {
+            drawerLayout.openDrawer(GravityCompat.START)
+        }
     }
 
     private fun setupNavDrawer(role: String) {
         Log.i("DASHBOARD ACTIVITY", "Set up Nav Drawer")
         val user = FirebaseAuth.getInstance().currentUser ?: return
 
-        val navigationView = findViewById<NavigationView>(R.id.nav_view_drawer) // Thay ID thích hợp
+        val navigationView = findViewById<NavigationView>(R.id.nav_view_drawer)
         val menu = navigationView.menu
 
         // 1. Lấy Header View
         val headerView = navigationView.getHeaderView(0)
 
-        // 2. Tìm các ID mới
+        // 2. Tìm các ID trong Header View
         val userNameTv = headerView.findViewById<TextView>(R.id.user_name_text_view)
         val userEmailTv = headerView.findViewById<TextView>(R.id.user_email_text_view)
-        val avatarImg = headerView.findViewById<ImageView>(R.id.nav_header_avatar) // ID mới cho ImageView
+        val avatarImg = headerView.findViewById<ImageView>(R.id.nav_header_avatar)
 
         val isUserAdmin = role == "admin"
 
-        println("isUserAdmin = " + isUserAdmin.toString())
+        Log.i("DASHBOARD ACTIVITY", "Is Admin: $isUserAdmin")
 
         // 3. Cập nhật Text và Email
         if (isUserAdmin) {
@@ -276,16 +323,66 @@ class DashboardActivity : AppCompatActivity() {
             Glide.with(this)
                 .load(user.photoUrl)
                 .placeholder(R.drawable.ic_user_profile)
-                .transform(CircleCrop()) // Giả sử bạn muốn ảnh tròn
+                .transform(CircleCrop())
                 .into(avatarImg)
         } else {
             // Đặt lại ảnh mặc định nếu không có photoUrl
             avatarImg.setImageResource(R.drawable.ic_user_profile)
         }
 
-        // 5. Ẩn/Hiện nhóm các mục quản trị (Logic phân quyền)
-        val adminGroup = menu.setGroupVisible(R.id.admin_group, isUserAdmin)
+        // **********************************************
+        // 5. THIẾT LẬP LISTENER CHO TẤT CẢ CÁC MỤC
+        // **********************************************
 
+        // 5a. Thiết lập hiển thị nhóm Admin
+        Log.i("CHECK", "USER ADMIN = " + isUserAdmin)
+        menu.setGroupVisible(R.id.admin_group, isUserAdmin)
 
+        // 5b. My Orders (User và Admin đều thấy)
+        val myOrderBtn = menu.findItem(R.id.nav_orders)
+        myOrderBtn?.setOnMenuItemClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            startActivity(Intent(this, MyOrdersActivity::class.java))
+            true
+        }
+
+        // 5c. Các mục chỉ Admin thấy (Cần kiểm tra trước khi gán listener)
+        if (isUserAdmin) {
+            // Product Management
+            menu.findItem(R.id.nav_product_management)?.setOnMenuItemClickListener {
+                drawerLayout.closeDrawer(GravityCompat.START)
+                startActivity(Intent(this, ProductManagementActivity::class.java))
+                true
+            }
+
+            // Order Management
+            menu.findItem(R.id.nav_order_management)?.setOnMenuItemClickListener {
+                drawerLayout.closeDrawer(GravityCompat.START)
+                startActivity(Intent(this, OrderManagementActivity::class.java))
+                true
+            }
+
+            // User Management
+            menu.findItem(R.id.nav_user_management)?.setOnMenuItemClickListener {
+                drawerLayout.closeDrawer(GravityCompat.START)
+                startActivity(Intent(this, UserManagementActivity::class.java))
+                true
+            }
+
+            // Home Admin
+            menu.findItem(R.id.nav_admin_home)?.setOnMenuItemClickListener {
+                drawerLayout.closeDrawer(GravityCompat.START)
+                // Giả định Home Admin sẽ chuyển đến một Activity khác hoặc chỉ là nav_home
+                // Nếu chỉ là Nav Home, bạn có thể bỏ qua hoặc xử lý lại logic này.
+                true
+            }
+
+            // Statistics
+            menu.findItem(R.id.nav_statistics)?.setOnMenuItemClickListener {
+                drawerLayout.closeDrawer(GravityCompat.START)
+                // startActivity(Intent(this, StatisticsActivity::class.java)) // Cần tạo StatisticsActivity
+                true
+            }
+        }
     }
 }

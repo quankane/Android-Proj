@@ -5,15 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
+    android:layout_marginHorizontal="16dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
+        android:minHeight="100dp"
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- Order ID -->
+        <!-- Mã đơn hàng -->
         <TextView
             android:id="@+id/orderIdTxt"
             android:layout_width="0dp"
@@ -31,7 +33,6 @@
             android:id="@+id/statusTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_status_bg"
             android:paddingHorizontal="8dp"
             android:paddingVertical="4dp"
             android:textColor="@color/white"
@@ -40,7 +41,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Đã giao" />
 
-        <!-- Order Date -->
+        <!-- Ngày đặt hàng -->
         <TextView
             android:id="@+id/dateTxt"
             android:layout_width="0dp"
@@ -51,14 +52,43 @@
             app:layout_constraintTop_toBottomOf="@id/orderIdTxt"
             tools:text="Ngày đặt: 11/11/2025" />
 
-        <!-- Total Items / Separator -->
-        <View
-            android:id="@+id/separator"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
+        <!-- Địa chỉ nhận hàng -->
+        <TextView
+            android:id="@+id/addressTxt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="12sp"
+            android:textColor="@color/grey"
+            android:maxLines="2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dateTxt"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Địa chỉ: 123 Đường Nguyễn Văn Linh, Q7, TP.HCM" />
+
+        <!-- Tên Sản phẩm đầu tiên trong đơn hàng -->
+        <TextView
+            android:id="@+id/firstItemTxt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:background="@color/lightGrey"
-            app:layout_constraintTop_toBottomOf="@id/dateTxt" />
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/addressTxt"
+            app:layout_constraintEnd_toStartOf="@id/totalItemsTxt"
+            tools:text="Sản phẩm: adidas Men's Run Falcon (x3) và 2 mặt hàng khác" />
+
+        <!-- Tổng số lượng mặt hàng -->
+        <TextView
+            android:id="@+id/totalItemsTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/firstItemTxt"
+            tools:text="3 món" />
 
         <!-- Total Amount -->
         <TextView
@@ -66,11 +96,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Tổng tiền:"
+            android:text="Tổng tiền thanh toán:"
             android:textColor="@color/black"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/separator" />
+            app:layout_constraintTop_toBottomOf="@id/firstItemTxt" />
 
         <TextView
             android:id="@+id/totalAmountTxt"
@@ -82,16 +112,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/totalLabel"
             tools:text="$125.00" />
-
-        <TextView
-            android:id="@+id/detailsBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Xem chi tiết"
-            android:textColor="@color/blue"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/totalAmountTxt" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
