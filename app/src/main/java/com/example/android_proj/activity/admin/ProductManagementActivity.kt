@@ -1,27 +1,39 @@
 package com.example.android_proj.activity.admin
 
+import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts // THÊM IMPORT NÀY
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.android_proj.adapter.ProductManagementAdapter
 import com.example.android_proj.databinding.ActivityProductManagementBinding
 import com.example.android_proj.model.ItemsModel
-// --- Đảm bảo import đúng FIRESTORE ---
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ProductManagementActivity : AppCompatActivity(), ProductManagementAdapter.ProductClickListener {
 
     private lateinit var binding: ActivityProductManagementBinding
     private lateinit var adapter: ProductManagementAdapter
-    // --- Dùng FIRESTORE ---
     private val db = FirebaseFirestore.getInstance()
     private var productList = mutableListOf<ItemsModel>()
+
+    // --- THÊM BỘ KHỞI CHẠY ACTIVITY ĐỂ NHẬN KẾT QUẢ ---
+    private val addEditProductLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        // Nếu Activity kia trả về RESULT_OK (tức là đã Thêm/Sửa thành công)
+        if (result.resultCode == Activity.RESULT_OK) {
+            // Tải lại danh sách sản phẩm
+            loadProducts()
+        }
+    }
+    // --- HẾT PHẦN THÊM ---
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,36 +52,29 @@ class ProductManagementActivity : AppCompatActivity(), ProductManagementAdapter.
         binding.productsRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.productsRecyclerView.adapter = adapter
 
-        // Nút THÊM:
+        // --- CẬP NHẬT NÚT THÊM ---
         binding.fabAddProduct.setOnClickListener {
-            // (Chúng ta sẽ làm màn hình này sau)
-            // val intent = Intent(this, AddEditProductActivity::class.java)
-            // startActivity(intent)
-            Toast.makeText(this, "Chuyển đến màn hình Thêm sản phẩm", Toast.LENGTH_SHORT).show()
+            // Mở AddEditProductActivity ở chế độ "Thêm mới" (không gửi ID)
+            val intent = Intent(this, AddEditProductActivity::class.java)
+            addEditProductLauncher.launch(intent)
         }
     }
 
-    // --- HÀM LOAD ĐÃ SỬA LẠI ĐỂ DÙNG FIRESTORE ---
     private fun loadProducts() {
         binding.progressBar.visibility = View.VISIBLE
-
-        // Truy cập collection "items" (hoặc tên bạn đặt) trong FIRESTORE
-        // Dựa trên ảnh của bạn, tên collection là "items"
-        db.collection("items")
+        db.collection("Items") // Dùng "Items" (viết hoa)
             .get()
             .addOnSuccessListener { documents ->
                 binding.progressBar.visibility = View.GONE
-                // Chuyển QuerySnapshot thành danh sách ItemsModel
                 val items = documents.toObjects(ItemsModel::class.java).toMutableList()
 
-                // Gán Document ID vào trường 'id' của mỗi object
                 for (i in items.indices) {
                     items[i].id = documents.documents[i].id
                 }
 
                 productList.clear()
                 productList.addAll(items)
-                adapter.updateData(items) // Cập nhật adapter
+                adapter.updateData(items)
             }
             .addOnFailureListener { e ->
                 binding.progressBar.visibility = View.GONE
@@ -78,10 +83,13 @@ class ProductManagementActivity : AppCompatActivity(), ProductManagementAdapter.
             }
     }
 
-    // Xử lý khi nhấn nút SỬA
+    // --- CẬP NHẬT NÚT SỬA ---
     override fun onEditClick(item: ItemsModel) {
-        // (Logic sửa sẽ làm sau)
-        Toast.makeText(this, "Sửa sản phẩm: ${item.title}", Toast.LENGTH_SHORT).show()
+        // Mở AddEditProductActivity ở chế độ "Sửa" (gửi kèm ID)
+        val intent = Intent(this, AddEditProductActivity::class.java).apply {
+            putExtra("PRODUCT_ID", item.id)
+        }
+        addEditProductLauncher.launch(intent)
     }
 
     // Xử lý khi nhấn nút XÓA
@@ -96,19 +104,18 @@ class ProductManagementActivity : AppCompatActivity(), ProductManagementAdapter.
             .show()
     }
 
-    // --- HÀM XÓA ĐÃ SỬA LẠI ĐỂ DÙNG FIRESTORE ---
+    // --- SỬA LỖI HÀM XÓA ---
     private fun deleteProductFromFirebase(item: ItemsModel) {
         if (item.id.isEmpty()) {
             Toast.makeText(this, "Lỗi: Không tìm thấy ID sản phẩm", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Xóa document trong FIRESTORE
-        db.collection("items").document(item.id)
+        // PHẢI DÙNG "Items" (viết hoa) giống như lúc load
+        db.collection("Items").document(item.id)
             .delete()
             .addOnSuccessListener {
                 Toast.makeText(this, "Đã xóa: ${item.title}", Toast.LENGTH_SHORT).show()
-                // Xóa khỏi RecyclerView
                 adapter.removeItem(item)
             }
             .addOnFailureListener { e ->

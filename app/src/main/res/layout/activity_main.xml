@@ -18,7 +18,11 @@
         <ScrollView
             android:id="@+id/scrollView2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -32,16 +36,16 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="48dp"
                     android:layout_marginEnd="16dp"
-                    android:orientation="horizontal"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/menuIconBtn"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:visibility="gone"
+                        android:layout_marginRight="10dp"
                         android:src="@drawable/outline_density_medium_24"
-                        android:layout_marginRight="10dp"/>
+                        android:visibility="gone" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -187,11 +191,13 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerViewRecommendation"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
-
                     <ProgressBar
                         android:id="@+id/progressBarRecommendation"
                         style="?android:attr/progressBarStyle"
@@ -271,12 +277,12 @@
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view_drawer"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/nav_drawer_menu" />
+            <com.google.android.material.navigation.NavigationView
+                android:id="@+id/nav_view_drawer"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:fitsSystemWindows="true"
+                app:headerLayout="@layout/nav_header_main"
+                app:menu="@menu/nav_drawer_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>
