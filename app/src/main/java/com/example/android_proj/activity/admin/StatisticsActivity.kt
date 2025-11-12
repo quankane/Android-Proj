@@ -1,4 +1,4 @@
-package com.google.firebase.example.admin
+package com.example.android_proj.activity.admin
 
 import android.annotation.SuppressLint
 import android.os.Bundle
