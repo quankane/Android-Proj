@@ -11,6 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidProj">
         <activity
+            android:name=".activity.admin.AddEditUserActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.admin.HomeAdminActivity"
             android:exported="false" />
         <activity
@@ -34,6 +37,7 @@
         <activity
             android:name=".activity.MyOrdersActivity"
             android:exported="false" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
