@@ -1,44 +1,42 @@
 package com.example.android_proj.viewmodel
 
-import android.app.Application // Cần import Application
-import androidx.lifecycle.AndroidViewModel // <-- Thay thế ViewModel bằng AndroidViewModel
+import android.app.Application // <-- Đổi từ Context sang Application
+import androidx.lifecycle.AndroidViewModel // <-- Đổi từ ViewModel sang AndroidViewModel
 import androidx.lifecycle.LiveData
 import com.example.android_proj.model.BrandModel
 import com.example.android_proj.model.ItemsModel
 import com.example.android_proj.model.SliderModel
 import com.example.android_proj.repository.MainRepository
 
-// CHÚ Ý: Phải kế thừa AndroidViewModel và truyền Application vào constructor
+// 1. ĐỔI sang AndroidViewModel và nhận Application
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    // Khởi tạo Repository bằng Application context
+    // 2. Truyền 'application' (là một Context) vào Repository
     private val repository = MainRepository(application)
 
-    // --- Các LiveData hiện có ---
-    val populars: LiveData<MutableList<ItemsModel>> = repository.populars
-    val brands: LiveData<MutableList<BrandModel>> = repository.brands
+    // Các LiveData không đổi
     val banners: LiveData<List<SliderModel>> = repository.banners
+    val brands: LiveData<MutableList<BrandModel>> = repository.brands
+    val populars: LiveData<MutableList<ItemsModel>> = repository.populars
 
-    // --- Phương thức tải dữ liệu hiện có ---
-    fun loadBrands() = repository.loadBrands()
-    fun loadBanners() = repository.loadBanners()
-    fun loadPopulars() = repository.loadPopulars()
+    // Các hàm load không đổi
+    fun loadBanners() {
+        repository.loadBanners()
+    }
 
-    // ------------------------------------------
-    // --- PHƯƠNG THỨC QUẢN LÝ WISHLIST (MỚI) ---
-    // ------------------------------------------
+    fun loadBrands() {
+        repository.loadBrands()
+    }
 
-    /**
-     * Lấy danh sách ItemModel hiện tại trong WishList từ Repository.
-     */
+    fun loadPopulars() {
+        repository.loadPopulars()
+    }
+
+    // Các hàm Wishlist không đổi
     fun getWishlistItems(): ArrayList<ItemsModel> {
         return repository.getWishlistItems()
     }
 
-    /**
-     * Thêm hoặc xóa một item khỏi WishList.
-     * @return True nếu item được thêm, False nếu item bị xóa.
-     */
     fun toggleWishlistItem(item: ItemsModel): Boolean {
         return repository.toggleWishlistItem(item)
     }

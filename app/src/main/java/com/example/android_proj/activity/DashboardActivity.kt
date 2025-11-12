@@ -32,6 +32,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import androidx.core.view.isVisible
 import com.example.android_proj.activity.MyOrdersActivity
+import com.example.android_proj.activity.admin.ProductManagementActivity
 
 // implements NavigationView.OnNavigationItemSelectedListener để xử lý các sự kiện click trong Nav Drawer
 class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {

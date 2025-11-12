@@ -1,24 +1,23 @@
 package com.example.android_proj.repository
 
-import android.content.Context // Cần import Context
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.android_proj.helper.ManagementWishList // Import lớp WishList helper
+import com.example.android_proj.helper.ManagementWishList
 import com.example.android_proj.model.BrandModel
 import com.example.android_proj.model.ItemsModel
 import com.example.android_proj.model.SliderModel
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+// --- THAY ĐỔI IMPORT ---
+import com.google.firebase.firestore.FirebaseFirestore
+// (Xóa các import của Realtime Database)
 
-// CHÚ Ý: Cần nhận Context trong constructor
 class MainRepository(private val context: Context) {
 
-    // --- Khai báo thuộc tính ---
-    private val firebaseDatabase = FirebaseDatabase.getInstance();
-    private val managementWishList = ManagementWishList(context) // <-- Khởi tạo WishList helper
+    // --- THAY ĐỔI DB ---
+    private val db = FirebaseFirestore.getInstance() // <-- ĐỔI SANG FIRESTORE
+    private val managementWishList = ManagementWishList(context)
 
+    // Các LiveData không đổi
     var _populars = MutableLiveData<MutableList<ItemsModel>>()
     private val _brands = MutableLiveData<MutableList<BrandModel>>()
     private val _banners = MutableLiveData<List<SliderModel>>()
@@ -28,86 +27,69 @@ class MainRepository(private val context: Context) {
     val populars: LiveData<MutableList<ItemsModel>> get() = _populars
 
     // ------------------------------------------
-    // --- PHƯƠNG THỨC QUẢN LÝ WISHLIST (MỚI) ---
+    // --- PHƯƠNG THỨC QUẢN LÝ WISHLIST (Giữ nguyên) ---
     // ------------------------------------------
 
-    /**
-     * Lấy danh sách sản phẩm yêu thích từ TinyDB (WishList local).
-     */
     fun getWishlistItems(): ArrayList<ItemsModel> {
         return managementWishList.getListWishlist()
     }
 
-    /**
-     * Thêm hoặc xóa một item khỏi WishList local.
-     */
     fun toggleWishlistItem(item: ItemsModel): Boolean {
         return managementWishList.toggleWishlistItem(item)
     }
 
     // ------------------------------------------
-    // --- PHƯƠNG THỨC TẢI DỮ LIỆU FIREBASE ---
+    // --- CÁC HÀM TẢI DỮ LIỆU ĐÃ SỬA SANG FIRESTORE ---
     // ------------------------------------------
 
     fun loadBrands() {
-        val ref = firebaseDatabase.getReference("Category")
-        // ... (Logic tải Brands giữ nguyên)
-        ref.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val list = mutableListOf<BrandModel>()
-                for (childSnapshot in snapshot.children) {
-                    childSnapshot.getValue(BrandModel::class.java)?.let {
-                        list.add(it)
-                    }
-                }
+        // Lấy từ collection "categories" (hoặc tên bạn đặt trong Firestore)
+        db.collection("Category")
+            .get()
+            .addOnSuccessListener { documents ->
+                // Tự động chuyển đổi toàn bộ list
+                val list = documents.toObjects(BrandModel::class.java).toMutableList()
                 _brands.value = list
             }
-
-            override fun onCancelled(error: DatabaseError) {
+            .addOnFailureListener {
                 // Xử lý lỗi
+                _brands.value = mutableListOf() // Trả về list rỗng nếu lỗi
             }
-
-        })
     }
 
     fun loadBanners() {
-        val ref = firebaseDatabase.getReference("Banner")
-        // ... (Logic tải Banners giữ nguyên)
-        ref.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val list = mutableListOf<SliderModel>()
-                for (childSnapshot in snapshot.children) {
-                    childSnapshot.getValue(SliderModel::class.java)?.let {
-                        list.add(it)
-                    }
-                }
+        // Lấy từ collection "banners"
+        db.collection("Banner")
+            .get()
+            .addOnSuccessListener { documents ->
+                val list = documents.toObjects(SliderModel::class.java)
                 _banners.value = list
             }
-
-            override fun onCancelled(error: DatabaseError) {
+            .addOnFailureListener {
                 // Xử lý lỗi
+                _banners.value = listOf()
             }
-
-        })
     }
 
     fun loadPopulars() {
-        val ref = firebaseDatabase.getReference("Items")
-        // ... (Logic tải Items giữ nguyên)
-        ref.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val list = mutableListOf<ItemsModel>()
-                for (childSnapshot in snapshot.children) {
-                    childSnapshot.getValue(ItemsModel::class.java)?.let {
-                        list.add(it)
-                    }
+        // Lấy từ collection "items"
+        db.collection("Items")
+            .get()
+            .addOnSuccessListener { documents ->
+                val list = documents.toObjects(ItemsModel::class.java).toMutableList()
+
+                // --- QUAN TRỌNG ---
+                // Gán ID document vào trường 'id' của mỗi item
+                // (Giống như cách làm trong MyOrdersActivity)
+                for (i in list.indices) {
+                    list[i].id = documents.documents[i].id
                 }
+
                 _populars.value = list
             }
-
-            override fun onCancelled(error: DatabaseError) {
+            .addOnFailureListener {
                 // Xử lý lỗi
+                _populars.value = mutableListOf()
             }
-        })
     }
 }

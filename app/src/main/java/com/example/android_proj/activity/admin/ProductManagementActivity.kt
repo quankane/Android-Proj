@@ -12,12 +12,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.android_proj.adapter.ProductManagementAdapter
 import com.example.android_proj.databinding.ActivityProductManagementBinding
 import com.example.android_proj.model.ItemsModel
+// --- Đảm bảo import đúng FIRESTORE ---
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ProductManagementActivity : AppCompatActivity(), ProductManagementAdapter.ProductClickListener {
 
     private lateinit var binding: ActivityProductManagementBinding
     private lateinit var adapter: ProductManagementAdapter
+    // --- Dùng FIRESTORE ---
     private val db = FirebaseFirestore.getInstance()
     private var productList = mutableListOf<ItemsModel>()
 
@@ -38,51 +40,51 @@ class ProductManagementActivity : AppCompatActivity(), ProductManagementAdapter.
         binding.productsRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.productsRecyclerView.adapter = adapter
 
-        // Nút THÊM: Mở Activity để tạo sản phẩm mới
+        // Nút THÊM:
         binding.fabAddProduct.setOnClickListener {
-            // Chúng ta sẽ tạo Activity này ở bước sau
+            // (Chúng ta sẽ làm màn hình này sau)
             // val intent = Intent(this, AddEditProductActivity::class.java)
             // startActivity(intent)
             Toast.makeText(this, "Chuyển đến màn hình Thêm sản phẩm", Toast.LENGTH_SHORT).show()
         }
     }
 
+    // --- HÀM LOAD ĐÃ SỬA LẠI ĐỂ DÙNG FIRESTORE ---
     private fun loadProducts() {
         binding.progressBar.visibility = View.VISIBLE
-        // Lấy từ collection "Items" (hoặc tên collection sản phẩm của bạn)
-        db.collection("Items")
+
+        // Truy cập collection "items" (hoặc tên bạn đặt) trong FIRESTORE
+        // Dựa trên ảnh của bạn, tên collection là "items"
+        db.collection("items")
             .get()
             .addOnSuccessListener { documents ->
                 binding.progressBar.visibility = View.GONE
+                // Chuyển QuerySnapshot thành danh sách ItemsModel
                 val items = documents.toObjects(ItemsModel::class.java).toMutableList()
 
-                // Gán ID (vì ID không tự map)
+                // Gán Document ID vào trường 'id' của mỗi object
                 for (i in items.indices) {
                     items[i].id = documents.documents[i].id
                 }
 
                 productList.clear()
                 productList.addAll(items)
-                adapter.updateData(items)
+                adapter.updateData(items) // Cập nhật adapter
             }
             .addOnFailureListener { e ->
                 binding.progressBar.visibility = View.GONE
-                Log.e("ProductManagement", "Lỗi tải sản phẩm", e)
+                Log.e("ProductManagement", "Lỗi tải sản phẩm Firestore", e)
                 Toast.makeText(this, "Lỗi tải sản phẩm: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
-    // Xử lý khi nhấn nút SỬA (từ Adapter)
+    // Xử lý khi nhấn nút SỬA
     override fun onEditClick(item: ItemsModel) {
-        // Mở Activity AddEditProduct, gửi kèm ID sản phẩm
-        // val intent = Intent(this, AddEditProductActivity::class.java).apply {
-        //     putExtra("PRODUCT_ID", item.id)
-        // }
-        // startActivity(intent)
+        // (Logic sửa sẽ làm sau)
         Toast.makeText(this, "Sửa sản phẩm: ${item.title}", Toast.LENGTH_SHORT).show()
     }
 
-    // Xử lý khi nhấn nút XÓA (từ Adapter)
+    // Xử lý khi nhấn nút XÓA
     override fun onDeleteClick(item: ItemsModel) {
         AlertDialog.Builder(this)
             .setTitle("Xác nhận xóa")
@@ -94,13 +96,15 @@ class ProductManagementActivity : AppCompatActivity(), ProductManagementAdapter.
             .show()
     }
 
+    // --- HÀM XÓA ĐÃ SỬA LẠI ĐỂ DÙNG FIRESTORE ---
     private fun deleteProductFromFirebase(item: ItemsModel) {
         if (item.id.isEmpty()) {
             Toast.makeText(this, "Lỗi: Không tìm thấy ID sản phẩm", Toast.LENGTH_SHORT).show()
             return
         }
 
-        db.collection("Items").document(item.id)
+        // Xóa document trong FIRESTORE
+        db.collection("items").document(item.id)
             .delete()
             .addOnSuccessListener {
                 Toast.makeText(this, "Đã xóa: ${item.title}", Toast.LENGTH_SHORT).show()
