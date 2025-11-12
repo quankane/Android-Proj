@@ -1,5 +1,6 @@
 package com.example.android_proj.activity.admin
 
+import android.content.Intent // THÊM IMPORT NÀY
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -7,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.android_proj.activity.OrderDetailActivity // THÊM IMPORT NÀY
 import com.example.android_proj.adapter.OrderManagementAdapter
 import com.example.android_proj.databinding.ActivityOrderManagementBinding
 import com.example.android_proj.model.Order
@@ -32,6 +34,7 @@ class OrderManagementActivity : AppCompatActivity(), OrderManagementAdapter.Orde
     private fun initView() {
         binding.toolbar.setNavigationOnClickListener { finish() }
 
+        // Truyền 'this' (vì Activity này đã implement OrderClickListener)
         adapter = OrderManagementAdapter(orderList, this)
         binding.ordersRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.ordersRecyclerView.adapter = adapter
@@ -40,7 +43,6 @@ class OrderManagementActivity : AppCompatActivity(), OrderManagementAdapter.Orde
     private fun loadOrders() {
         binding.progressBar.visibility = View.VISIBLE
         db.collection("orders")
-            // Sắp xếp TẤT CẢ đơn hàng theo ngày mới nhất
             .orderBy("orderDate", Query.Direction.DESCENDING)
             .get()
             .addOnSuccessListener { documents ->
@@ -60,6 +62,17 @@ class OrderManagementActivity : AppCompatActivity(), OrderManagementAdapter.Orde
             }
     }
 
+    // --- THÊM HÀM MỚI (Xử lý click vào item) ---
+    override fun onItemClick(order: Order) {
+        // Mở màn hình chi tiết (giống hệt bên OrderAdapter)
+        val intent = Intent(this, OrderDetailActivity::class.java).apply {
+            putExtra("ORDER_ID", order.orderId)
+        }
+        startActivity(intent)
+    }
+    // --- HẾT HÀM MỚI ---
+
+    // Hàm này (xử lý click vào Status) giữ nguyên
     override fun onUpdateStatusClick(order: Order) {
         val statuses = arrayOf("Pending", "Shipped", "Delivered", "Cancelled")
         val currentStatusIndex = statuses.indexOf(order.status)
