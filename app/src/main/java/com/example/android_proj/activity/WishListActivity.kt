@@ -22,6 +22,10 @@ class WishlistActivity : AppCompatActivity() {
 
         managementWishList = ManagementWishList(this)
 
+    }
+
+    override fun onResume() {
+        super.onResume()
         initView()
         initWishlist()
     }

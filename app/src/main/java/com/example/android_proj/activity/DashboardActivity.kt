@@ -86,9 +86,6 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             finish()
             return // Dừng khởi tạo Dashboard
         }
-
-        initUI()
-        loadUserRoleAndSetupDrawer()
     }
 
     // Xử lý sự kiện khi người dùng chọn một mục trong Nav Drawer
@@ -134,6 +131,8 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         if ((binding.viewPagerSlider.adapter?.itemCount ?: 0) > 1) {
             startAutoScroll()
         }
+        initUI()
+        loadUserRoleAndSetupDrawer()
     }
 
     override fun onPause() {

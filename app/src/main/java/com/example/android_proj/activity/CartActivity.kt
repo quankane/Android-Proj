@@ -50,6 +50,11 @@ class CartActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
 
         initView()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Tải lại dữ liệu giỏ hàng mỗi khi quay lại trang
         initCartItemList()
         calculateCart()
     }
