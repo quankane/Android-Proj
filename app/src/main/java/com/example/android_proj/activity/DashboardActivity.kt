@@ -33,6 +33,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import androidx.core.view.isVisible
 import com.example.android_proj.activity.MyOrdersActivity
 import com.example.android_proj.activity.admin.ProductManagementActivity
+import com.example.android_proj.activity.admin.UserManagementActivity
 
 // implements NavigationView.OnNavigationItemSelectedListener để xử lý các sự kiện click trong Nav Drawer
 class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -356,11 +357,11 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             }
 
             // Order Management
-            menu.findItem(R.id.nav_order_management)?.setOnMenuItemClickListener {
-                drawerLayout.closeDrawer(GravityCompat.START)
-                startActivity(Intent(this, OrderManagementActivity::class.java))
-                true
-            }
+//            menu.findItem(R.id.nav_order_management)?.setOnMenuItemClickListener {
+//                drawerLayout.closeDrawer(GravityCompat.START)
+//                startActivity(Intent(this, OrderManagementActivity::class.java))
+//                true
+//            }
 
             // User Management
             menu.findItem(R.id.nav_user_management)?.setOnMenuItemClickListener {

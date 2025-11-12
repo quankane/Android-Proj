@@ -1,4 +1,4 @@
-package com.example.android_proj.adapter
+package com.example.android_proj.adapter.admin
 
 import android.content.Context
 import android.view.LayoutInflater

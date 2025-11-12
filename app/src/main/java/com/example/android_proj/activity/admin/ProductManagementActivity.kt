@@ -11,7 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts // THÊM IMPORT
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.android_proj.adapter.ProductManagementAdapter
+import com.example.android_proj.adapter.admin.ProductManagementAdapter
 import com.example.android_proj.databinding.ActivityProductManagementBinding
 import com.example.android_proj.model.ItemsModel
 import com.google.firebase.firestore.FirebaseFirestore
