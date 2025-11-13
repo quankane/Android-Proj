@@ -50,6 +50,45 @@
             app:layout_constraintTop_toBottomOf="@id/productTitle"
             tools:text="$99.99" />
 
+        <TextView
+            android:id="@+id/productOldPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="12sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/productPrice"
+            app:layout_constraintStart_toEndOf="@id/productPrice"
+            tools:text="$120.00" />
+
+        <TextView
+            android:id="@+id/productRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@id/productTitle"
+            app:layout_constraintTop_toBottomOf="@id/productPrice"
+            tools:text="⭐ 4.5" />
+
+        <TextView
+            android:id="@+id/productDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@id/deleteButton"
+            app:layout_constraintStart_toStartOf="@id/productTitle"
+            app:layout_constraintTop_toBottomOf="@id/productRating"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            tools:text="Đây là mô tả ngắn của sản phẩm..." />
+
+
         <ImageButton
             android:id="@+id/editButton"
             android:layout_width="40dp"

@@ -325,9 +325,9 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
         // 3. Cập nhật Text và Email
         if (isUserAdmin) {
-            userNameTv?.text = "Admin"
+            userNameTv?.text = "Quản trị viên"
         } else {
-            userNameTv?.text = user.displayName ?: "User"
+            userNameTv?.text = user.displayName ?: "Khách hàng"
         }
         userEmailTv?.text = user.email // Hiển thị email
 

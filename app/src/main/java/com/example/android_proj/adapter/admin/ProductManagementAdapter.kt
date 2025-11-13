@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.android_proj.databinding.ItemProductManagementBinding
 import com.example.android_proj.model.ItemsModel
+import android.graphics.Paint
+import android.view.View
 
 class ProductManagementAdapter(
     private var items: MutableList<ItemsModel>,
@@ -37,6 +39,26 @@ class ProductManagementAdapter(
         holder.binding.apply {
             productTitle.text = item.title
             productPrice.text = String.format("$%.2f", item.price)
+
+            // --- PHẦN CẬP NHẬT ---
+
+            // 1. Hiển thị Old Price (nếu có và lớn hơn price)
+            if (item.oldPrice > item.price) {
+                productOldPrice.visibility = View.VISIBLE
+                productOldPrice.text = String.format("$%.2f", item.oldPrice)
+                // Thêm gạch ngang
+                productOldPrice.paintFlags = productOldPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            } else {
+                productOldPrice.visibility = View.GONE
+            }
+
+            // 2. Hiển thị Rating (ví dụ: ⭐ 4.5)
+            productRating.text = String.format("⭐ %.1f", item.rating)
+
+            // 3. Hiển thị Description
+            productDescription.text = item.description
+
+            // --- HẾT PHẦN CẬP NHẬT ---
 
             Glide.with(context)
                 .load(item.picUrl.firstOrNull()) // Lấy ảnh đầu tiên
