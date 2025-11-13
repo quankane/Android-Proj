@@ -7,13 +7,10 @@ import com.example.android_proj.helper.ManagementWishList
 import com.example.android_proj.model.BrandModel
 import com.example.android_proj.model.ItemsModel
 import com.example.android_proj.model.SliderModel
-// --- THAY ĐỔI IMPORT ---
 import com.google.firebase.firestore.FirebaseFirestore
-// (Xóa các import của Realtime Database)
 
 class MainRepository(private val context: Context) {
 
-    // --- THAY ĐỔI DB ---
     private val db = FirebaseFirestore.getInstance() // <-- ĐỔI SANG FIRESTORE
     private val managementWishList = ManagementWishList(context)
 
@@ -26,10 +23,6 @@ class MainRepository(private val context: Context) {
     val brands: LiveData<MutableList<BrandModel>> get() = _brands
     val populars: LiveData<MutableList<ItemsModel>> get() = _populars
 
-    // ------------------------------------------
-    // --- PHƯƠNG THỨC QUẢN LÝ WISHLIST (Giữ nguyên) ---
-    // ------------------------------------------
-
     fun getWishlistItems(): ArrayList<ItemsModel> {
         return managementWishList.getListWishlist()
     }
@@ -38,12 +31,8 @@ class MainRepository(private val context: Context) {
         return managementWishList.toggleWishlistItem(item)
     }
 
-    // ------------------------------------------
-    // --- CÁC HÀM TẢI DỮ LIỆU ĐÃ SỬA SANG FIRESTORE ---
-    // ------------------------------------------
-
     fun loadBrands() {
-        // Lấy từ collection "categories" (hoặc tên bạn đặt trong Firestore)
+        // Lấy từ collection "categories"
         db.collection("Category")
             .get()
             .addOnSuccessListener { documents ->
@@ -78,9 +67,7 @@ class MainRepository(private val context: Context) {
             .addOnSuccessListener { documents ->
                 val list = documents.toObjects(ItemsModel::class.java).toMutableList()
 
-                // --- QUAN TRỌNG ---
                 // Gán ID document vào trường 'id' của mỗi item
-                // (Giống như cách làm trong MyOrdersActivity)
                 for (i in list.indices) {
                     list[i].id = documents.documents[i].id
                 }
