@@ -40,8 +40,7 @@ class UserManagementAdapter(
             userNameTxt.text = user.name.ifEmpty { "(Chưa có tên)" } // Hiển thị tên
             userRoleTxt.text = "Role: ${user.role}"
 
-            // (Bạn có thể thêm logic load ảnh avatar nếu có URL)
-            // Glide.with(context).load(user.avatarUrl)...
+             Glide.with(context).load(user.u)
 
             // Sửa listener
             holder.itemView.setOnClickListener {
