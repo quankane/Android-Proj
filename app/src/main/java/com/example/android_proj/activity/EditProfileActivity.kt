@@ -11,13 +11,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
-import com.bumptech.glide.request.RequestOptions
+import com.example.android_proj.R // Đảm bảo import R
 import com.example.android_proj.databinding.ActivityEditProfileBinding
+import com.example.android_proj.model.UserModel // THÊM IMPORT NÀY
 import com.example.android_proj.response.CloudinaryResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.FirebaseFirestore // THÊM IMPORT NÀY
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
@@ -35,11 +36,11 @@ class EditProfileActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityEditProfileBinding
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore // THÊM FIRESTORE
     private lateinit var storageRef: StorageReference
-    private val CLOUDINARY_CLOUD_NAME = "dgwnoquie" // Thay thế bằng Cloud Name của bạn
+    private val CLOUDINARY_CLOUD_NAME = "dgwnoquie"
     private val CLOUDINARY_UPLOAD_PRESET = "upload-1"
 
-    // Launcher để chọn ảnh từ Gallery
     private lateinit var pickImageLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,9 +49,10 @@ class EditProfileActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance() // KHỞI TẠO FIRESTORE
         storageRef = FirebaseStorage.getInstance().reference
 
-        setupImagePicker() // Khởi tạo Launcher
+        setupImagePicker()
         loadCurrentProfile()
         setupListeners()
     }
@@ -58,18 +60,32 @@ class EditProfileActivity : AppCompatActivity() {
     private fun loadCurrentProfile() = with(binding) {
         val user = auth.currentUser
         if (user != null) {
+            // 1. Tải từ Firebase Auth (Email, Tên, Ảnh)
             usernameEdt.setText(user.displayName)
             emailEdt.setText(user.email)
 
-            // Tải ảnh đại diện hiện tại (nếu có)
-            println("PhotoURL = " + user.photoUrl)
             if (user.photoUrl != null) {
                 Glide.with(this@EditProfileActivity)
                     .load(user.photoUrl)
-                    .placeholder(com.example.android_proj.R.drawable.ic_user_profile)
+                    .placeholder(R.drawable.ic_user_profile)
                     .transform(CircleCrop())
                     .into(avatarImg)
             }
+
+            // 2. Tải từ Firestore (SĐT)
+            db.collection("users").document(user.uid)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        val userModel = document.toObject(UserModel::class.java)
+                        phoneEdt.setText(userModel?.phoneNumber) // <-- HIỂN THỊ SĐT
+                    } else {
+                        Log.w("EditProfile", "User document không tồn tại trong Firestore!")
+                    }
+                }
+                .addOnFailureListener {
+                    Log.e("EditProfile", "Lỗi tải SĐT: ${it.message}")
+                }
         } else {
             Toast.makeText(this@EditProfileActivity, "Lỗi: Không tìm thấy người dùng.", Toast.LENGTH_SHORT).show()
             finish()
@@ -77,98 +93,69 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() = with(binding) {
+        // ... (toolbar, changePasswordBtn, avatarImg, logoutBtn giữ nguyên) ...
         toolbar.setNavigationOnClickListener { finish() }
+        avatarImg.setOnClickListener { openImagePicker() }
+        changePasswordBtn.setOnClickListener { sendPasswordResetEmail() }
+        logoutBtn.setOnClickListener { performLogout() }
 
+        // Chỉ sửa saveBtn
         saveBtn.setOnClickListener {
+            // Sửa hàm: Sẽ lưu cả Auth và Firestore
             saveProfileChanges()
-        }
-
-        changePasswordBtn.setOnClickListener {
-            sendPasswordResetEmail()
-        }
-
-        // KÍCH HOẠT CHỌN ẢNH KHI NHẤN VÀO AVATAR
-        avatarImg.setOnClickListener {
-            openImagePicker()
-        }
-
-        logoutBtn.setOnClickListener {
-            performLogout()
         }
     }
 
     private fun openImagePicker() {
-        // Tạo Intent để mở thư viện ảnh
+        // ... (giữ nguyên)
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         pickImageLauncher.launch(intent)
     }
 
-    // SỬA ĐỔI trong setupImagePicker() để gọi hàm mới:
     private fun setupImagePicker() {
+        // ... (giữ nguyên)
         pickImageLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == RESULT_OK && result.data != null) {
                 val imageUri = result.data?.data
                 if (imageUri != null) {
-                    // Hiển thị ảnh mới trên giao diện tạm thời
-                    Glide.with(this).load(imageUri).into(binding.avatarImg)
-
-                    // *** THAY THẾ HÀM CŨ BẰNG HÀM MỚI ***
-                    uploadImageToCloudinary(imageUri) // <--- SỬ DỤNG HÀM MỚI
+                    Glide.with(this).load(imageUri).transform(CircleCrop()).into(binding.avatarImg)
+                    uploadImageToCloudinary(imageUri)
                 }
             }
         }
     }
 
     private fun uploadImageToCloudinary(imageUri: Uri) {
+        // ... (hàm này giữ nguyên, vì nó gọi updateAuthProfilePhotoUrl) ...
         val user = auth.currentUser ?: return
         Toast.makeText(this, "Đang tải ảnh lên Cloudinary...", Toast.LENGTH_SHORT).show()
-
-        // 1. Chuẩn bị tệp ảnh
         val inputStream = contentResolver.openInputStream(imageUri)
         val fileBytes = inputStream?.readBytes()
         inputStream?.close()
-
         if (fileBytes == null) {
             Toast.makeText(this, "Không thể đọc dữ liệu ảnh.", Toast.LENGTH_LONG).show()
             return
         }
-
-        // 2. Định nghĩa API URL
         val url = "https://api.cloudinary.com/v1_1/$CLOUDINARY_CLOUD_NAME/image/upload"
-
-        // 3. Khởi chạy Coroutine để thực hiện thao tác mạng
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val client = OkHttpClient()
-
-                // Xây dựng body request (Multipart Form Data)
                 val requestBody = MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("file", "profile_${user.uid}.jpg", // tên file
+                    .addFormDataPart("file", "profile_${user.uid}.jpg",
                         RequestBody.create("image/*".toMediaTypeOrNull(), fileBytes))
-                    .addFormDataPart("upload_preset", CLOUDINARY_UPLOAD_PRESET) // preset
+                    .addFormDataPart("upload_preset", CLOUDINARY_UPLOAD_PRESET)
                     .build()
-
-                val request = Request.Builder()
-                    .url(url)
-                    .post(requestBody)
-                    .build()
-
-                // Thực hiện request
+                val request = Request.Builder().url(url).post(requestBody).build()
                 client.newCall(request).execute().use { response ->
                     if (!response.isSuccessful) throw IOException("Unexpected code $response")
-
                     val responseBody = response.body?.string()
-
-                    // Phân tích JSON Response để lấy secure_url
                     val newPhotoUrl = parseCloudinaryResponse(responseBody)
-
-                    // Quay lại luồng chính để cập nhật UI/Auth
                     if (newPhotoUrl != null) {
                         runOnUiThread {
-                            updateAuthProfilePhotoUrl(newPhotoUrl) // Hàm này đã có sẵn
+                            updateAuthProfilePhotoUrl(newPhotoUrl)
                         }
                     } else {
                         runOnUiThread {
@@ -185,42 +172,33 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    // Hàm đơn giản để lấy URL từ JSON Response
     private fun parseCloudinaryResponse(responseBody: String?): String? {
+        // ... (hàm này giữ nguyên) ...
         if (responseBody == null) {
             Log.e("Cloudinary", "Response body is null.")
             return null
         }
-
         return try {
-            // Khởi tạo Gson
             val gson = Gson()
-
-            // Phân tích chuỗi JSON thành đối tượng CloudinaryResponse
             val response = gson.fromJson(responseBody, CloudinaryResponse::class.java)
-
-            // Lấy URL và THÊM BIẾN ĐỔI (để ảnh có hình tròn 100x100)
             val originalUrl = response.secure_url
-
             if (originalUrl.isNullOrEmpty()) {
                 Log.e("Cloudinary", "Secure URL is missing in the response.")
                 return null
             }
-
-            // CHÈN PHÉP BIẾN ĐỔI CLOUDINARY VÀO URL (Như đã thảo luận trước đó)
             val transformations = "c_fill,w_100,h_100,r_max,f_auto,q_auto"
             return originalUrl.replace("/upload/", "/upload/$transformations/")
-
         } catch (e: Exception) {
-            // Bắt các lỗi phân tích JSON
             Log.e("Cloudinary", "Failed to parse JSON response using Gson: ${e.message}", e)
             null
         }
     }
 
+    // --- SỬA HÀM NÀY: Phải cập nhật cả Firestore ---
     private fun updateAuthProfilePhotoUrl(newPhotoUrl: String) {
         val user = auth.currentUser ?: return
 
+        // 1. Cập nhật Firebase Auth
         val profileUpdates = UserProfileChangeRequest.Builder()
             .setPhotoUri(Uri.parse(newPhotoUrl))
             .build()
@@ -228,57 +206,78 @@ class EditProfileActivity : AppCompatActivity() {
         user.updateProfile(profileUpdates)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(this, "Cập nhật ảnh đại diện thành công!", Toast.LENGTH_SHORT).show()
-                    // Tải lại ảnh để đảm bảo Glide lưu cache đúng
-                    println("Photo url = " + user.photoUrl)
-                    Glide.with(this)
-                        .load(user.photoUrl)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE) // Không lưu cache đĩa
-                        .skipMemoryCache(true)                     // Bỏ qua cache bộ nhớ
-                        .placeholder(com.example.android_proj.R.drawable.ic_user_profile)
-                        .apply(RequestOptions().transform(CenterInside()))
-                        .into(binding.avatarImg)
+                    Toast.makeText(this, "Cập nhật ảnh Auth thành công!", Toast.LENGTH_SHORT).show()
+
+                    // 2. Cập nhật Firestore
+                    db.collection("users").document(user.uid)
+                        .update("avatarUrl", newPhotoUrl) // <-- LƯU VÀO FIRESTORE
+                        .addOnSuccessListener {
+                            Log.d("EditProfile", "Cập nhật avatarUrl trong Firestore thành công.")
+                            // Tải lại ảnh (giữ nguyên)
+                            Glide.with(this)
+                                .load(newPhotoUrl) // Dùng URL mới
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                                .placeholder(R.drawable.ic_user_profile)
+                                .transform(CircleCrop())
+                                .into(binding.avatarImg)
+                        }
+                        .addOnFailureListener {
+                            Log.e("EditProfile", "Lỗi cập nhật avatarUrl Firestore: ${it.message}")
+                        }
                 } else {
                     Toast.makeText(this, "Lỗi cập nhật hồ sơ Firebase Auth.", Toast.LENGTH_LONG).show()
                 }
             }
     }
 
+    // --- SỬA HÀM NÀY: Phải cập nhật cả Firestore ---
     private fun saveProfileChanges() {
         val newUsername = binding.usernameEdt.text.toString().trim()
-        val user = auth.currentUser
+        val newPhone = binding.phoneEdt.text.toString().trim() // <-- LẤY SĐT MỚI
+        val user = auth.currentUser ?: return
 
         if (newUsername.isEmpty()) {
             Toast.makeText(this, "Tên người dùng không được để trống.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        user?.let {
-            if (newUsername != it.displayName) {
-                val profileUpdates = UserProfileChangeRequest.Builder()
-                    .setDisplayName(newUsername)
-                    .build()
+        // 1. Cập nhật Firebase Auth (Chỉ displayName)
+        val profileUpdates = UserProfileChangeRequest.Builder()
+            .setDisplayName(newUsername)
+            .build()
 
-                it.updateProfile(profileUpdates).addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Toast.makeText(this@EditProfileActivity, "Cập nhật tên người dùng thành công!", Toast.LENGTH_SHORT).show()
+        user.updateProfile(profileUpdates).addOnCompleteListener { authTask ->
+            if (authTask.isSuccessful) {
+
+                // 2. Cập nhật Firestore (name và phoneNumber)
+                val userUpdates = mapOf(
+                    "name" to newUsername,
+                    "phoneNumber" to newPhone
+                )
+
+                db.collection("users").document(user.uid)
+                    .update(userUpdates)
+                    .addOnSuccessListener {
+                        Toast.makeText(this@EditProfileActivity, "Cập nhật hồ sơ thành công!", Toast.LENGTH_SHORT).show()
                         finish()
-                    } else {
-                        Toast.makeText(this@EditProfileActivity, "Cập nhật tên thất bại: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                     }
-                }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(this@EditProfileActivity, "Lỗi cập nhật Firestore: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
             } else {
-                Toast.makeText(this@EditProfileActivity, "Không có thay đổi nào để lưu.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@EditProfileActivity, "Lỗi cập nhật Auth: ${authTask.exception?.message}", Toast.LENGTH_LONG).show()
             }
         }
     }
 
     private fun sendPasswordResetEmail() {
+        // ... (giữ nguyên)
         val email = auth.currentUser?.email
         if (email != null) {
             auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(this, "Liên kết đặt lại mật khẩu đã được gửi đến Email của bạn. Vui lòng kiểm tra hộp thư.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Liên kết đặt lại mật khẩu đã được gửi đến Email của bạn.", Toast.LENGTH_LONG).show()
                 } else {
                     Toast.makeText(this, "Lỗi khi gửi email đặt lại mật khẩu.", Toast.LENGTH_SHORT).show()
                 }
@@ -287,9 +286,9 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun performLogout() {
+        // ... (giữ nguyên)
         auth.signOut()
         Toast.makeText(this, "Đã đăng xuất thành công!", Toast.LENGTH_SHORT).show()
-
         val intent = Intent(this, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
