@@ -196,7 +196,7 @@ class AddEditUserActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 Toast.makeText(this, "Đã gửi email reset đến: $email", Toast.LENGTH_LONG).show()
             }
-            .addOnFailureListener {
+            .addOnFailureListener {a
                 Toast.makeText(this, "Lỗi: ${it.message}", Toast.LENGTH_SHORT).show()
             }
     }
