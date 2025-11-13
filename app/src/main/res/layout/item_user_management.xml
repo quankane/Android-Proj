@@ -19,7 +19,9 @@
         <ImageView
             android:id="@+id/userAvatar"
             android:layout_width="50dp"
+            android:elevation="4dp"
             android:layout_height="50dp"
+            android:background="@drawable/white_bg_circle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

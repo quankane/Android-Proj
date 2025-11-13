@@ -12,10 +12,11 @@
         android:id="@+id/nav_header_avatar"
         android:layout_width="72dp"
         android:layout_height="72dp"
+        android:elevation="4dp"
         android:contentDescription="Ảnh đại diện"
         android:layout_marginTop="8dp" app:srcCompat="@drawable/ic_user_profile"
         android:scaleType="centerCrop"
-        android:background="@drawable/circle_background" />
+        android:background="@drawable/white_bg_circle" />
 
     <TextView
         android:id="@+id/user_name_text_view"

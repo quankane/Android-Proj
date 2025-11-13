@@ -41,7 +41,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="24dp"
                 android:background="@drawable/white_bg_circle"
-                android:padding="8dp"
+                android:elevation="4dp"
                 app:srcCompat="@drawable/ic_user_profile" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -108,9 +108,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Đăng xuất"
-                    android:textColor="@color/red"
+                    android:textColor="@color/white"
                     android:textSize="16sp"
-                    app:strokeColor="@color/red" />
+                    android:backgroundTint="@color/red" />
                 <Space
                     android:layout_width="16dp"
                     android:layout_height="wrap_content" />
@@ -119,6 +119,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:backgroundTint="@color/blue"
                     android:text="Lưu thay đổi"
                     android:textSize="16sp" />
             </LinearLayout>
