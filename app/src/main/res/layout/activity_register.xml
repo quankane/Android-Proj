@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:text="Register Title"
+        android:text="Đăng ký"
         android:textColor="@color/black"
         android:textSize="30sp"
         android:textStyle="bold"
@@ -37,7 +37,7 @@
         android:layout_height="50dp"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="32dp"
-        android:hint="Username Hint"
+        android:hint="Vui lòng nhập tên đăng nhập"
         android:inputType="textPersonName"
         android:background="@drawable/stroke_bg"
         android:paddingStart="16dp"
@@ -54,7 +54,7 @@
         android:layout_height="50dp"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="16dp"
-        android:hint="Email Hint"
+        android:hint="Vui lòng nhập email"
         android:inputType="textEmailAddress"
         android:background="@drawable/stroke_bg"
         android:paddingStart="16dp"
@@ -71,7 +71,7 @@
         android:layout_height="50dp"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="16dp"
-        android:hint="Password Hint"
+        android:hint="Vui lòng nhập mật khẩu"
         android:inputType="textPassword"
         android:background="@drawable/stroke_bg"
         android:paddingStart="16dp"
@@ -89,7 +89,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:background="@drawable/blue_bg"
-        android:text="Register"
+        android:text="Đăng ký"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -97,17 +97,31 @@
         app:layout_constraintStart_toStartOf="@+id/passwordEdt"
         app:layout_constraintTop_toBottomOf="@+id/passwordEdt" />
 
-    <TextView
-        android:id="@+id/loginLinkTxt"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="I have account?"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerBtn" />
+        app:layout_constraintTop_toBottomOf="@id/registerBtn">
+
+        <TextView
+            android:id="@+id/link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bạn đã có tài khoản?"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/loginLinkTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Đăng nhập"
+            android:textColor="@color/blue"
+            android:textSize="16sp" />
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/registerProgressBar"

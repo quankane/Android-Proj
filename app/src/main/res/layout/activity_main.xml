@@ -57,7 +57,7 @@
                             android:id="@+id/textView2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Welcome Back"
+                            android:text="Chào mừng trở lại"
                             android:textColor="@color/black" />
 
                         <TextView
@@ -86,7 +86,7 @@
                     android:drawableStart="@drawable/search_icon"
                     android:drawablePadding="12dp"
                     android:ems="10"
-                    android:hint="@string/what_are_you_looking_for"
+                    android:hint="Vui lòng nhập vào sản phẩm bạn đang tìm kiếm"
                     android:inputType="text"
                     android:padding="12sp"
                     android:textColorHint="@color/grey"
@@ -172,7 +172,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/recommendation"
+                        android:text="Gợi ý sản phẩm"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -181,7 +181,7 @@
                         android:id="@+id/textView5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/see_all" />
+                        android:text="Xem tất cả" />
                 </LinearLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -198,6 +198,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
                     <ProgressBar
                         android:id="@+id/progressBarRecommendation"
                         style="?android:attr/progressBarStyle"
@@ -277,12 +278,12 @@
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.google.android.material.navigation.NavigationView
-                android:id="@+id/nav_view_drawer"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="start"
-                android:fitsSystemWindows="true"
-                app:headerLayout="@layout/nav_header_main"
-                app:menu="@menu/nav_drawer_menu" />
+<!--    <com.google.android.material.navigation.NavigationView-->
+<!--        android:id="@+id/nav_view_drawer"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_gravity="start"-->
+<!--        android:fitsSystemWindows="true"-->
+<!--        app:headerLayout="@layout/nav_header_main"-->
+<!--        app:menu="@menu/nav_drawer_menu" />-->
 </androidx.drawerlayout.widget.DrawerLayout>
