@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.android_proj.R
-import com.example.android_proj.databinding.ActivityAddEditUserBinding
+import com.example.android_proj.R // Đảm bảo bạn đã import R
+import com.example.android_proj.databinding.ActivityAddEditUserBinding // Đảm bảo tên file binding này đúng
 import com.example.android_proj.model.UserModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -24,14 +24,16 @@ class AddEditUserActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Sử dụng ViewBinding để liên kết layout
         binding = ActivityAddEditUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         auth = Firebase.auth
-        currentUserId = intent.getStringExtra("USER_ID")
+        currentUserId = intent.getStringExtra("USER_ID") // Lấy ID từ Intent
 
         initView()
 
+        // Kiểm tra xem đây là chế độ "Thêm" hay "Sửa"
         if (currentUserId == null) {
             setupAddMode()
         } else {
@@ -64,6 +66,7 @@ class AddEditUserActivity : AppCompatActivity() {
         loadUserDetails()
     }
 
+    // Tải dữ liệu user (chỉ ở chế độ Sửa)
     private fun loadUserDetails() {
         binding.progressBar.visibility = View.VISIBLE
         db.collection("users").document(currentUserId!!)
@@ -73,7 +76,7 @@ class AddEditUserActivity : AppCompatActivity() {
                 if (document.exists()) {
                     currentUserModel = document.toObject(UserModel::class.java)
                     currentUserModel?.userId = document.id
-                    populateForm(currentUserModel)
+                    populateForm(currentUserModel) // Điền data vào form
                 } else {
                     Toast.makeText(this, "Không tìm thấy user", Toast.LENGTH_SHORT).show()
                     finish()
@@ -86,11 +89,14 @@ class AddEditUserActivity : AppCompatActivity() {
             }
     }
 
-    // Điền dữ liệu vào form (chế độ Sửa)
+    // Điền dữ liệu vào form (Sửa)
     private fun populateForm(user: UserModel?) {
         user ?: return
         binding.etName.setText(user.name)
         binding.etEmail.setText(user.email)
+        binding.etPhone.setText(user.phoneNumber) // <-- ĐIỀN SĐT
+        binding.etAvatar.setText(user.avatarUrl)   // <-- ĐIỀN AVATAR URL
+
         if (user.role == "admin") {
             binding.radioAdmin.isChecked = true
         } else {
@@ -112,6 +118,8 @@ class AddEditUserActivity : AppCompatActivity() {
         val email = binding.etEmail.text.toString().trim()
         val password = binding.etPassword.text.toString().trim()
         val name = binding.etName.text.toString().trim()
+        val phone = binding.etPhone.text.toString().trim()   // <-- LẤY SĐT
+        val avatar = binding.etAvatar.text.toString().trim() // <-- LẤY AVATAR
         val role = if (binding.radioAdmin.isChecked) "admin" else "user"
 
         if (email.isEmpty() || password.isEmpty() || name.isEmpty()) {
@@ -132,7 +140,14 @@ class AddEditUserActivity : AppCompatActivity() {
                 }
 
                 // 2. Tạo user document trong Firestore
-                val userModel = UserModel(userId = newUid, email = email, name = name, role = role)
+                val userModel = UserModel(
+                    userId = newUid,
+                    email = email,
+                    name = name,
+                    role = role,
+                    phoneNumber = phone,  // <-- LƯU SĐT
+                    avatarUrl = avatar    // <-- LƯU AVATAR
+                )
                 db.collection("users").document(newUid)
                     .set(userModel)
                     .addOnSuccessListener {
@@ -155,6 +170,8 @@ class AddEditUserActivity : AppCompatActivity() {
     // Logic SỬA
     private fun performUpdateUser() {
         val name = binding.etName.text.toString().trim()
+        val phone = binding.etPhone.text.toString().trim()   // <-- LẤY SĐT
+        val avatar = binding.etAvatar.text.toString().trim() // <-- LẤY AVATAR
         val role = if (binding.radioAdmin.isChecked) "admin" else "user"
 
         if (name.isEmpty()) {
@@ -164,12 +181,14 @@ class AddEditUserActivity : AppCompatActivity() {
 
         binding.progressBar.visibility = View.VISIBLE
 
-        // Chỉ cập nhật name và role
+        // Cập nhật các trường
         db.collection("users").document(currentUserId!!)
             .update(
                 mapOf(
                     "name" to name,
-                    "role" to role
+                    "role" to role,
+                    "phoneNumber" to phone,  // <-- CẬP NHẬT SĐT
+                    "avatarUrl" to avatar    // <-- CẬP NHẬT AVATAR
                 )
             )
             .addOnSuccessListener {
@@ -196,7 +215,7 @@ class AddEditUserActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 Toast.makeText(this, "Đã gửi email reset đến: $email", Toast.LENGTH_LONG).show()
             }
-            .addOnFailureListener {a
+            .addOnFailureListener {
                 Toast.makeText(this, "Lỗi: ${it.message}", Toast.LENGTH_SHORT).show()
             }
     }
