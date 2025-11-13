@@ -20,10 +20,10 @@
             android:id="@+id/userAvatar"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_user_profile"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:src="@drawable/ic_user_profile" />
 
         <TextView
             android:id="@+id/userEmailTxt"
