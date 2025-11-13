@@ -294,15 +294,11 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         // Tìm nút Menu (menuIconBtn)
         val menuButton = findViewById<ImageView>(R.id.menuIconBtn)
 
-        // 1. Chỉ hiển thị nút Menu cho Admin
-        menuButton?.isVisible = isUserAdmin
-
-        if (isUserAdmin) {
-            // 2. Gán Listener cho ICON MENU (menuIconBtn)
+            // Gán Listener cho ICON MENU (menuIconBtn)
             menuButton?.setOnClickListener {
                 drawerLayout.openDrawer(GravityCompat.START)
             }
-        }
+
 
         // 3. Gán Listener cho ICON THÔNG BÁO (imageView2) - Luôn mở Drawer
         binding.imageView2.setOnClickListener {

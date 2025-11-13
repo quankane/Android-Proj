@@ -36,7 +36,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityEditProfileBinding
     private lateinit var auth: FirebaseAuth
-    private lateinit var db: FirebaseFirestore // THÊM FIRESTORE
+    private lateinit var db: FirebaseFirestore
     private lateinit var storageRef: StorageReference
     private val CLOUDINARY_CLOUD_NAME = "dgwnoquie"
     private val CLOUDINARY_UPLOAD_PRESET = "upload-1"
@@ -49,7 +49,7 @@ class EditProfileActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         auth = FirebaseAuth.getInstance()
-        db = FirebaseFirestore.getInstance() // KHỞI TẠO FIRESTORE
+        db = FirebaseFirestore.getInstance()
         storageRef = FirebaseStorage.getInstance().reference
 
         setupImagePicker()
@@ -93,27 +93,22 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() = with(binding) {
-        // ... (toolbar, changePasswordBtn, avatarImg, logoutBtn giữ nguyên) ...
         toolbar.setNavigationOnClickListener { finish() }
         avatarImg.setOnClickListener { openImagePicker() }
         changePasswordBtn.setOnClickListener { sendPasswordResetEmail() }
         logoutBtn.setOnClickListener { performLogout() }
 
-        // Chỉ sửa saveBtn
         saveBtn.setOnClickListener {
-            // Sửa hàm: Sẽ lưu cả Auth và Firestore
             saveProfileChanges()
         }
     }
 
     private fun openImagePicker() {
-        // ... (giữ nguyên)
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         pickImageLauncher.launch(intent)
     }
 
     private fun setupImagePicker() {
-        // ... (giữ nguyên)
         pickImageLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
@@ -128,7 +123,6 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun uploadImageToCloudinary(imageUri: Uri) {
-        // ... (hàm này giữ nguyên, vì nó gọi updateAuthProfilePhotoUrl) ...
         val user = auth.currentUser ?: return
         Toast.makeText(this, "Đang tải ảnh lên Cloudinary...", Toast.LENGTH_SHORT).show()
         val inputStream = contentResolver.openInputStream(imageUri)
@@ -173,7 +167,6 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun parseCloudinaryResponse(responseBody: String?): String? {
-        // ... (hàm này giữ nguyên) ...
         if (responseBody == null) {
             Log.e("Cloudinary", "Response body is null.")
             return null
@@ -194,7 +187,6 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    // --- SỬA HÀM NÀY: Phải cập nhật cả Firestore ---
     private fun updateAuthProfilePhotoUrl(newPhotoUrl: String) {
         val user = auth.currentUser ?: return
 
@@ -210,10 +202,10 @@ class EditProfileActivity : AppCompatActivity() {
 
                     // 2. Cập nhật Firestore
                     db.collection("users").document(user.uid)
-                        .update("avatarUrl", newPhotoUrl) // <-- LƯU VÀO FIRESTORE
+                        .update("avatarUrl", newPhotoUrl)
                         .addOnSuccessListener {
                             Log.d("EditProfile", "Cập nhật avatarUrl trong Firestore thành công.")
-                            // Tải lại ảnh (giữ nguyên)
+                            // Tải lại ảnh
                             Glide.with(this)
                                 .load(newPhotoUrl) // Dùng URL mới
                                 .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -231,7 +223,6 @@ class EditProfileActivity : AppCompatActivity() {
             }
     }
 
-    // --- SỬA HÀM NÀY: Phải cập nhật cả Firestore ---
     private fun saveProfileChanges() {
         val newUsername = binding.usernameEdt.text.toString().trim()
         val newPhone = binding.phoneEdt.text.toString().trim() // <-- LẤY SĐT MỚI
@@ -272,7 +263,6 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun sendPasswordResetEmail() {
-        // ... (giữ nguyên)
         val email = auth.currentUser?.email
         if (email != null) {
             auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
@@ -286,7 +276,6 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun performLogout() {
-        // ... (giữ nguyên)
         auth.signOut()
         Toast.makeText(this, "Đã đăng xuất thành công!", Toast.LENGTH_SHORT).show()
         val intent = Intent(this, LoginActivity::class.java)

@@ -62,7 +62,7 @@ class OrderManagementActivity : AppCompatActivity(), OrderManagementAdapter.Orde
             }
     }
 
-    // --- THÊM HÀM MỚI (Xử lý click vào item) ---
+    // --- Xử lý click vào item ---
     override fun onItemClick(order: Order) {
         // Mở màn hình chi tiết (giống hệt bên OrderAdapter)
         val intent = Intent(this, OrderDetailActivity::class.java).apply {
@@ -70,9 +70,8 @@ class OrderManagementActivity : AppCompatActivity(), OrderManagementAdapter.Orde
         }
         startActivity(intent)
     }
-    // --- HẾT HÀM MỚI ---
 
-    // Hàm này (xử lý click vào Status) giữ nguyên
+    // Xử lý click vào Status
     override fun onUpdateStatusClick(order: Order) {
         val statuses = arrayOf("Pending", "Shipped", "Delivered", "Cancelled")
         val currentStatusIndex = statuses.indexOf(order.status)

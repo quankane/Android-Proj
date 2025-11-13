@@ -33,7 +33,6 @@ class ProductManagementActivity : AppCompatActivity(), ProductManagementAdapter.
             loadProducts()
         }
     }
-    // --- HẾT PHẦN THÊM ---
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +61,7 @@ class ProductManagementActivity : AppCompatActivity(), ProductManagementAdapter.
 
     private fun loadProducts() {
         binding.progressBar.visibility = View.VISIBLE
-        db.collection("Items") // Dùng "Items" (viết hoa)
+        db.collection("Items") // Dùng "Items"
             .get()
             .addOnSuccessListener { documents ->
                 binding.progressBar.visibility = View.GONE
@@ -83,7 +82,7 @@ class ProductManagementActivity : AppCompatActivity(), ProductManagementAdapter.
             }
     }
 
-    // --- CẬP NHẬT NÚT SỬA ---
+    // --- CLICK sửa ---
     override fun onEditClick(item: ItemsModel) {
         // Mở AddEditProductActivity ở chế độ "Sửa" (gửi kèm ID)
         val intent = Intent(this, AddEditProductActivity::class.java).apply {
@@ -104,14 +103,13 @@ class ProductManagementActivity : AppCompatActivity(), ProductManagementAdapter.
             .show()
     }
 
-    // --- SỬA LỖI HÀM XÓA ---
+    // --- CLICK XÓA ---
     private fun deleteProductFromFirebase(item: ItemsModel) {
         if (item.id.isEmpty()) {
             Toast.makeText(this, "Lỗi: Không tìm thấy ID sản phẩm", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // PHẢI DÙNG "Items" (viết hoa) giống như lúc load
         db.collection("Items").document(item.id)
             .delete()
             .addOnSuccessListener {

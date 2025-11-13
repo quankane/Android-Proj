@@ -102,7 +102,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="TRUNG BÌNH/ĐƠN"
+                            android:text="TRUNG BÌNH $/ĐƠN"
                             android:textAppearance="?attr/textAppearanceCaption"/>
                         <TextView
                             android:id="@+id/statAvgOrderValue"

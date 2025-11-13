@@ -106,8 +106,6 @@ class HomeAdminActivity : AppCompatActivity(), OrderManagementAdapter.OrderClick
             }
     }
 
-    // --- Xử lý Click (giống hệt OrderManagementActivity) ---
-
     override fun onItemClick(order: Order) {
         val intent = Intent(this, OrderDetailActivity::class.java).apply {
             putExtra("ORDER_ID", order.orderId)
@@ -135,7 +133,7 @@ class HomeAdminActivity : AppCompatActivity(), OrderManagementAdapter.OrderClick
             .update("status", newStatus)
             .addOnSuccessListener {
                 Toast.makeText(this, "Cập nhật trạng thái thành công", Toast.LENGTH_SHORT).show()
-                loadDashboardData() // Tải l    ại toàn bộ data
+                loadDashboardData() // Tải lại toàn bộ data
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Cập nhật thất bại: ${e.message}", Toast.LENGTH_SHORT).show()

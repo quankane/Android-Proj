@@ -5,8 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.android_proj.R // Đảm bảo bạn đã import R
-import com.example.android_proj.databinding.ActivityAddEditUserBinding // Đảm bảo tên file binding này đúng
+import com.example.android_proj.databinding.ActivityAddEditUserBinding
 import com.example.android_proj.model.UserModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -70,8 +69,7 @@ class AddEditUserActivity : AppCompatActivity() {
     private fun loadUserDetails() {
         binding.progressBar.visibility = View.VISIBLE
         db.collection("users").document(currentUserId!!)
-            .get()
-            .addOnSuccessListener { document ->
+            .get().addOnSuccessListener { document ->
                 binding.progressBar.visibility = View.GONE
                 if (document.exists()) {
                     currentUserModel = document.toObject(UserModel::class.java)
@@ -81,8 +79,7 @@ class AddEditUserActivity : AppCompatActivity() {
                     Toast.makeText(this, "Không tìm thấy user", Toast.LENGTH_SHORT).show()
                     finish()
                 }
-            }
-            .addOnFailureListener {
+            }.addOnFailureListener {
                 binding.progressBar.visibility = View.GONE
                 Toast.makeText(this, "Lỗi tải dữ liệu: ${it.message}", Toast.LENGTH_SHORT).show()
                 finish()
@@ -95,7 +92,6 @@ class AddEditUserActivity : AppCompatActivity() {
         binding.etName.setText(user.name)
         binding.etEmail.setText(user.email)
         binding.etPhone.setText(user.phoneNumber) // <-- ĐIỀN SĐT
-        binding.etAvatar.setText(user.avatarUrl)   // <-- ĐIỀN AVATAR URL
 
         if (user.role == "admin") {
             binding.radioAdmin.isChecked = true
@@ -115,11 +111,14 @@ class AddEditUserActivity : AppCompatActivity() {
 
     // Logic THÊM
     private fun performAddUser() {
+        // Lưu thông tin đăng nhập của admin để ko bị chuyển hướng khi tạo user mới
+        val adminEmail = auth.currentUser?.email
+        val adminPassword = "quankane"
+
         val email = binding.etEmail.text.toString().trim()
         val password = binding.etPassword.text.toString().trim()
         val name = binding.etName.text.toString().trim()
         val phone = binding.etPhone.text.toString().trim()   // <-- LẤY SĐT
-        val avatar = binding.etAvatar.text.toString().trim() // <-- LẤY AVATAR
         val role = if (binding.radioAdmin.isChecked) "admin" else "user"
 
         if (email.isEmpty() || password.isEmpty() || name.isEmpty()) {
@@ -130,8 +129,7 @@ class AddEditUserActivity : AppCompatActivity() {
         binding.progressBar.visibility = View.VISIBLE
 
         // 1. Tạo user trong Authentication
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnSuccessListener { authResult ->
+        auth.createUserWithEmailAndPassword(email, password).addOnSuccessListener { authResult ->
                 val newUid = authResult.user?.uid
                 if (newUid == null) {
                     binding.progressBar.visibility = View.GONE
@@ -146,22 +144,41 @@ class AddEditUserActivity : AppCompatActivity() {
                     name = name,
                     role = role,
                     phoneNumber = phone,  // <-- LƯU SĐT
-                    avatarUrl = avatar    // <-- LƯU AVATAR
                 )
-                db.collection("users").document(newUid)
-                    .set(userModel)
-                    .addOnSuccessListener {
+                db.collection("users").document(newUid).set(userModel).addOnSuccessListener {
                         binding.progressBar.visibility = View.GONE
                         Toast.makeText(this, "Thêm user thành công!", Toast.LENGTH_SHORT).show()
                         setResult(Activity.RESULT_OK) // Báo cho list refresh
                         finish()
-                    }
-                    .addOnFailureListener { e ->
+                    }.addOnFailureListener { e ->
                         binding.progressBar.visibility = View.GONE
-                        Toast.makeText(this, "Lỗi lưu Firestore: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Lỗi lưu Firestore: ${e.message}", Toast.LENGTH_SHORT)
+                            .show()
                     }
-            }
-            .addOnFailureListener { e ->
+                if (adminEmail != null) {
+                    auth.signInWithEmailAndPassword(adminEmail, adminPassword)
+                        .addOnSuccessListener {
+                            // Đăng nhập lại Admin thành công!
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(
+                                this,
+                                "Thêm user thành công! Admin đã đăng nhập lại.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            setResult(Activity.RESULT_OK)
+                            finish()
+                        }.addOnFailureListener { e ->
+                            // Lỗi đăng nhập lại (rất hiếm nếu password đúng)
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(
+                                this,
+                                "Thêm user thành công, nhưng lỗi đăng nhập lại Admin: ${e.message}",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            auth.signOut()
+                        }
+                }
+            }.addOnFailureListener { e ->
                 binding.progressBar.visibility = View.GONE
                 Toast.makeText(this, "Lỗi tạo Auth: ${e.message}", Toast.LENGTH_SHORT).show()
             }
@@ -171,7 +188,6 @@ class AddEditUserActivity : AppCompatActivity() {
     private fun performUpdateUser() {
         val name = binding.etName.text.toString().trim()
         val phone = binding.etPhone.text.toString().trim()   // <-- LẤY SĐT
-        val avatar = binding.etAvatar.text.toString().trim() // <-- LẤY AVATAR
         val role = if (binding.radioAdmin.isChecked) "admin" else "user"
 
         if (name.isEmpty()) {
@@ -182,22 +198,18 @@ class AddEditUserActivity : AppCompatActivity() {
         binding.progressBar.visibility = View.VISIBLE
 
         // Cập nhật các trường
-        db.collection("users").document(currentUserId!!)
-            .update(
+        db.collection("users").document(currentUserId!!).update(
                 mapOf(
                     "name" to name,
                     "role" to role,
-                    "phoneNumber" to phone,  // <-- CẬP NHẬT SĐT
-                    "avatarUrl" to avatar    // <-- CẬP NHẬT AVATAR
+                    "phoneNumber" to phone,
                 )
-            )
-            .addOnSuccessListener {
+            ).addOnSuccessListener {
                 binding.progressBar.visibility = View.GONE
                 Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show()
                 setResult(Activity.RESULT_OK) // Báo cho list refresh
                 finish()
-            }
-            .addOnFailureListener {
+            }.addOnFailureListener {
                 binding.progressBar.visibility = View.GONE
                 Toast.makeText(this, "Cập nhật thất bại: ${it.message}", Toast.LENGTH_SHORT).show()
             }
@@ -211,11 +223,9 @@ class AddEditUserActivity : AppCompatActivity() {
             return
         }
 
-        auth.sendPasswordResetEmail(email)
-            .addOnSuccessListener {
+        auth.sendPasswordResetEmail(email).addOnSuccessListener {
                 Toast.makeText(this, "Đã gửi email reset đến: $email", Toast.LENGTH_LONG).show()
-            }
-            .addOnFailureListener {
+            }.addOnFailureListener {
                 Toast.makeText(this, "Lỗi: ${it.message}", Toast.LENGTH_SHORT).show()
             }
     }

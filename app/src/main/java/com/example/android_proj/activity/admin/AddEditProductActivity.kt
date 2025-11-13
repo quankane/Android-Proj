@@ -13,24 +13,21 @@ class AddEditProductActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddEditProductBinding
     private val db = FirebaseFirestore.getInstance()
-    private var currentProductId: String? = null // Biến lưu ID khi ở chế độ Sửa
-    private var currentItem: ItemsModel? = null // Biến lưu item khi ở chế độ Sửa
+    private var currentProductId: String? = null
+    private var currentItem: ItemsModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddEditProductBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Lấy ID từ Intent (nếu có)
         currentProductId = intent.getStringExtra("PRODUCT_ID")
 
         initView()
 
         if (currentProductId == null) {
-            // Chế độ THÊM MỚI
             binding.toolbar.title = "Thêm sản phẩm mới"
         } else {
-            // Chế độ SỬA
             binding.toolbar.title = "Chỉnh sửa sản phẩm"
             loadProductDetails()
         }
@@ -41,7 +38,7 @@ class AddEditProductActivity : AppCompatActivity() {
         binding.btnSave.setOnClickListener { saveProduct() }
     }
 
-    // Tải thông tin sản phẩm (chỉ chạy ở chế độ Sửa)
+    //Sửa
     private fun loadProductDetails() {
         binding.progressBar.visibility = View.VISIBLE
         db.collection("Items").document(currentProductId!!)
@@ -64,22 +61,19 @@ class AddEditProductActivity : AppCompatActivity() {
             }
     }
 
-    // Điền dữ liệu vào form (chỉ chạy ở chế độ Sửa)
     private fun populateForm(item: ItemsModel?) {
         item ?: return
         binding.etTitle.setText(item.title)
         binding.etDescription.setText(item.description)
         binding.etPrice.setText(item.price.toString())
         binding.etOldPrice.setText(item.oldPrice.toString())
-        binding.etRating.setText(item.rating.toString()) // <-- THÊM DÒNG NÀY
+        binding.etRating.setText(item.rating.toString())
 
-        // Chuyển List<String> thành chuỗi "a, b, c"
         binding.etPicUrl.setText(item.picUrl.joinToString(","))
         binding.etSize.setText(item.size.joinToString(","))
         binding.etColor.setText(item.color.joinToString(","))
     }
 
-    // Xử lý logic LƯU
     private fun saveProduct() {
         binding.progressBar.visibility = View.VISIBLE
 
@@ -106,20 +100,19 @@ class AddEditProductActivity : AppCompatActivity() {
             .map { it.trim() }
             .filter { it.isNotEmpty() } as ArrayList<String>
 
-        // 3. Validation đơn giản
         if (title.isEmpty() || price == 0.0 || picUrlList.isEmpty()) {
             Toast.makeText(this, "Tên, Giá, và URL ảnh không được trống", Toast.LENGTH_SHORT).show()
             binding.progressBar.visibility = View.GONE
             return
         }
 
-        // 4. Tạo hoặc Cập nhật đối tượng
+        // 4. Tạo hoặc Cập nhật đối tượng (Elvis Operator)
         val product = currentItem ?: ItemsModel() // Lấy item cũ (Sửa) hoặc tạo item mới (Thêm)
         product.title = title
         product.description = description
         product.price = price
         product.oldPrice = oldPrice
-        product.rating = rating // <-- THÊM DÒNG NÀY
+        product.rating = rating
         product.picUrl = picUrlList
         product.size = sizeList
         product.color = colorList
@@ -145,6 +138,7 @@ class AddEditProductActivity : AppCompatActivity() {
                 }
         } else {
             // --- Chế độ SỬA ---
+            // Non null asserted operator
             db.collection("Items").document(currentProductId!!)
                 .set(product) // Dùng set() để ghi đè toàn bộ object
                 .addOnSuccessListener {

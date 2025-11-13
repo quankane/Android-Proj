@@ -14,7 +14,6 @@ class AllProductsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAllProductsBinding
 
-    // Dùng lại ViewModel và Adapter
     private lateinit var popularAdapter: PopularAdapter
     private val viewModel: MainViewModel by lazy {
         ViewModelProvider(this).get(MainViewModel::class.java)
@@ -48,8 +47,6 @@ class AllProductsActivity : AppCompatActivity() {
         binding.progressBar.visibility = View.VISIBLE
 
         // Quan sát dữ liệu từ ViewModel
-        // (Tôi giả định viewModel.populars là nơi lấy tất cả sản phẩm
-        // Nếu bạn có hàm khác, hãy gọi hàm đó)
         viewModel.populars.observe(this) { items ->
             popularAdapter.updateData(items)
             binding.progressBar.visibility = View.GONE

@@ -37,9 +37,6 @@ class StatisticsActivity : AppCompatActivity() {
         // 2. Chạy tất cả song song
         Tasks.whenAllSuccess<QuerySnapshot>(ordersTask, usersTask, itemsTask)
             .addOnSuccessListener { results ->
-                // results[0] là kết quả của ordersTask
-                // results[1] là kết quả của usersTask
-                // results[2] là kết quả của itemsTask
 
                 // Xử lý Orders
                 val ordersSnapshot = results[0]

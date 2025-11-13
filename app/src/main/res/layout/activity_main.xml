@@ -45,7 +45,7 @@
                         android:layout_height="32dp"
                         android:layout_marginRight="10dp"
                         android:src="@drawable/outline_density_medium_24"
-                        android:visibility="gone" />
+                        android:visibility="visible" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"

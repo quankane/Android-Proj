@@ -57,7 +57,7 @@ class DetailActivity : AppCompatActivity() {
         updateFavoriteIcon(isFavorite)
     }
 
-    // HÀM CẬP NHẬT BIỂU TƯỢNG (Giả định R.drawable.fav_icon_filled và R.drawable.fav_icon)
+    // HÀM CẬP NHẬT BIỂU TƯỢNG
     private fun updateFavoriteIcon(isFavorite: Boolean) {
         if (isFavorite) {
             binding.favBtn.setImageResource(R.drawable.fav_icon_filled) // Màu đỏ/Đã đầy
@@ -135,7 +135,7 @@ class DetailActivity : AppCompatActivity() {
             item.numberInCart = numberItemTxt.text.toString().toInt();
 
             managementCart.insertFood(item)
-            // ... hiển thị thông báo thành công
+            Toast.makeText(this@DetailActivity, "Đã thêm sản phẩm vào giỏ hàng", Toast.LENGTH_SHORT).show()
         }
     }
 

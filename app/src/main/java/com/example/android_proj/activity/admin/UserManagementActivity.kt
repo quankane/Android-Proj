@@ -58,6 +58,7 @@ class UserManagementActivity : AppCompatActivity(), UserManagementAdapter.UserCl
     private fun loadUsers() {
         binding.progressBar.visibility = View.VISIBLE
         db.collection("users")
+            .whereNotEqualTo("email", "quanducbui2017@gmail.com")
             .get()
             .addOnSuccessListener { documents ->
                 binding.progressBar.visibility = View.GONE

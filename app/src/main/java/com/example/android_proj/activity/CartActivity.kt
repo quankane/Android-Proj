@@ -1,5 +1,6 @@
 package com.example.android_proj.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -27,7 +28,6 @@ class CartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCartBinding
     private lateinit var managementCart: ManagementCart
 
-    // Thêm các biến để lưu trữ giá trị
     private var tax: Double = 0.0
     private var delivery: Double = 0.0
     private var total: Double = 0.0
@@ -153,26 +153,25 @@ class CartActivity : AppCompatActivity() {
             if (currentUser == null) {
                 Toast.makeText(this, "Vui lòng đăng nhập để đặt hàng", Toast.LENGTH_SHORT).show()
                 dialog.dismiss() // Đóng dialog
-                // Tùy chọn: Chuyển người dùng đến màn hình đăng nhập
-                // startActivity(Intent(this, LoginActivity::class.java))
+                 startActivity(Intent(this, LoginActivity::class.java))
                 return@setOnClickListener
             }
             val userId = currentUser.uid
 
             // 2. Tạo đối tượng ShippingAddress
             val shippingAddress = ShippingAddress(
-                fullName = "", // Bạn có thể thêm trường này vào dialog
+                fullName = "",
                 phoneNumber = phone,
                 streetAddress = address,
-                city = "" // Bạn có thể thêm trường này vào dialog
+                city = ""
             )
 
             // 3. Tạo danh sách OrderItem từ giỏ hàng
             val orderItems = managementCart.getListCart().map { item ->
                 OrderItem(
-                    id = item.id.toString(), // Đảm bảo ID là String
+                    id = item.id.toString(),
                     title = item.title,
-                    picUrl = item.picUrl.firstOrNull() ?: "", // Lấy ảnh đầu tiên
+                    picUrl = item.picUrl.firstOrNull() ?: "",
                     priceAtPurchase = item.price,
                     quantity = item.numberInCart
                 )
@@ -180,7 +179,6 @@ class CartActivity : AppCompatActivity() {
 
             // 4. Tạo đối tượng Order
             val order = Order(
-                // orderId sẽ được tạo tự động bởi Firebase (nếu dùng)
                 userId = userId, // Dùng userId thực tế
                 orderDate = Timestamp.now(),
                 status = "Pending", // Trạng thái chờ xử lý
@@ -202,18 +200,17 @@ class CartActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    // --- HÀM LƯU ĐƠN HÀNG (ĐÃ HOÀN CHỈNH) ---
+    // --- HÀM LƯU ĐƠN HÀNG ---
     private fun saveOrderToFirebase(order: Order) {
 
-        // Tên collection "orders" phải khớp với tên bạn dùng trong MyOrdersActivity
         db.collection("orders")
-            .add(order) // .add() tự động tạo Document ID
+            .add(order)
             .addOnSuccessListener { documentReference ->
                 Log.d("CartActivity", "Order saved successfully with ID: ${documentReference.id}")
                 Toast.makeText(this, "Đặt hàng thành công!", Toast.LENGTH_SHORT).show()
 
                 // Xóa giỏ hàng sau khi đặt thành công
-                managementCart.clearCart() // Hàm này bạn đã thêm ở bước trước
+                managementCart.clearCart()
 
                 // Cập nhật lại UI (hiển thị giỏ hàng trống)
                 initCartItemList()
