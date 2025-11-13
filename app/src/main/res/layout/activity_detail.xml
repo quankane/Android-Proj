@@ -178,7 +178,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/select_color"
+                android:text="Chọn màu sắc"
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -197,7 +197,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/select_size"
+                android:text="Chọn kích cỡ"
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -233,7 +233,7 @@
                         android:id="@+id/textView16"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/total_price"
+                        android:text="Tổng giá tiền"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -255,7 +255,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:background="@drawable/blue_bg"
-                    android:text="@string/buy_now"
+                    android:text="Mua ngay"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />

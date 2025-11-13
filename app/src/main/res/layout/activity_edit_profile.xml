@@ -49,7 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="Username (Tên hiển thị)">
+                android:hint="Tên đăng nhập (Tên hiển thị)">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/usernameEdt"
@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginBottom="20dp"
-                android:text="Change password"
+                android:text="Đổi mật khẩu"
                 android:textColor="@color/blue"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -107,7 +107,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Logout"
+                    android:text="Đăng xuất"
                     android:textColor="@color/red"
                     android:textSize="16sp"
                     app:strokeColor="@color/red" />
@@ -119,7 +119,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Save Changes"
+                    android:text="Lưu thay đổi"
                     android:textSize="16sp" />
             </LinearLayout>
 

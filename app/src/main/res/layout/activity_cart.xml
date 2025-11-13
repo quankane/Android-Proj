@@ -8,10 +8,12 @@
     tools:context=".activity.CartActivity">
 
     <TextView
+        android:gravity="center"
         android:id="@+id/emptyTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/your_cart_is_empty"
+        android:text="Giỏ hàng của bạn đang trống\n
+Vui lòng quay lại trang chủ chọn mua sản phẩm"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,7 +43,7 @@
             android:id="@+id/textView7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/order_detail"
+            android:text="Chi tiết đơn hàng"
             android:textColor="@color/black"
             android:textSize="25sp"
             android:textStyle="bold"
@@ -85,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:text="@string/free_delivery"
+            android:text="Vận chuyển miễn phí"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textView8" />
@@ -96,7 +98,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:text="@string/total_tax"
+            android:text="Tổng thuế"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textView9" />
@@ -112,7 +114,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="24dp"
-            android:text="@string/check_out"
+            android:text="Thanh toán"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -122,7 +124,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="@string/subtotal"
+            android:text="Tổng phụ"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -145,7 +147,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:text="@string/total"
+            android:text="Tổng cộng"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view2" />
