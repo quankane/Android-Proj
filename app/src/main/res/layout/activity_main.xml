@@ -235,7 +235,7 @@
                     android:weightSum="4">
 
                     <ImageView
-                        android:id="@+id/imageView6"
+                        android:id="@+id/homeBtn"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center_vertical"

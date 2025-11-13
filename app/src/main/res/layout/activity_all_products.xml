@@ -26,7 +26,7 @@
         android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:listitem="@layout/viewholder_popular" /> <ProgressBar
+        tools:listitem="@layout/viewholder_recommendation" /> <ProgressBar
     android:id="@+id/progressBar"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

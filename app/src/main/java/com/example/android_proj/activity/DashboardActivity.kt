@@ -153,6 +153,12 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         initRecommendation()
         initBottomNavigation()
         initUsername()
+
+        binding.textView5.setOnClickListener {
+            val intent = Intent(this, AllProductsActivity::class.java)
+            startActivity(intent)
+        }
+
         // Gọi setupDrawerOpener để gán Listener cho nút Menu và Chuông
         // Gắn listener cho Navigation View
         val navigationView = findViewById<NavigationView>(R.id.nav_view_drawer)
