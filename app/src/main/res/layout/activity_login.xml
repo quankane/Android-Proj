@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
-        android:text="Login Title"
+        android:text="Đăng nhập"
         android:textColor="@color/black"
         android:textSize="30sp"
         android:textStyle="bold"
@@ -27,7 +27,7 @@
         android:layout_height="50dp"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="40dp"
-        android:hint="Email Hint"
+        android:hint="Vui lòng nhập email"
         android:inputType="textEmailAddress"
         android:background="@drawable/stroke_bg"
         android:paddingStart="16dp"
@@ -44,7 +44,7 @@
         android:layout_height="50dp"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="16dp"
-        android:hint="Password Hint"
+        android:hint="Vui lòng nhập mật kẩu"
         android:inputType="textPassword"
         android:background="@drawable/stroke_bg"
         android:paddingStart="16dp"
@@ -61,7 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
-        android:text="Forgot Password"
+        android:text="Quên mật khẩu"
         android:textColor="@color/red"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -75,7 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:background="@drawable/blue_bg"
-        android:text="Login"
+        android:text="Đăng nhập"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -83,17 +83,33 @@
         app:layout_constraintStart_toStartOf="@+id/passwordEdt"
         app:layout_constraintTop_toBottomOf="@+id/forgotPasswordTxt" />
 
-    <TextView
-        android:id="@+id/registerLinkTxt"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="I don't have a account"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/loginBtn">
+
+        <TextView
+            android:id="@+id/link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bạn chưa có tài khoản?"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            />
+
+        <TextView
+            android:id="@+id/registerLinkTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Đăng ký"
+            android:textColor="@color/blue"
+            android:textSize="16sp"
+            />
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/loginProgressBar"

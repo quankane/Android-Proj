@@ -10,7 +10,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="Admin Dashboard"
+        app:title="Trang chủ quản trị"
         android:paddingTop="48dp"
         android:textColor="@color/black"
         android:textSize="25sp"
