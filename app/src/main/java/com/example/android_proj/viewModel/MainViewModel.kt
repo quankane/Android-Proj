@@ -8,7 +8,6 @@ import com.example.android_proj.model.ItemsModel
 import com.example.android_proj.model.SliderModel
 import com.example.android_proj.repository.MainRepository
 
-// 1. ĐỔI sang AndroidViewModel và nhận Application
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     // 2. Truyền 'application' (là một Context) vào Repository
@@ -19,7 +18,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val brands: LiveData<MutableList<BrandModel>> = repository.brands
     val populars: LiveData<MutableList<ItemsModel>> = repository.populars
 
-    // Các hàm load không đổi
     fun loadBanners() {
         repository.loadBanners()
     }
@@ -32,7 +30,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         repository.loadPopulars()
     }
 
-    // Các hàm Wishlist không đổi
     fun getWishlistItems(): ArrayList<ItemsModel> {
         return repository.getWishlistItems()
     }
