@@ -41,6 +41,8 @@ import com.example.android_proj.activity.admin.UserManagementActivity
 // implements NavigationView.OnNavigationItemSelectedListener để xử lý các sự kiện click trong Nav Drawer
 class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+    private lateinit var auth: FirebaseAuth
+
     private val viewModel : MainViewModel by lazy {
         val factory = ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ViewModelProvider(this, factory)[MainViewModel::class.java]
@@ -76,6 +78,7 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         Log.i("DASHBOARD ACTIVITY", "Đã chạy vào dashboard")
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        auth = FirebaseAuth.getInstance()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -149,10 +152,16 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         initBanners()
         initRecommendation()
         initBottomNavigation()
+        initUsername()
         // Gọi setupDrawerOpener để gán Listener cho nút Menu và Chuông
         // Gắn listener cho Navigation View
         val navigationView = findViewById<NavigationView>(R.id.nav_view_drawer)
         navigationView.setNavigationItemSelectedListener(this)
+    }
+
+    private fun initUsername() {
+        val user = auth.currentUser
+        binding.etUsername.setText(user?.displayName)
     }
 
     private fun initBrands() {

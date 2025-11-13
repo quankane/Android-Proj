@@ -39,10 +39,11 @@
 
             <TextView
                 android:id="@+id/startBtn"
-                android:layout_width="200dp"
-                android:layout_height="45dp"
+                android:layout_width="300dp"
+                android:layout_height="60dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="30dp"
+                android:textSize="30dp"
+                android:layout_marginTop="60dp"
                 android:background="@drawable/radius_bg"
                 android:gravity="center"
                 android:text="Get started"
