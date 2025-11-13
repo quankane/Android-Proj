@@ -26,19 +26,19 @@ class ManagementWishList(val context: Context) {
     fun toggleWishlistItem(item: ItemsModel): Boolean {
         val list = getListWishlist()
 
-        // Kiểm tra xem item đã tồn tại chưa (chỉ cần so sánh ID)
-        val exists = list.any { it.title == item.title } // Dùng title/id để kiểm tra
+        // Kiểm tra xem item đã tồn tại chưa
+        val exists = list.any { it.title == item.title }
 
         return if (exists) {
             // Xóa khỏi danh sách
             list.removeAll { it.title == item.title }
             saveList(list)
-            false // Đã xóa
+            false
         } else {
-            // Thêm vào danh sách (chỉ cần bản sao cơ bản)
+            // Thêm vào danh sách
             list.add(item.copy(numberInCart = 0, selectedSize = "N/A", selectedColor = "N/A"))
             saveList(list)
-            true // Đã thêm
+            true
         }
     }
 }

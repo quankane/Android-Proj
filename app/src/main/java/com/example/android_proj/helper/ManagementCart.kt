@@ -10,7 +10,6 @@ class ManagementCart(val context: Context) {
     private val tinyDB = TinyDB(context)
     private val managementWishList = ManagementWishList(context)
 
-    //Wishlist
     fun getWishlistItems(): ArrayList<ItemsModel> {
         return managementWishList.getListWishlist()
     }
@@ -22,15 +21,12 @@ class ManagementCart(val context: Context) {
     fun insertFood(item: ItemsModel) {
         var listFood = getListCart()
 
-        // --- THAY ĐỔI LOGIC TỪ TITLE SANG ID ---
-        // Giả định ItemsModel có thuộc tính 'id' duy nhất cho mỗi sản phẩm
-        val existAlready = listFood.any { it.id == item.id && // THAY ĐỔI
+        val existAlready = listFood.any { it.id == item.id &&
                 it.selectedSize == item.selectedSize &&
                 it.selectedColor == item.selectedColor}
-        val index = listFood.indexOfFirst { it.id == item.id && // THAY ĐỔI
+        val index = listFood.indexOfFirst { it.id == item.id &&
                 it.selectedSize == item.selectedSize &&
                 it.selectedColor == item.selectedColor}
-        // --- HẾT THAY ĐỔI ---
 
         if (listFood != null && !listFood.isEmpty()) {
             for (food in listFood) {
@@ -38,15 +34,12 @@ class ManagementCart(val context: Context) {
             }
         }
 
-        println("==================")
-        println("item id = " + item.id) // THAY ĐỔI (để log id cho rõ)
 
         if (existAlready) {
-            println("1")
+
             // Cập nhật số lượng cho mặt hàng đã tồn tại
             listFood[index].numberInCart = item.numberInCart
         } else {
-            println("2")
             // Thêm mặt hàng mới (với size/color khác)
             listFood.add(item)
         }
@@ -83,14 +76,7 @@ class ManagementCart(val context: Context) {
         return fee
     }
 
-    // --- HÀM MỚI ---
-    /**
-     * Xóa tất cả các mặt hàng khỏi giỏ hàng trong TinyDB.
-     * Thường được gọi sau khi thanh toán thành công.
-     */
     fun clearCart() {
         tinyDB.remove("CartList")
-        // Bạn không cần trả về list rỗng,
-        // vì getListCart() sẽ tự động trả về list rỗng vào lần tới.
     }
 }
