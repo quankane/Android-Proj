@@ -40,7 +40,7 @@ class ColorAdapter(
         val color = colorString.toColorInt()
         holder.binding.colorCircle.setColorFilter(color, PorterDuff.Mode.SRC_IN)
 
-        // 3. Logic highlight (Giữ nguyên)
+        // 3. Logic highlight
         holder.binding.strokeView.visibility = if (selectedPosition == position)
             View.VISIBLE else View.GONE
 

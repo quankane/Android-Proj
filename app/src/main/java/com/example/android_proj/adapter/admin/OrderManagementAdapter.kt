@@ -1,13 +1,12 @@
 package com.example.android_proj.adapter
 
-import android.content.Context // THÊM IMPORT NÀY
-import android.content.Intent // THÊM IMPORT NÀY
+
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android_proj.activity.OrderDetailActivity // THÊM IMPORT NÀY
 import com.example.android_proj.databinding.ItemOrderBinding
 import com.example.android_proj.model.Order
 import java.text.SimpleDateFormat
@@ -20,18 +19,16 @@ class OrderManagementAdapter(
 
     private val dateFormatter = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
 
-    // --- THAY ĐỔI 1: Cập nhật Interface ---
+    // --- Cập nhật Interface ---
     interface OrderClickListener {
-        fun onUpdateStatusClick(order: Order) // Giữ nguyên
-        fun onItemClick(order: Order)         // Thêm hàm mới để xem chi tiết
+        fun onUpdateStatusClick(order: Order)
+        fun onItemClick(order: Order)
     }
-    // --- HẾT THAY ĐỔI 1 ---
 
     inner class OrderViewHolder(val binding: ItemOrderBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(order: Order) {
-            // Logic bind giống hệt OrderAdapter
             binding.orderIdTxt.text = "Mã ĐH: #${order.orderId.take(6)}"
             binding.totalAmountTxt.text = String.format("$%.2f", order.totalAmount)
             binding.dateTxt.text = "Ngày: ${dateFormatter.format(order.orderDate.toDate())}"
@@ -75,7 +72,7 @@ class OrderManagementAdapter(
         return OrderViewHolder(binding)
     }
 
-    // --- THAY ĐỔI 2: Cập nhật onBindViewHolder ---
+    // --- Cập nhật onBindViewHolder ---
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
         val order = orders[position]
         holder.bind(order)
@@ -90,10 +87,10 @@ class OrderManagementAdapter(
             listener.onItemClick(order)
         }
     }
-    // --- HẾT THAY ĐỔI 2 ---
 
     override fun getItemCount(): Int = orders.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newOrders: List<Order>) {
         orders.clear()
         orders.addAll(newOrders)

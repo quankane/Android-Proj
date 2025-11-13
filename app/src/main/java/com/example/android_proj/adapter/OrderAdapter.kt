@@ -1,13 +1,12 @@
 package com.example.android_proj.adapter
 
+import android.annotation.SuppressLint
 import android.content.Intent // THÊM IMPORT NÀY
 import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android_proj.R
 import com.example.android_proj.activity.OrderDetailActivity // THÊM IMPORT NÀY
 import com.example.android_proj.databinding.ItemOrderBinding
 import com.example.android_proj.model.Order
@@ -54,13 +53,13 @@ class OrderAdapter(
             setStatusColor(binding.statusTxt, order.status)
         }
 
-        // Cập nhật màu sắc cho trạng thái (Bạn cần định nghĩa màu trong colors.xml)
+        // Cập nhật màu sắc cho trạng thái
         private fun setStatusColor(textView: TextView, status: String) {
             val color: Int = when (status) {
-                "Delivered" -> Color.parseColor("#4CAF50") // Green
-                "Shipped" -> Color.parseColor("#FFC107")   // Amber
-                "Cancelled" -> Color.parseColor("#F44336") // Red
-                else -> Color.parseColor("#2196F3")        // Blue (Pending)
+                "Delivered" -> Color.parseColor("#4CAF50")
+                "Shipped" -> Color.parseColor("#FFC107")
+                "Cancelled" -> Color.parseColor("#F44336")
+                else -> Color.parseColor("#2196F3")
             }
             textView.setBackgroundColor(color)
         }
@@ -71,7 +70,6 @@ class OrderAdapter(
         return OrderViewHolder(binding)
     }
 
-    // --- LOGIC ĐÃ ĐƯỢC THÊM Ở ĐÂY ---
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
         val order = orders[position]
         holder.bind(order)
@@ -86,10 +84,10 @@ class OrderAdapter(
             context.startActivity(intent)
         }
     }
-    // --- HẾT PHẦN THÊM LOGIC ---
 
     override fun getItemCount(): Int = orders.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newOrders: List<Order>) {
         orders.clear()
         orders.addAll(newOrders)

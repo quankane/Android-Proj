@@ -56,7 +56,7 @@ class WishlistAdapter(
             notifyItemRemoved(position)
             notifyItemRangeChanged(position, listItemSelected.size)
 
-            // Gọi callback để cập nhật UI (ví dụ: hiển thị empty state)
+            // Gọi callback để cập nhật UI
             onWishlistChanged()
         }
     }

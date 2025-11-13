@@ -17,7 +17,6 @@ class PicsAdapter(
     inner class ViewHolder(val binding: ViewholderPicsBinding) :
     RecyclerView.ViewHolder(binding.root)
 
-    //field
     private var selectedPosition = -1
     private var lastSelectedPosition = -1
     @SuppressLint("RestrictedApi")

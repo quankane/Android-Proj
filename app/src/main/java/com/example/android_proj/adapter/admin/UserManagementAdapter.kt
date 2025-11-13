@@ -1,5 +1,6 @@
 package com.example.android_proj.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -40,18 +41,17 @@ class UserManagementAdapter(
             userNameTxt.text = user.name.ifEmpty { "(Chưa có tên)" }
             userRoleTxt.text = "Role: ${user.role}"
 
-            // --- SỬA LỖI VÀ CẬP NHẬT LOGIC LOAD AVATAR ---
+            // --- LOAD AVATAR ---
             if (user.avatarUrl.isNotEmpty()) {
                 Glide.with(context)
-                    .load(user.avatarUrl) // Sửa từ 'user.u'
-                    .placeholder(R.drawable.ic_user_profile) // Ảnh chờ
-                    .transform(CircleCrop()) // Bo tròn ảnh
-                    .into(userAvatar) // Giả định ID trong layout là 'userAvatar'
+                    .load(user.avatarUrl)
+                    .placeholder(R.drawable.ic_user_profile)
+                    .transform(CircleCrop())
+                    .into(userAvatar)
             } else {
                 // Nếu không có URL, dùng icon mặc định
                 userAvatar.setImageResource(R.drawable.ic_user_profile)
             }
-            // --- HẾT PHẦN SỬA ---
 
             holder.itemView.setOnClickListener {
                 listener.onUserClick(user)
@@ -63,6 +63,7 @@ class UserManagementAdapter(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newUsers: List<UserModel>) {
         users.clear()
         users.addAll(newUsers)
