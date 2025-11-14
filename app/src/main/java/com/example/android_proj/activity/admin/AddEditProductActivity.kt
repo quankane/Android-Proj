@@ -1,4 +1,4 @@
-package com.example.android_proj.activity
+package com.example.android_proj.activity.admin
 
 import android.app.AlertDialog
 import android.content.Intent
@@ -13,19 +13,27 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.cloudinary.android.MediaManager
-import com.cloudinary.android.callback.ErrorInfo
-import com.cloudinary.android.callback.UploadCallback
 import com.example.android_proj.R
 import com.example.android_proj.adapter.admin.ImagePreviewAdapter
 import com.example.android_proj.databinding.ActivityAddEditProductBinding
 import com.example.android_proj.model.ItemsModel
+import com.example.android_proj.response.CloudinaryResponse // IMPORT MỚI
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.gson.Gson // IMPORT MỚI
+import kotlinx.coroutines.CoroutineScope // IMPORT MỚI
+import kotlinx.coroutines.Dispatchers // IMPORT MỚI
+import kotlinx.coroutines.launch // IMPORT MỚI
+import kotlinx.coroutines.withContext // IMPORT MỚI
+import okhttp3.MediaType.Companion.toMediaTypeOrNull // IMPORT MỚI
+import okhttp3.MultipartBody // IMPORT MỚI
+import okhttp3.OkHttpClient // IMPORT MỚI
+import okhttp3.Request // IMPORT MỚI
+import okhttp3.RequestBody // IMPORT MỚI
+import java.io.IOException // IMPORT MỚI
 import java.util.UUID
-import java.util.concurrent.atomic.AtomicInteger
 
 class AddEditProductActivity : AppCompatActivity() {
 
@@ -34,7 +42,12 @@ class AddEditProductActivity : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
 
     // Cloudinary (Từ file của bạn)
-    private val CLOUDINARY_UPLOAD_PRESET = "upload-1"
+    private val CLOUDINARY_CLOUD_NAME = "dgwnoquie" // TỪ EditProfile
+    private val CLOUDINARY_UPLOAD_PRESET = "upload-1" // TỪ EditProfile
+
+    // HTTP Client (Dùng chung)
+    private val httpClient = OkHttpClient() // TỪ EditProfile
+    private val gson = Gson() // TỪ EditProfile
 
     // Image Adapter
     private lateinit var imagePreviewAdapter: ImagePreviewAdapter
@@ -72,6 +85,8 @@ class AddEditProductActivity : AppCompatActivity() {
         }
     }
 
+    // --- Các hàm khởi tạo (Không thay đổi) ---
+
     private fun initToolbar() {
         binding.toolbar.setNavigationOnClickListener { finish() }
     }
@@ -100,12 +115,9 @@ class AddEditProductActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        // Khởi tạo adapter với callback xử lý khi nhấn nút xóa
         imagePreviewAdapter = ImagePreviewAdapter(this) { sourceToRemove ->
-            // sourceToRemove có thể là Uri (ảnh mới) hoặc String (URL cũ)
             imagePreviewAdapter.removeImage(sourceToRemove)
         }
-
         binding.imagesRecyclerView.apply {
             layoutManager = LinearLayoutManager(this@AddEditProductActivity, LinearLayoutManager.HORIZONTAL, false)
             adapter = imagePreviewAdapter
@@ -113,32 +125,24 @@ class AddEditProductActivity : AppCompatActivity() {
     }
 
     private fun initListeners() = with(binding) {
-        // Nút thêm ảnh
         btnAddImage.setOnClickListener { openImagePicker() }
-
-        // Nút thêm Size
         btnAddSize.setOnClickListener {
             showAddChipDialog("Thêm Size", "Nhập size (ví dụ: M)") { sizeText ->
                 createChip(sizeText, sizeChipGroup)
             }
         }
-
-        // Nút thêm Màu
         btnAddColor.setOnClickListener {
             showAddChipDialog("Thêm Màu", "Nhập tên màu (ví dụ: Đỏ)") { colorText ->
                 createChip(colorText, colorChipGroup)
             }
         }
-
-        // Nút Lưu
         btnSave.setOnClickListener {
             validateAndSaveProduct()
         }
     }
 
-    /**
-     * Tải chi tiết sản phẩm từ Firestore khi ở chế độ Edit
-     */
+    // --- Các hàm tải dữ liệu và UI (Không thay đổi) ---
+
     private fun loadProductDetails() {
         showLoading(true)
         db.collection("items").document(mCurrentProductId!!)
@@ -151,22 +155,15 @@ class AddEditProductActivity : AppCompatActivity() {
                         finish()
                         return@addOnSuccessListener
                     }
-                    // Điền dữ liệu vào UI
                     binding.apply {
                         etTitle.setText(mProductToEdit?.title)
                         etDescription.setText(mProductToEdit?.description)
                         etPrice.setText(mProductToEdit?.price.toString())
                         etOldPrice.setText(mProductToEdit?.oldPrice.toString())
                         etRating.setText(mProductToEdit?.rating.toString())
-
-                        // Tải danh sách ảnh (URL String)
                         imagePreviewAdapter.setImages(mProductToEdit?.picUrl ?: emptyList())
-
-                        // Tạo Chips cho Size
                         sizeChipGroup.removeAllViews()
                         mProductToEdit?.size?.forEach { createChip(it, sizeChipGroup) }
-
-                        // Tạo Chips cho Màu
                         colorChipGroup.removeAllViews()
                         mProductToEdit?.color?.forEach { createChip(it, colorChipGroup) }
                     }
@@ -183,26 +180,18 @@ class AddEditProductActivity : AppCompatActivity() {
             }
     }
 
-    /**
-     * Mở trình chọn ảnh
-     */
     private fun openImagePicker() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true) // Cho phép chọn nhiều ảnh
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         pickImageLauncher.launch(intent)
     }
 
-    /**
-     * Hiển thị Dialog đơn giản để nhập text cho Chip
-     */
     private fun showAddChipDialog(title: String, hint: String, onOkClicked: (String) -> Unit) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle(title)
-
         val input = EditText(this)
         input.hint = hint
         builder.setView(input)
-
         builder.setPositiveButton("Thêm") { dialog, _ ->
             val text = input.text.toString().trim()
             if (text.isNotEmpty()) {
@@ -214,9 +203,6 @@ class AddEditProductActivity : AppCompatActivity() {
         builder.show()
     }
 
-    /**
-     * Tạo và thêm một Chip vào ChipGroup
-     */
     private fun createChip(text: String, chipGroup: ChipGroup) {
         val chip = Chip(this)
         chip.text = text
@@ -227,9 +213,6 @@ class AddEditProductActivity : AppCompatActivity() {
         chipGroup.addView(chip)
     }
 
-    /**
-     * Lấy danh sách text từ các Chip trong một ChipGroup
-     */
     private fun getChipsFromGroup(chipGroup: ChipGroup): ArrayList<String> {
         val list = ArrayList<String>()
         for (i in 0 until chipGroup.childCount) {
@@ -239,9 +222,8 @@ class AddEditProductActivity : AppCompatActivity() {
         return list
     }
 
-    /**
-     * Kiểm tra dữ liệu và bắt đầu quá trình lưu
-     */
+    // --- (THAY ĐỔI) Logic Lưu và Upload ---
+
     private fun validateAndSaveProduct() {
         val title = binding.etTitle.text.toString().trim()
         val desc = binding.etDescription.text.toString().trim()
@@ -254,7 +236,6 @@ class AddEditProductActivity : AppCompatActivity() {
             return
         }
 
-        // Lấy danh sách ảnh từ adapter
         val newImageUris = imagePreviewAdapter.getUris()
         val existingImageUrls = imagePreviewAdapter.getUrls()
 
@@ -265,11 +246,8 @@ class AddEditProductActivity : AppCompatActivity() {
 
         showLoading(true)
 
-        // Lấy danh sách Size và Color từ ChipGroups
         val sizes = getChipsFromGroup(binding.sizeChipGroup)
         val colors = getChipsFromGroup(binding.colorChipGroup)
-
-        // Tạo đối tượng ItemsModel
         val docId = mCurrentProductId ?: db.collection("items").document().id
         val item = ItemsModel(
             id = docId,
@@ -280,123 +258,150 @@ class AddEditProductActivity : AppCompatActivity() {
             rating = rating,
             size = sizes,
             color = colors,
-            picUrl = ArrayList() // Sẽ được cập nhật sau khi upload
+            picUrl = ArrayList() // Sẽ cập nhật sau
         )
 
-        // Bắt đầu quá trình upload ảnh và sau đó lưu
+        // Bắt đầu quá trình upload và lưu (ĐÃ THAY ĐỔI)
         uploadImagesAndSave(newImageUris, existingImageUrls, item)
     }
 
     /**
-     * Xử lý luồng upload:
-     * 1. Upload tất cả ảnh mới (Uris) lên Cloudinary.
-     * 2. Thu thập các URL mới.
-     * 3. Kết hợp URL mới + URL cũ (Strings).
-     * 4. Lưu vào Firestore.
+     * THAY THẾ: Upload bằng Coroutine và OkHttp (Giống EditProfile)
      */
     private fun uploadImagesAndSave(
         newImageUris: List<Uri>,
         existingImageUrls: List<String>,
         itemData: ItemsModel
     ) {
-        val finalImageUrls = ArrayList(existingImageUrls) // Bắt đầu với các URL cũ
+        val finalImageUrls = ArrayList(existingImageUrls)
         val totalNewUploads = newImageUris.size
 
         if (totalNewUploads == 0) {
-            // Không có ảnh mới, chỉ cần lưu với các URL cũ
+            // Không có ảnh mới, lưu luôn
             itemData.picUrl = finalImageUrls
             saveProductToFirestore(itemData)
             return
         }
 
-        val uploadedUrls = mutableListOf<String>()
-        // AtomicInteger để đếm số lượng upload hoàn thành (thread-safe)
-        val uploadCounter = AtomicInteger(0)
-        var hasUploadFailed = false
+        // Bắt đầu Coroutine trên Main thread
+        CoroutineScope(Dispatchers.Main).launch {
+            val uploadedUrls = mutableListOf<String>()
+            var hasUploadFailed = false
 
-        newImageUris.forEach { uri ->
-            uploadImageToCloudinarySDK(uri,
-                onSuccess = { newUrl ->
-                    if (hasUploadFailed) return@uploadImageToCloudinarySDK
+            Toast.makeText(this@AddEditProductActivity, "Đang tải lên $totalNewUploads ảnh...", Toast.LENGTH_SHORT).show()
 
-                    uploadedUrls.add(newUrl)
-                    // Kiểm tra xem đây có phải là ảnh cuối cùng được upload không
-                    if (uploadCounter.incrementAndGet() == totalNewUploads) {
-                        // Đã upload xong tất cả, tiến hành lưu
-                        finalImageUrls.addAll(uploadedUrls)
-                        itemData.picUrl = finalImageUrls
-                        saveProductToFirestore(itemData)
+            // Chuyển sang IO thread để thực hiện upload
+            withContext(Dispatchers.IO) {
+                for (uri in newImageUris) {
+                    val newUrl = uploadImageWithOkHttp(uri) // Hàm upload blocking
+                    if (newUrl != null) {
+                        uploadedUrls.add(newUrl)
+                    } else {
+                        // Một ảnh bị lỗi, dừng upload
+                        hasUploadFailed = true
+                        break
                     }
-                },
-                onFailure = {
-                    if (hasUploadFailed) return@uploadImageToCloudinarySDK
-
-                    // Nếu một ảnh thất bại, hủy toàn bộ
-                    hasUploadFailed = true
-                    showLoading(false)
-                    Toast.makeText(this, "Một ảnh tải lên thất bại, đã hủy lưu.", Toast.LENGTH_LONG).show()
                 }
-            )
+            }
+
+            // Quay lại Main thread để xử lý kết quả
+            if (hasUploadFailed) {
+                showLoading(false)
+                Toast.makeText(this@AddEditProductActivity, "Một ảnh tải lên thất bại, đã hủy lưu.", Toast.LENGTH_LONG).show()
+            } else {
+                // Tất cả thành công, gộp URL và lưu
+                finalImageUrls.addAll(uploadedUrls)
+                itemData.picUrl = finalImageUrls
+                saveProductToFirestore(itemData)
+            }
         }
     }
 
     /**
-     * Tải MỘT ảnh lên Cloudinary bằng SDK
-     * (Đây là hàm từ file mẫu của bạn, được điều chỉnh)
+     * HÀM MỚI: Upload MỘT ảnh bằng OkHttp (Logic từ EditProfile)
+     * Chạy bên trong Dispatchers.IO, nên có thể là hàm blocking.
+     * Trả về URL (String) nếu thành công, null nếu thất bại.
      */
-    private fun uploadImageToCloudinarySDK(
-        imageUri: Uri,
-        onSuccess: (String) -> Unit,
-        onFailure: () -> Unit
-    ) {
+    private fun uploadImageWithOkHttp(imageUri: Uri): String? {
         val user = auth.currentUser
         if (user == null) {
-            onFailure()
-            return
+            Log.e("OkHttpUpload", "Không có user, dừng upload.")
+            return null
         }
 
-        val publicId = "items/${user.uid}/${UUID.randomUUID()}"
-        // Biến đổi ảnh: fill, rộng 300, cao 300, tự động định dạng và chất lượng
-        val transformations = "c_fill,w_300,h_300,f_auto,q_auto"
+        // 1. Đọc file bytes (Giống EditProfile)
+        val inputStream = contentResolver.openInputStream(imageUri)
+        val fileBytes = inputStream?.readBytes()
+        inputStream?.close()
+        if (fileBytes == null) {
+            Log.e("OkHttpUpload", "Không thể đọc file bytes từ Uri: $imageUri")
+            return null
+        }
 
-        MediaManager.get().upload(imageUri)
-            .unsigned(CLOUDINARY_UPLOAD_PRESET)
-            .option("public_id", publicId)
-            .option("overwrite", false)
-            .callback(object : UploadCallback {
-                override fun onStart(requestId: String) {
-                    // Đã gọi showLoading(true) từ trước
+        val url = "https://api.cloudinary.com/v1_1/$CLOUDINARY_CLOUD_NAME/image/upload"
+        val publicId = "items/${user.uid}/${UUID.randomUUID()}" // Tạo publicId duy nhất
+
+        return try {
+            // 2. Tạo Request Body (Giống EditProfile)
+            val requestBody = MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", "item_image.jpg",
+                    RequestBody.create("image/*".toMediaTypeOrNull(), fileBytes))
+                .addFormDataPart("upload_preset", CLOUDINARY_UPLOAD_PRESET)
+                .addFormDataPart("public_id", publicId) // Thêm public_id
+                .build()
+
+            // 3. Tạo Request (Giống EditProfile)
+            val request = Request.Builder().url(url).post(requestBody).build()
+
+            // 4. Thực thi request (Giống EditProfile)
+            httpClient.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) {
+                    Log.e("OkHttpUpload", "Upload thất bại: ${response.code} ${response.message}")
+                    throw IOException("Unexpected code $response")
                 }
 
-                override fun onProgress(requestId: String, bytes: Long, totalBytes: Long) {}
-
-                override fun onSuccess(requestId: String, resultData: Map<*, *>) {
-                    val secureUrl = resultData["secure_url"] as? String
-                    if (secureUrl != null) {
-                        // Áp dụng biến đổi vào URL
-                        val transformedUrl = secureUrl.replace("/upload/", "/upload/$transformations/")
-                        Log.d("CloudinarySDK", "Upload thành công: $transformedUrl")
-                        onSuccess(transformedUrl) // Trả về URL đã biến đổi
-                    } else {
-                        Log.e("CloudinarySDK", "Lỗi phân tích URL: $resultData")
-                        onFailure()
-                    }
-                }
-
-                override fun onError(requestId: String, error: ErrorInfo) {
-                    Log.e("CloudinarySDK", "Upload thất bại: ${error.description}", error.exception)
-                    onFailure()
-                }
-
-                override fun onReschedule(requestId: String, error: ErrorInfo) {}
-            }).dispatch()
+                val responseBody = response.body?.string()
+                // 5. Parse response (Giống EditProfile)
+                parseCloudinaryResponse(responseBody)
+            }
+        } catch (e: Exception) {
+            Log.e("OkHttpUpload", "Upload failed: ${e.message}", e)
+            null // Trả về null nếu có lỗi
+        }
     }
 
     /**
-     * Lưu đối tượng ItemsModel hoàn chỉnh vào Firestore
+     * HÀM MỚI: Parse JSON bằng Gson (Từ EditProfile)
+     * ĐÃ SỬA: Dùng transformation w_300, h_300 cho sản phẩm
+     */
+    private fun parseCloudinaryResponse(responseBody: String?): String? {
+        if (responseBody == null) {
+            Log.e("Cloudinary", "Response body is null.")
+            return null
+        }
+        return try {
+            val response = gson.fromJson(responseBody, CloudinaryResponse::class.java)
+            val originalUrl = response.secure_url
+            if (originalUrl.isNullOrEmpty()) {
+                Log.e("Cloudinary", "Secure URL is missing in the response.")
+                return null
+            }
+            // Thay đổi transformation cho phù hợp với ảnh sản phẩm (lớn hơn avatar)
+            val transformations = "c_fill,w_300,h_300,f_auto,q_auto"
+            val transformedUrl = originalUrl.replace("/upload/", "/upload/$transformations/")
+            Log.d("Cloudinary", "Parsed URL: $transformedUrl")
+            return transformedUrl
+        } catch (e: Exception) {
+            Log.e("Cloudinary", "Failed to parse JSON response using Gson: ${e.message}", e)
+            null
+        }
+    }
+
+    /**
+     * Lưu vào Firestore (Không thay đổi)
      */
     private fun saveProductToFirestore(item: ItemsModel) {
-        // Sử dụng set(item) sẽ hoạt động cho cả "Add" (tạo mới) và "Edit" (ghi đè)
         db.collection("items").document(item.id)
             .set(item)
             .addOnSuccessListener {
