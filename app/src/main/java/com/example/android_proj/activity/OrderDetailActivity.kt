@@ -80,6 +80,7 @@ class OrderDetailActivity : AppCompatActivity() {
         binding.orderStatusDetailTxt.text = "Trạng thái: ${order.status}"
 
         // Thông tin giao hàng
+        binding.shippingNameTxt.text = "Tên: ${order.shippingAddress.fullName}"
         binding.shippingAddressTxt.text = "Địa chỉ: ${order.shippingAddress.streetAddress}, ${order.shippingAddress.city}"
         binding.shippingPhoneTxt.text = "SĐT: ${order.shippingAddress.phoneNumber}"
 

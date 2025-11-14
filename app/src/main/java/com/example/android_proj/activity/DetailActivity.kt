@@ -1,8 +1,10 @@
 package com.example.android_proj.activity
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +19,7 @@ import com.example.android_proj.databinding.ActivityDetailBinding
 import com.example.android_proj.helper.ManagementCart
 import com.example.android_proj.model.ItemsModel
 import com.example.android_proj.viewmodel.MainViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 class DetailActivity : AppCompatActivity() {
 
@@ -111,31 +114,51 @@ class DetailActivity : AppCompatActivity() {
             Toast.makeText(this@DetailActivity, message, Toast.LENGTH_SHORT).show()
         }
 
+        // Trong DetailActivity.kt, bên trong hàm setupViews()
+
         addToCartBtn.setOnClickListener {
-            // Lấy giá trị đã được cập nhật từ biến lưu trữ (String?)
+            Log.i("Detail Activity", "1")
+            // 1. KIỂM TRA ĐĂNG NHẬP (Quan trọng nhất)
+            if (FirebaseAuth.getInstance().currentUser == null) {
+                Log.i("Detail Activity", "2")
+                Toast.makeText(this@DetailActivity, "Vui lòng đăng nhập để thêm vào giỏ hàng!", Toast.LENGTH_SHORT).show()
+                // (Tùy chọn) Chuyển người dùng đến màn hình đăng nhập
+                 startActivity(Intent(this@DetailActivity, LoginActivity::class.java))
+                return@setOnClickListener
+            }
+
             val hasSizes = item.size.isNotEmpty()
             val hasColors = item.color.isNotEmpty()
 
+            // Lấy giá trị đã chọn (vẫn là String?)
             val chosenSize = selectedSize
             val chosenColor = selectedColor
 
-            // Nếu có tùy chọn size/color nhưng người dùng chưa chọn
-            if (hasSizes && chosenSize == null) {
+            // 2. SỬA LỖI VALIDATION (dùng isNullOrEmpty thay vì == null)
+            Log.i("Detail Activity", "3")
+
+            if (hasSizes && chosenSize.isNullOrEmpty()) {
+                Log.i("Detail Activity", "4")
                 Toast.makeText(this@DetailActivity, "Vui lòng chọn Size!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            if (hasColors && chosenColor == null) {
+            if (hasColors && chosenColor.isNullOrEmpty()) {
+                Log.i("Detail Activity", "5")
                 Toast.makeText(this@DetailActivity, "Vui lòng chọn Màu!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
-            // 3. Sử dụng các biến String đã lưu
-            item.selectedSize = chosenSize.toString()
-            item.selectedColor = chosenColor.toString()
-            item.numberInCart = numberItemTxt.text.toString().toInt();
-
+            Log.i("Detail Activity", "6")
+            // 3. SỬA LỖI gán `null.toString()` (dùng toán tử ?: "")
+            item.selectedSize = chosenSize ?: ""
+            item.selectedColor = chosenColor ?: ""
+            item.numberInCart = numberItemTxt.text.toString().toInt()
+            Log.i("Detail Activity", "7")
             managementCart.insertFood(item)
-            Toast.makeText(this@DetailActivity, "Đã thêm sản phẩm vào giỏ hàng", Toast.LENGTH_SHORT).show()
+            Log.i("Detail Activity", "8")
+            // 4. (Khuyến nghị) XÓA TOAST "ĐÃ THÊM" Ở ĐÂY
+            // Toast "Đã thêm vào giỏ hàng" đã có sẵn bên trong ManagementCart.
+            // Giữ nó ở đây sẽ gây ra 2 Toast (một từ ManagementCart, một từ Activity)
+            // Toast.makeText(this@DetailActivity, "Đã thêm sản phẩm vào giỏ hàng", Toast.LENGTH_SHORT).show()
         }
     }
 

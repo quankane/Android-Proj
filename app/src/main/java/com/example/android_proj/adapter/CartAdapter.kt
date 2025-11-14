@@ -2,94 +2,81 @@ package com.example.android_proj.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.PorterDuff
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.request.RequestOptions
 import com.example.android_proj.databinding.ViewholderCartBinding
-import com.example.android_proj.helper.ChangeNumberItemsListener
-import com.example.android_proj.helper.ManagementCart
-import com.example.android_proj.model.ItemsModel
-import kotlin.math.roundToLong
+import com.example.android_proj.model.CartItem
+import java.text.DecimalFormat
 
 class CartAdapter(
-    private val listItemSelected: ArrayList<ItemsModel>,
-    context: Context,
-    var changeNumberItemsListener: ChangeNumberItemsListener? = null
-) : RecyclerView.Adapter<CartAdapter.ViewHolder>()
-{
+    private var list: MutableList<CartItem>,
+    private val context: Context,
+    private val listener: CartItemListener
+) : RecyclerView.Adapter<CartAdapter.ViewHolder>() {
 
-    private val managementCart = ManagementCart(context)
+    // Interface để gửi sự kiện click về Activity
+    interface CartItemListener {
+        fun onPlusClicked(item: CartItem)
+        fun onMinusClicked(item: CartItem)
+    }
 
-    class ViewHolder(val binding: ViewholderCartBinding) :
-    RecyclerView.ViewHolder(binding.root)
+    private val formatter = DecimalFormat("###,###,###.##")
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): CartAdapter.ViewHolder {
-        val binding = ViewholderCartBinding.inflate(
-            LayoutInflater.from(parent.context),
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = ViewholderCartBinding.inflate(LayoutInflater.from(context),
             parent,
-            false
-        )
+            false)
         return ViewHolder(binding)
     }
 
-    @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: CartAdapter.ViewHolder, @SuppressLint("RecyclerView") position: Int) {
-        val item = listItemSelected[position]
+    @SuppressLint("UseKtx")
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = list[position]
+
         holder.binding.titleTxt.text = item.title
-        holder.binding.feeEachItemTxt.text = "$${item.price}"
-        holder.binding.totalEachItem.text = "$${(item.numberInCart * item.price).roundToLong()}"
+        holder.binding.feeEachItemTxt.text = "$${formatter.format(item.price)}"
+        holder.binding.totalEachItem.text = "$${formatter.format(item.price * item.numberInCart)}"
         holder.binding.numberItemTxt.text = item.numberInCart.toString()
+
         holder.binding.sizeTxt.text = "Size: ${item.selectedSize}"
         holder.binding.colorTxt.text = "Color: ${item.selectedColor}"
-        val color = item.selectedColor.toColorInt()
-        holder.binding.colorCircle.setColorFilter(color, PorterDuff.Mode.SRC_IN)
 
-
-        Glide.with(holder.itemView.context)
-            .load(item.picUrl[0])
-            .apply(RequestOptions().transform(CenterCrop()))
+        // Tải ảnh
+        Glide.with(context)
+            .load(item.picUrl)
             .into(holder.binding.pic)
 
-        holder.binding.plusCartBtn.setOnClickListener {
-            managementCart.plusItem(
-                listItemSelected,
-                position,
-                object : ChangeNumberItemsListener {
-                    @SuppressLint("NotifyDataSetChanged")
-                    override fun onChanged() {
-                        notifyDataSetChanged()
-                        changeNumberItemsListener?.onChanged()
-                    }
+        // Xử lý màu sắc
+        try {
+            val color = Color.parseColor(item.selectedColor)
+            val drawable = holder.binding.colorCircle.background as GradientDrawable
+            drawable.setColor(color)
+        } catch (e: Exception) {
+            // Xử lý nếu mã màu không hợp lệ
+        }
 
-                }
-            )
+        // Gửi sự kiện click về Activity
+        holder.binding.plusCartBtn.setOnClickListener {
+            listener.onPlusClicked(item)
         }
 
         holder.binding.minusCartBtn.setOnClickListener {
-            managementCart.minusItem(
-                listItemSelected,
-                position,
-                object : ChangeNumberItemsListener {
-                    @SuppressLint("NotifyDataSetChanged")
-                    override fun onChanged() {
-                        notifyDataSetChanged()
-                        changeNumberItemsListener?.onChanged()
-                    }
-
-                }
-            )
+            listener.onMinusClicked(item)
         }
     }
 
-    override fun getItemCount(): Int {
-        return listItemSelected.size
+    override fun getItemCount(): Int = list.size
+
+    // Hàm cập nhật danh sách từ Firestore
+    fun updateList(newList: List<CartItem>) {
+        list.clear()
+        list.addAll(newList)
+        notifyDataSetChanged()
     }
+
+    inner class ViewHolder(val binding: ViewholderCartBinding) : RecyclerView.ViewHolder(binding.root)
 }

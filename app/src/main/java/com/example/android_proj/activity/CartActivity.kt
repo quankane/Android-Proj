@@ -203,7 +203,7 @@ class CartActivity : AppCompatActivity() {
             // 3. Tạo danh sách OrderItem từ giỏ hàng hiện tại (currentCartList)
             val orderItems = currentCartList.map { item ->
                 OrderItem(
-                    itemId = item.itemId.toString(),
+                    id = item.itemId.toString(),
                     title = item.title,
                     picUrl = item.picUrl,
                     priceAtPurchase = item.price,
