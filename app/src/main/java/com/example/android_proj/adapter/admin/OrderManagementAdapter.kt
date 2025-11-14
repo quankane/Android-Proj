@@ -58,9 +58,9 @@ class OrderManagementAdapter(
 
         private fun setStatusColor(textView: TextView, status: String) {
             val color: Int = when (status) {
-                "Delivered" -> Color.parseColor("#4CAF50") // Green
-                "Shipped" -> Color.parseColor("#FFC107")   // Amber
-                "Cancelled" -> Color.parseColor("#F44336") // Red
+                "Thành công" -> Color.parseColor("#4CAF50") // Green
+                "Đang xử lý" -> Color.parseColor("#FFC107")   // Amber
+                "Hủy bỏ" -> Color.parseColor("#F44336") // Red
                 else -> Color.parseColor("#2196F3")        // Blue (Pending)
             }
             textView.setBackgroundColor(color)

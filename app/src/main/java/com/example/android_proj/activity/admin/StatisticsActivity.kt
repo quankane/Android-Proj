@@ -50,15 +50,15 @@ class StatisticsActivity : AppCompatActivity() {
 
                 for (order in orders) {
                     // Chỉ tính doanh thu đơn hàng đã giao
-                    if(order.status == "Delivered") {
+                    if(order.status == "Thành công") {
                         totalRevenue += order.totalAmount
                     }
                     // Đếm trạng thái
                     when (order.status) {
-                        "Pending" -> pending++
-                        "Shipped" -> shipped++
-                        "Delivered" -> delivered++
-                        "Cancelled" -> cancelled++
+                        "Đang chờ" -> pending++
+                        "Đang xử lý" -> shipped++
+                        "Thành công" -> delivered++
+                        "Hủy bỏ" -> cancelled++
                     }
                 }
 

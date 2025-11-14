@@ -73,7 +73,7 @@ class OrderManagementActivity : AppCompatActivity(), OrderManagementAdapter.Orde
 
     // Xử lý click vào Status
     override fun onUpdateStatusClick(order: Order) {
-        val statuses = arrayOf("Pending", "Shipped", "Delivered", "Cancelled")
+        val statuses = arrayOf("Đang chờ", "Đang xử lý", "Thành công", "Hủy bỏ")
         val currentStatusIndex = statuses.indexOf(order.status)
 
         AlertDialog.Builder(this)

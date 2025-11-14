@@ -9,7 +9,7 @@ data class Order(
     @get:Exclude var orderId: String = "", // Document ID
     val userId: String = "",
     val orderDate: Timestamp = Timestamp.now(),
-    var status: String = "Pending",
+    var status: String = "Đang chờ",
     val items: List<OrderItem> = listOf(),
     val shippingAddress: ShippingAddress = ShippingAddress(),
     val paymentMethod: String = "Cash on Delivery",
