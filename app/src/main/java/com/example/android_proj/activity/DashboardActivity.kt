@@ -288,6 +288,7 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             }
     }
 
+    @SuppressLint("SuspiciousIndentation")
     private fun setupDrawerOpener(role: String) {
         val isUserAdmin = role == "admin"
 

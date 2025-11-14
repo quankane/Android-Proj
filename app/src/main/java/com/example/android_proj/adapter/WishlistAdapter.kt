@@ -4,12 +4,14 @@ package com.example.android_proj.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.request.RequestOptions
+import com.example.android_proj.activity.DetailActivity
 import com.example.android_proj.databinding.ViewholderWishlistBinding
 import com.example.android_proj.helper.ManagementWishList
 import com.example.android_proj.model.ItemsModel
@@ -61,6 +63,13 @@ class WishlistAdapter(
 
             // Gọi callback để cập nhật UI
             onWishlistChanged()
+        }
+
+        holder.binding.root.setOnClickListener {
+            val intent = Intent(holder.itemView.context,
+                DetailActivity::class.java)
+            intent.putExtra("object", item)
+            holder.itemView.context.startActivity(intent)
         }
     }
 
