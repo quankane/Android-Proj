@@ -37,14 +37,17 @@ class WishlistAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val item = listItemSelected[position]
-        holder.binding.titleTxt.text = item.title
-        holder.binding.priceTxt.text = "$${item.price}"
+        holder.binding.productTitle.text = item.title
+        holder.binding.productPrice.text = "$${item.price}"
+        holder.binding.productOldPrice.text = "$${item.oldPrice}"
+        holder.binding.productDescription.text = "${item.description}"
+        holder.binding.productRating.text = "${item.rating}"
 
         // Load ảnh sản phẩm
         Glide.with(holder.itemView.context)
             .load(item.picUrl[0])
             .apply(RequestOptions().transform(CenterCrop()))
-            .into(holder.binding.pic)
+            .into(holder.binding.productImage)
 
         // Xử lý nút Xóa khỏi WishList
         holder.binding.removeBtn.setOnClickListener {
