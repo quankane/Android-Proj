@@ -1,156 +1,277 @@
-package com.example.android_proj.activity.admin
+package com.example.android_proj.activity
 
-import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+// BỎ: import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.cloudinary.android.MediaManager // THÊM
+import com.cloudinary.android.callback.ErrorInfo // THÊM
+import com.cloudinary.android.callback.UploadCallback // THÊM
+import com.example.android_proj.R
 import com.example.android_proj.databinding.ActivityAddEditProductBinding
-import com.example.android_proj.model.ItemsModel
+import com.example.android_proj.model.ItemsModel // THAY ĐỔI: Dùng ItemsModel
+// BỎ: import com.example.android_proj.response.CloudinaryResponse
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+// BỎ: import com.google.gson.Gson
+// BỎ: import kotlinx.coroutines.Dispatchers
+// BỎ: import kotlinx.coroutines.launch
+// BỎ: import kotlinx.coroutines.withContext
+// BỎ: import okhttp3.MediaType.Companion.toMediaTypeOrNull
+// BỎ: import okhttp3.MultipartBody
+// BỎ: import okhttp3.OkHttpClient
+// BỎ: import okhttp3.Request
+// BỎ: import okhttp3.RequestBody
+// BỎ: import java.io.IOException
+import java.util.UUID
 
 class AddEditProductActivity : AppCompatActivity() {
 
+    // ... (existing properties)
     private lateinit var binding: ActivityAddEditProductBinding
-    private val db = FirebaseFirestore.getInstance()
-    private var currentProductId: String? = null
-    private var currentItem: ItemsModel? = null
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
+    private val CLOUDINARY_CLOUD_NAME = "dgwnoquie" // GIỮ LẠI
+    private val CLOUDINARY_UPLOAD_PRESET = "upload-1" // THÊM
+
+    private var mCurrentProductId: String? = null
+    // ... (existing code)
+    private var mExistingImageUrl: String? = null // URL ảnh hiện tại (nếu là "edit")
+
+    companion object {
+// ... (existing code)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityAddEditProductBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        currentProductId = intent.getStringExtra("PRODUCT_ID")
-
-        initView()
-
-        if (currentProductId == null) {
-            binding.toolbar.title = "Thêm sản phẩm mới"
-        } else {
-            binding.toolbar.title = "Chỉnh sửa sản phẩm"
-            loadProductDetails()
+// ... (existing code)
+// ... (existing code)
+// ... (existing code)
+// ... (existing code)
+        if (mCurrentProductId != null) {
+            binding.toolbar.title = "Chỉnh sửa Sản phẩm"
+            loadProductDetails() // Tên hàm không đổi, logic bên trong thay đổi
+// ... (existing code)
         }
     }
 
-    private fun initView() {
-        binding.toolbar.setNavigationOnClickListener { finish() }
-        binding.btnSave.setOnClickListener { saveProduct() }
-    }
-
-    //Sửa
+    // Logic load dữ liệu (tương tự loadCurrentProfile)
     private fun loadProductDetails() {
-        binding.progressBar.visibility = View.VISIBLE
-        db.collection("Items").document(currentProductId!!)
-            .get()
-            .addOnSuccessListener { document ->
-                binding.progressBar.visibility = View.GONE
-                if (document.exists()) {
-                    currentItem = document.toObject(ItemsModel::class.java)
-                    currentItem?.id = document.id // Gán ID
-                    populateForm(currentItem)
+// ... (existing code)
+// ... (existing code)
+// ... (existing code)
+        .addOnFailureListener {
+            showLoading(false)
+            Log.e("AddEditProduct", "Lỗi tải sản phẩm: ${it.message}")
+        }
+    }
+
+    private fun setupListeners() = with(binding) {
+// ... (existing code)
+// ... (existing code)
+// ... (existing code)
+    }
+}
+
+// ... (openImagePicker and setupImagePicker remain the same)
+// Giống hệt EditProfileActivity
+private fun openImagePicker() {
+    val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+    pickImageLauncher.launch(intent)
+}
+
+// Logic ImagePicker (gần giống, nhưng không tải lên ngay)
+private fun setupImagePicker() {
+    pickImageLauncher = registerForActivityResult(
+// ... (existing code)
+// ... (existing code)
+// ... (existing code)
+        // Chỉ hiển thị ảnh, không upload ngay
+        Glide.with(this)
+            .load(mSelectedImageUri)
+            .transform(RoundedCorners(16))
+            .into(binding.productImageImg)
+}
+}
+}
+}
+
+private fun validateAndSaveProduct() {
+// ... (existing code)
+// ... (existing code)
+// ... (existing code)
+    // BỎ QUA: stock
+    // val stockStr = binding.productStockEdt.text.toString().trim()
+
+// ... (existing code)
+// ... (existing code)
+// ... (existing code)
+    showLoading(true)
+
+    // ... (Quy trình lưu 1, 2, 3 không thay đổi logic)
+
+    if (mSelectedImageUri != null) {
+        // 1. Tải ảnh mới lên
+        // THAY ĐỔI: Gọi hàm SDK
+        uploadImageToCloudinarySDK(mSelectedImageUri!!) { newImageUrl ->
+            // Sau khi có URL ảnh, lưu vào Firestore
+            // THAY ĐỔI: Bỏ 'stockStr'
+            saveProductToFirestore(newImageUrl, name, desc, priceStr)
+        }
+    } else if (mCurrentProductId != null) {
+// ... (existing code)
+        // THAY ĐỔI: Bỏ 'stockStr'
+        saveProductToFirestore(mExistingImageUrl, name, desc, priceStr)
+    } else {
+// ... (existing code)
+        Toast.makeText(this, "Vui lòng chọn ảnh cho sản phẩm.", Toast.LENGTH_SHORT).show()
+    }
+}
+
+// BỎ: Hàm uploadImageToCloudinary (OkHttp)
+// BỎ: Hàm parseCloudinaryResponse (Gson)
+
+/**
+ * THAY THẾ: Upload ảnh bằng Cloudinary SDK (giống EditProfileActivity_SDK)
+ * @param imageUri Uri của ảnh
+ * @param onSuccess Callback trả về URL_SAU_KHI_BIẾN_ĐỔI
+ */
+private fun uploadImageToCloudinarySDK(imageUri: Uri, onSuccess: (String) -> Unit) {
+    val user = auth.currentUser
+    if (user == null) {
+        showLoading(false)
+        Toast.makeText(this, "Bạn chưa đăng nhập.", Toast.LENGTH_SHORT).show()
+        return
+    }
+    Toast.makeText(this, "Đang tải ảnh lên...", Toast.LENGTH_SHORT).show()
+
+    val publicId = "items/${user.uid}/${UUID.randomUUID()}"
+    val transformations = "c_fill,w_300,h_300,f_auto,q_auto"
+
+    MediaManager.get().upload(imageUri)
+        .unsigned(CLOUDINARY_UPLOAD_PRESET)
+        .option("public_id", publicId)
+        .option("overwrite", false) // Không cần ghi đè vì publicId là duy nhất
+        .callback(object : UploadCallback {
+            override fun onStart(requestId: String) {
+                showLoading(true) // Đảm bảo đang show loading
+            }
+
+            override fun onProgress(requestId: String, bytes: Long, totalBytes: Long) {
+                // Có thể" cập nhật progress bar nếu muốn
+            }
+
+            override fun onSuccess(requestId: String, resultData: Map<*, *>) {
+                val secureUrl = resultData["secure_url"] as? String
+                if (secureUrl != null) {
+                    // ÁP DỤNG TRANSFORMATION (giống logic parse cũ của bạn)
+                    val transformedUrl = secureUrl.replace("/upload/", "/upload/$transformations/")
+                    Log.d("CloudinarySDK", "Upload thành công: $transformedUrl")
+                    onSuccess(transformedUrl) // Trả về URL đã biến đổi
                 } else {
-                    Toast.makeText(this, "Không tìm thấy sản phẩm", Toast.LENGTH_SHORT).show()
-                    finish()
+                    Log.e("CloudinarySDK", "Lỗi phân tích URL từ kết quả: $resultData")
+                    Toast.makeText(this@AddEditProductActivity, "Lỗi phân tích URL Cloudinary.", Toast.LENGTH_LONG).show()
+                    showLoading(false)
                 }
             }
-            .addOnFailureListener {
-                binding.progressBar.visibility = View.GONE
-                Toast.makeText(this, "Lỗi tải dữ liệu: ${it.message}", Toast.LENGTH_SHORT).show()
-                finish()
+
+            override fun onError(requestId: String, error: ErrorInfo) {
+                Log.e("CloudinarySDK", "Upload thất bại: ${error.description}", error.exception)
+                Toast.makeText(this@AddEditProductActivity, "Tải ảnh lên thất bại: ${error.description}", Toast.LENGTH_LONG).show()
+                showLoading(false)
             }
-    }
 
-    private fun populateForm(item: ItemsModel?) {
-        item ?: return
-        binding.etTitle.setText(item.title)
-        binding.etDescription.setText(item.description)
-        binding.etPrice.setText(item.price.toString())
-        binding.etOldPrice.setText(item.oldPrice.toString())
-        binding.etRating.setText(item.rating.toString())
+            override fun onReschedule(requestId: String, error: ErrorInfo) {
+                // Xảy ra khi upload bị gián đoạn và được lên lịch lại
+            }
+        }).dispatch()
+}
 
-        binding.etPicUrl.setText(item.picUrl.joinToString(","))
-        binding.etSize.setText(item.size.joinToString(","))
-        binding.etColor.setText(item.color.joinToString(","))
-    }
 
-    private fun saveProduct() {
-        binding.progressBar.visibility = View.VISIBLE
+// Hàm lưu vào Firestore (Tương tự saveProfileChanges)
+private fun saveProductToFirestore(
+// ... (existing code)
+// ... (existing code)
+// ... (existing code)
+    // BỎ QUA: stockStr
+) {
+    val user = auth.currentUser
+// ... (existing code)
+// ... (existing code)
+// ... (existing code)
+    return
+}
 
-        // 1. Đọc dữ liệu từ Form
-        val title = binding.etTitle.text.toString().trim()
-        val description = binding.etDescription.text.toString().trim()
-        val price = binding.etPrice.text.toString().toDoubleOrNull() ?: 0.0
-        val oldPrice = binding.etOldPrice.text.toString().toDoubleOrNull() ?: 0.0
-        val rating = binding.etRating.text.toString().toDoubleOrNull() ?: 0.0 // <-- THÊM DÒNG NÀY
+if (imageUrl.isNullOrEmpty()) {
+// ... (existing code)
+// ... (existing code)
+// ... (existing code)
+    return
+}
 
-        // 2. Chuyển chuỗi "a, b, c" thành List<String>
-        val picUrlList = binding.etPicUrl.text.toString()
-            .split(",")
-            .map { it.trim() }
-            .filter { it.isNotEmpty() } as ArrayList<String>
+// Quyết định ID: Lấy ID cũ (edit) hoặc tạo ID mới (add)
+// ... (existing code)
+// ... (existing code)
+// ... (existing code)
+val docId = mCurrentProductId ?: db.collection("items").document().id
 
-        val sizeList = binding.etSize.text.toString()
-            .split(",")
-            .map { it.trim() }
-            .filter { it.isNotEmpty() } as ArrayList<String>
-
-        val colorList = binding.etColor.text.toString()
-            .split(",")
-            .map { it.trim() }
-            .filter { it.isNotEmpty() } as ArrayList<String>
-
-        if (title.isEmpty() || price == 0.0 || picUrlList.isEmpty()) {
-            Toast.makeText(this, "Tên, Giá, và URL ảnh không được trống", Toast.LENGTH_SHORT).show()
-            binding.progressBar.visibility = View.GONE
-            return
+// THAY ĐỔI: Logic lưu cho Add/Edit
+// ... (existing code)
+// ... (existing code)
+// ... (existing code)
+val item = ItemsModel(
+    id = docId,
+    title = name,
+    description = desc,
+    price = priceStr.toDoubleOrNull() ?: 0.0,
+    picUrl = arrayListOf(imageUrl), // THAY ĐỔI: Lưu vào list
+    // sellerId KHÔNG CÓ TRONG ItemsModel CỦA BẠN
+    // sellerId = user.uid
+    // Các trường khác (size, color, rating...) sẽ dùng giá trị mặc định
+)
+db.collection("items").document(docId).set(item)
+.addOnSuccessListener {
+// ... (existing code)
+// ... (existing code)
+// ... (existing code)
+}
+.addOnFailureListener { e ->
+    showLoading(false)
+    Toast.makeText(this, "Lỗi lưu vào Firestore: ${e.message}", Toast.LENGTH_LONG).show()
+}
+} else { // EDIT Mode
+// ... (existing code)
+// ... (existing code)
+// ... (existing code)
+    val updates = mapOf(
+        "title" to name,
+        "description" to desc,
+        "price" to (priceStr.toDoubleOrNull() ?: 0.0),
+        "picUrl" to arrayListOf(imageUrl) // GHI ĐÈ list ảnh chỉ với ảnh này
+    )
+    db.collection("items").document(docId).update(updates)
+        .addOnSuccessListener {
+// ... (existing code)
+// ... (existing code)
+// ... (existing code)
         }
-
-        // 4. Tạo hoặc Cập nhật đối tượng (Elvis Operator)
-        val product = currentItem ?: ItemsModel() // Lấy item cũ (Sửa) hoặc tạo item mới (Thêm)
-        product.title = title
-        product.description = description
-        product.price = price
-        product.oldPrice = oldPrice
-        product.rating = rating
-        product.picUrl = picUrlList
-        product.size = sizeList
-        product.color = colorList
-
-        // 5. Lưu lên Firestore
-        saveToFirestore(product)
-    }
-
-    private fun saveToFirestore(product: ItemsModel) {
-        if (currentProductId == null) {
-            // --- Chế độ THÊM MỚI ---
-            db.collection("Items")
-                .add(product)
-                .addOnSuccessListener {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this, "Thêm sản phẩm thành công", Toast.LENGTH_SHORT).show()
-                    setResult(Activity.RESULT_OK) // Trả kết quả OK để Activity trước reload
-                    finish()
-                }
-                .addOnFailureListener {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this, "Thêm thất bại: ${it.message}", Toast.LENGTH_SHORT).show()
-                }
-        } else {
-            // --- Chế độ SỬA ---
-            // Non null asserted operator
-            db.collection("Items").document(currentProductId!!)
-                .set(product) // Dùng set() để ghi đè toàn bộ object
-                .addOnSuccessListener {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show()
-                    setResult(Activity.RESULT_OK) // Trả kết quả OK để Activity trước reload
-                    finish()
-                }
-                .addOnFailureListener {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this, "Cập nhật thất bại: ${it.message}", Toast.LENGTH_SHORT).show()
-                }
+        .addOnFailureListener { e ->
+            showLoading(false)
+            Toast.makeText(this, "Lỗi cập nhật Firestore: ${e.message}", Toast.LENGTH_LONG).show()
         }
-    }
+}
+}
+
+private fun showLoading(isLoading: Boolean) {
+    binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+    binding.saveBtn.isEnabled = !isLoading
+}
 }

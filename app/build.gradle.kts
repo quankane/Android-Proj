@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
 }
 
+
 android {
     namespace = "com.example.android_proj"
     compileSdk = 36
@@ -41,6 +42,7 @@ android {
 }
 
 dependencies {
+
     // Thư viện UI
     implementation("com.tbuonomo:dotsindicator:5.1.0")
     implementation(libs.androidx.core.ktx)
@@ -75,8 +77,9 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
-    // GITHUB COLOR PICKER
-    implementation("com.github.dhaval2404:colorpicker:2.3")
+    // GITHUB COLOR PICKER & IMAGE PICKER
+    implementation("com.github.dhaval2404:imagepicker:2.1")
+    implementation("com.github.Dhaval2404:ColorPicker:2.3")
 
     // TESTING
     testImplementation(libs.junit)

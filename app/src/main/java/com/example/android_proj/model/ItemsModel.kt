@@ -15,4 +15,6 @@ data class ItemsModel(
     var numberInCart: Int = 1,
     var selectedSize: String = "",
     var selectedColor: String = ""
-) : Serializable
+) : Serializable {
+    constructor() : this("", "", "", ArrayList(), ArrayList(), ArrayList(), 0.0, 0.0, 0.0)
+}
