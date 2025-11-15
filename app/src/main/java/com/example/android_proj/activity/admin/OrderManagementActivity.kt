@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.android_proj.R
 import com.example.android_proj.activity.OrderDetailActivity // THÊM IMPORT NÀY
 import com.example.android_proj.adapter.OrderManagementAdapter
 import com.example.android_proj.databinding.ActivityOrderManagementBinding
@@ -76,7 +77,7 @@ class OrderManagementActivity : AppCompatActivity(), OrderManagementAdapter.Orde
         val statuses = arrayOf("Đang chờ", "Đang xử lý", "Thành công", "Hủy bỏ")
         val currentStatusIndex = statuses.indexOf(order.status)
 
-        AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(this)
             .setTitle("Cập nhật trạng thái cho ĐH #${order.orderId.take(6)}")
             .setSingleChoiceItems(statuses, currentStatusIndex) { dialog, which ->
                 val selectedStatus = statuses[which]
@@ -84,7 +85,10 @@ class OrderManagementActivity : AppCompatActivity(), OrderManagementAdapter.Orde
                 dialog.dismiss()
             }
             .setNegativeButton("Hủy", null)
-            .show()
+
+        val dialog = builder.create()
+        dialog.window?.setBackgroundDrawableResource(R.drawable.custom_dialog)
+        dialog.show()
     }
 
     private fun updateOrderStatus(order: Order, newStatus: String) {

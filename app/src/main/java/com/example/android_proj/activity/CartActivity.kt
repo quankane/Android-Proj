@@ -1,15 +1,18 @@
 package com.example.android_proj.activity
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
+import android.widget.RadioButton
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.android_proj.R
 import com.example.android_proj.adapter.CartAdapter
@@ -170,6 +173,21 @@ class CartActivity : AppCompatActivity() {
         val etAddress = dialogView.findViewById<EditText>(R.id.etAddress)
         val btnCancel = dialogView.findViewById<View>(R.id.btnCancel)
         val btnConfirm = dialogView.findViewById<View>(R.id.btnConfirm)
+        val radioBtn = dialogView.findViewById<RadioButton>(R.id.rbCod)
+
+        //Thay đổi màu radio btn
+        val colorStateList = ColorStateList(
+            arrayOf(
+                intArrayOf(android.R.attr.state_checked), // Trạng thái checked
+                intArrayOf(-android.R.attr.state_checked) // Trạng thái unchecked (default)
+            ),
+            intArrayOf(
+                ContextCompat.getColor(this, android.R.color.holo_blue_light), // Màu khi checked
+                ContextCompat.getColor(this, android.R.color.darker_gray)  // Màu khi unchecked
+            )
+        )
+
+        radioBtn.buttonTintList = colorStateList
 
         // (Tùy chọn) Tải SĐT/Địa chỉ đã lưu
         loadDefaultAddress(etPhone, etAddress)

@@ -163,7 +163,7 @@ class AddEditProductActivity : AppCompatActivity() {
 
     private fun loadProductDetails() {
         showLoading(true)
-        db.collection("items").document(mCurrentProductId!!)
+        db.collection("Items").document(mCurrentProductId!!)
             .get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {

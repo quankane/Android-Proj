@@ -8,13 +8,16 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardCornerRadius="8dp">
+        android:elevation="4dp"
+        android:backgroundTint="#eee"
+        app:cardCornerRadius="10dp">
 
         <ImageView
             android:id="@+id/imagePreview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
+            android:padding="10dp"
             android:src="@drawable/ic_product" />
 
         <ImageView
