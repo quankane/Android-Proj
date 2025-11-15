@@ -15,16 +15,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_product" /> <!-- Cần ảnh placeholder -->
+            android:src="@drawable/ic_product" />
+
+        <ImageView
+            android:id="@+id/imageRemoveBtn"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="top|end"
+            android:background="@drawable/ic_close"
+            android:backgroundTint="@color/black"
+            app:tint="@android:color/black" /> <!-- Cần ảnh placeholder -->
 
     </androidx.cardview.widget.CardView>
-
-    <ImageView
-        android:id="@+id/imageRemoveBtn"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_gravity="top|end"
-        android:background="@drawable/ic_close"
-        app:tint="@android:color/white" />
 
 </FrameLayout>

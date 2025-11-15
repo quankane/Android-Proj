@@ -39,6 +39,11 @@ class ProductManagementActivity : AppCompatActivity(), ProductManagementAdapter.
         binding = ActivityProductManagementBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
         initView()
         loadProducts()
     }

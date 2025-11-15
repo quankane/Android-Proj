@@ -1,6 +1,7 @@
 package com.example.android_proj.adapter.admin
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,6 +10,7 @@ import com.example.android_proj.databinding.ItemProductManagementBinding
 import com.example.android_proj.model.ItemsModel
 import android.graphics.Paint
 import android.view.View
+import com.example.android_proj.activity.DetailActivity
 
 class ProductManagementAdapter(
     private var items: MutableList<ItemsModel>,
@@ -67,6 +69,13 @@ class ProductManagementAdapter(
             }
             deleteButton.setOnClickListener {
                 listener.onDeleteClick(item)
+            }
+
+            root.setOnClickListener {
+                val intent = Intent(holder.itemView.context,
+                    DetailActivity::class.java)
+                intent.putExtra("object", item)
+                holder.itemView.context.startActivity(intent)
             }
         }
     }

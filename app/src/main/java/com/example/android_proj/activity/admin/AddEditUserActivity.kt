@@ -1,10 +1,13 @@
 package com.example.android_proj.activity.admin
 
+import android.R
 import android.app.Activity
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.example.android_proj.databinding.ActivityAddEditUserBinding
 import com.example.android_proj.model.UserModel
 import com.google.firebase.auth.FirebaseAuth
@@ -44,6 +47,21 @@ class AddEditUserActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener { finish() }
         binding.btnSave.setOnClickListener { handleSave() }
         binding.btnSendResetPassword.setOnClickListener { sendPasswordReset() }
+
+
+        val colorStateList = ColorStateList(
+            arrayOf(
+                intArrayOf(R.attr.state_checked), // Trạng thái checked
+                intArrayOf(-R.attr.state_checked) // Trạng thái unchecked (default)
+            ),
+            intArrayOf(
+                ContextCompat.getColor(this, R.color.holo_blue_light), // Màu khi checked
+                ContextCompat.getColor(this, R.color.darker_gray)  // Màu khi unchecked
+            )
+        )
+
+        binding.radioUser.buttonTintList = colorStateList
+        binding.radioAdmin.buttonTintList = colorStateList
     }
 
     // --- CHẾ ĐỘ THÊM MỚI ---
@@ -130,58 +148,58 @@ class AddEditUserActivity : AppCompatActivity() {
 
         // 1. Tạo user trong Authentication
         auth.createUserWithEmailAndPassword(email, password).addOnSuccessListener { authResult ->
-                val newUid = authResult.user?.uid
-                if (newUid == null) {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this, "Tạo Auth thất bại, UID rỗng", Toast.LENGTH_SHORT).show()
-                    return@addOnSuccessListener
-                }
+            val newUid = authResult.user?.uid
+            if (newUid == null) {
+                binding.progressBar.visibility = View.GONE
+                Toast.makeText(this, "Tạo Auth thất bại, UID rỗng", Toast.LENGTH_SHORT).show()
+                return@addOnSuccessListener
+            }
 
-                // 2. Tạo user document trong Firestore
-                val userModel = UserModel(
-                    userId = newUid,
-                    email = email,
-                    name = name,
-                    role = role,
-                    phoneNumber = phone,  // <-- LƯU SĐT
-                )
-                db.collection("users").document(newUid).set(userModel).addOnSuccessListener {
-                        binding.progressBar.visibility = View.GONE
-                        Toast.makeText(this, "Thêm user thành công!", Toast.LENGTH_SHORT).show()
-                        setResult(Activity.RESULT_OK) // Báo cho list refresh
-                        finish()
-                    }.addOnFailureListener { e ->
-                        binding.progressBar.visibility = View.GONE
-                        Toast.makeText(this, "Lỗi lưu Firestore: ${e.message}", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                if (adminEmail != null) {
-                    auth.signInWithEmailAndPassword(adminEmail, adminPassword)
-                        .addOnSuccessListener {
-                            // Đăng nhập lại Admin thành công!
-                            binding.progressBar.visibility = View.GONE
-                            Toast.makeText(
-                                this,
-                                "Thêm user thành công! Admin đã đăng nhập lại.",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            setResult(Activity.RESULT_OK)
-                            finish()
-                        }.addOnFailureListener { e ->
-                            // Lỗi đăng nhập lại (rất hiếm nếu password đúng)
-                            binding.progressBar.visibility = View.GONE
-                            Toast.makeText(
-                                this,
-                                "Thêm user thành công, nhưng lỗi đăng nhập lại Admin: ${e.message}",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            auth.signOut()
-                        }
-                }
+            // 2. Tạo user document trong Firestore
+            val userModel = UserModel(
+                userId = newUid,
+                email = email,
+                name = name,
+                role = role,
+                phoneNumber = phone,  // <-- LƯU SĐT
+            )
+            db.collection("users").document(newUid).set(userModel).addOnSuccessListener {
+                binding.progressBar.visibility = View.GONE
+                Toast.makeText(this, "Thêm user thành công!", Toast.LENGTH_SHORT).show()
+                setResult(Activity.RESULT_OK) // Báo cho list refresh
+                finish()
             }.addOnFailureListener { e ->
                 binding.progressBar.visibility = View.GONE
-                Toast.makeText(this, "Lỗi tạo Auth: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Lỗi lưu Firestore: ${e.message}", Toast.LENGTH_SHORT)
+                    .show()
             }
+            if (adminEmail != null) {
+                auth.signInWithEmailAndPassword(adminEmail, adminPassword)
+                    .addOnSuccessListener {
+                        // Đăng nhập lại Admin thành công!
+                        binding.progressBar.visibility = View.GONE
+                        Toast.makeText(
+                            this,
+                            "Thêm user thành công! Admin đã đăng nhập lại.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        setResult(Activity.RESULT_OK)
+                        finish()
+                    }.addOnFailureListener { e ->
+                        // Lỗi đăng nhập lại (rất hiếm nếu password đúng)
+                        binding.progressBar.visibility = View.GONE
+                        Toast.makeText(
+                            this,
+                            "Thêm user thành công, nhưng lỗi đăng nhập lại Admin: ${e.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        auth.signOut()
+                    }
+            }
+        }.addOnFailureListener { e ->
+            binding.progressBar.visibility = View.GONE
+            Toast.makeText(this, "Lỗi tạo Auth: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
     }
 
     // Logic SỬA
@@ -199,20 +217,20 @@ class AddEditUserActivity : AppCompatActivity() {
 
         // Cập nhật các trường
         db.collection("users").document(currentUserId!!).update(
-                mapOf(
-                    "name" to name,
-                    "role" to role,
-                    "phoneNumber" to phone,
-                )
-            ).addOnSuccessListener {
-                binding.progressBar.visibility = View.GONE
-                Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show()
-                setResult(Activity.RESULT_OK) // Báo cho list refresh
-                finish()
-            }.addOnFailureListener {
-                binding.progressBar.visibility = View.GONE
-                Toast.makeText(this, "Cập nhật thất bại: ${it.message}", Toast.LENGTH_SHORT).show()
-            }
+            mapOf(
+                "name" to name,
+                "role" to role,
+                "phoneNumber" to phone,
+            )
+        ).addOnSuccessListener {
+            binding.progressBar.visibility = View.GONE
+            Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show()
+            setResult(Activity.RESULT_OK) // Báo cho list refresh
+            finish()
+        }.addOnFailureListener {
+            binding.progressBar.visibility = View.GONE
+            Toast.makeText(this, "Cập nhật thất bại: ${it.message}", Toast.LENGTH_SHORT).show()
+        }
     }
 
     // Gửi Email Reset
@@ -224,9 +242,9 @@ class AddEditUserActivity : AppCompatActivity() {
         }
 
         auth.sendPasswordResetEmail(email).addOnSuccessListener {
-                Toast.makeText(this, "Đã gửi email reset đến: $email", Toast.LENGTH_LONG).show()
-            }.addOnFailureListener {
-                Toast.makeText(this, "Lỗi: ${it.message}", Toast.LENGTH_SHORT).show()
-            }
+            Toast.makeText(this, "Đã gửi email reset đến: $email", Toast.LENGTH_LONG).show()
+        }.addOnFailureListener {
+            Toast.makeText(this, "Lỗi: ${it.message}", Toast.LENGTH_SHORT).show()
+        }
     }
 }

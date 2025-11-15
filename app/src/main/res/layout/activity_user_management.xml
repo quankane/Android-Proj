@@ -44,6 +44,8 @@
         android:layout_margin="25dp"
         android:src="@drawable/add"
         app:tint="@color/white"
+        android:backgroundTint="@color/blue"
+        android:elevation="4dp"
         android:contentDescription="Thêm người dùng"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

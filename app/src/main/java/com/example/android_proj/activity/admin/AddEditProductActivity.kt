@@ -144,7 +144,7 @@ class AddEditProductActivity : AppCompatActivity() {
 
         // Giữ nguyên logic cho Size
         btnAddSize.setOnClickListener {
-            showAddChipDialog("Thêm Size", "Nhập size (ví dụ: M)") { sizeText ->
+            showAddChipDialog("Thêm Size", "Nhập size (Ví dụ: 38)") { sizeText ->
                 createChip(sizeText, sizeChipGroup)
             }
         }
@@ -242,7 +242,11 @@ class AddEditProductActivity : AppCompatActivity() {
             dialog.dismiss()
         }
         builder.setNegativeButton("Hủy") { dialog, _ -> dialog.cancel() }
-        builder.show()
+
+        val dialog = builder.create()
+        dialog.window?.setBackgroundDrawableResource(R.drawable.custom_dialog)
+
+        dialog.show()
     }
 
     private fun createChip(text: String, chipGroup: ChipGroup) {

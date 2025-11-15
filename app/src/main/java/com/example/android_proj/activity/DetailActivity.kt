@@ -76,7 +76,7 @@ class DetailActivity : AppCompatActivity() {
         priceTxt.text = "$${item.price}"
         oldPriceTxt.text = "$${item.oldPrice}"
         oldPriceTxt.paintFlags = priceTxt.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-        ratingTxt.text = "${item.rating} Rating"
+        ratingTxt.text = "${item.rating}"
         numberItemTxt.text = item.numberInCart.toString()
         selectedColor = item.selectedColor.toString()
         selectedSize = item.selectedSize.toString()

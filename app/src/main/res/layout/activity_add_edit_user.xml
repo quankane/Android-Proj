@@ -10,13 +10,13 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/back"
-        app:title="Quản lý người dùng"
         android:paddingTop="48dp"
         android:textColor="@color/black"
         android:textSize="25sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/back"
+        app:title="Quản lý người dùng" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -51,6 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:hint="Số điện thoại">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPhone"
                     android:layout_width="match_parent"
@@ -101,18 +102,20 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <RadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/radioUser"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:buttonTint="@color/radio_button_tint"
                     android:checked="true"
                     android:text="User" />
 
-                <RadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/radioAdmin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
+                    android:buttonTint="@color/radio_button_tint"
                     android:text="Admin" />
             </RadioGroup>
 
@@ -121,6 +124,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
+                android:backgroundTint="@color/blue"
                 android:padding="12dp"
                 android:text="Lưu" />
 
@@ -131,6 +135,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:text="Gửi Email Reset Mật khẩu"
+                android:textColor="@color/blue"
                 android:visibility="gone"
                 tools:visibility="visible" />
         </LinearLayout>
