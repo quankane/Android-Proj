@@ -17,6 +17,9 @@
             android:name=".activity.admin.AddEditUserActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.admin.AddEditProductActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.admin.HomeAdminActivity"
             android:exported="false" />
         <activity
@@ -27,9 +30,6 @@
             android:exported="false" />
         <activity
             android:name=".activity.admin.UserManagementActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activity.admin.AddEditProductActivity"
             android:exported="false" />
         <activity
             android:name=".activity.admin.ProductManagementActivity"

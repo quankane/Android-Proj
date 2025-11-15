@@ -1,7 +1,9 @@
 package com.example.android_proj.activity.admin
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color // IMPORT MỚI
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -17,22 +19,24 @@ import com.example.android_proj.R
 import com.example.android_proj.adapter.admin.ImagePreviewAdapter
 import com.example.android_proj.databinding.ActivityAddEditProductBinding
 import com.example.android_proj.model.ItemsModel
-import com.example.android_proj.response.CloudinaryResponse // IMPORT MỚI
+import com.example.android_proj.response.CloudinaryResponse
+import com.github.dhaval2404.colorpicker.ColorPickerDialog // IMPORT MỚI
+import com.github.dhaval2404.colorpicker.model.ColorShape // IMPORT MỚI
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.gson.Gson // IMPORT MỚI
-import kotlinx.coroutines.CoroutineScope // IMPORT MỚI
-import kotlinx.coroutines.Dispatchers // IMPORT MỚI
-import kotlinx.coroutines.launch // IMPORT MỚI
-import kotlinx.coroutines.withContext // IMPORT MỚI
-import okhttp3.MediaType.Companion.toMediaTypeOrNull // IMPORT MỚI
-import okhttp3.MultipartBody // IMPORT MỚI
-import okhttp3.OkHttpClient // IMPORT MỚI
-import okhttp3.Request // IMPORT MỚI
-import okhttp3.RequestBody // IMPORT MỚI
-import java.io.IOException // IMPORT MỚI
+import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import java.io.IOException
 import java.util.UUID
 
 class AddEditProductActivity : AppCompatActivity() {
@@ -41,19 +45,19 @@ class AddEditProductActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
 
-    // Cloudinary (Từ file của bạn)
-    private val CLOUDINARY_CLOUD_NAME = "dgwnoquie" // TỪ EditProfile
-    private val CLOUDINARY_UPLOAD_PRESET = "upload-1" // TỪ EditProfile
+    // Cloudinary
+    private val CLOUDINARY_CLOUD_NAME = "dgwnoquie"
+    private val CLOUDINARY_UPLOAD_PRESET = "upload-1"
 
-    // HTTP Client (Dùng chung)
-    private val httpClient = OkHttpClient() // TỪ EditProfile
-    private val gson = Gson() // TỪ EditProfile
+    // HTTP
+    private val httpClient = OkHttpClient()
+    private val gson = Gson()
 
-    // Image Adapter
+    // Image
     private lateinit var imagePreviewAdapter: ImagePreviewAdapter
     private lateinit var pickImageLauncher: ActivityResultLauncher<Intent>
 
-    // Trạng thái Add/Edit
+    // State
     private var mCurrentProductId: String? = null
     private var mProductToEdit: ItemsModel? = null
 
@@ -62,19 +66,19 @@ class AddEditProductActivity : AppCompatActivity() {
         binding = ActivityAddEditProductBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Khởi tạo Firebase
+        // Init Firebase
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
-        // Lấy ID sản phẩm (nếu là "edit")
+        // Get Product ID
         mCurrentProductId = intent.getStringExtra("PRODUCT_ID")
 
         initToolbar()
-        initImagePicker()
+        initImagePicker() // Giữ nguyên, không thay đổi
         initRecyclerView()
-        initListeners()
+        initListeners() // Đã cập nhật
 
-        // Kiểm tra chế độ Add hay Edit
+        // Check mode
         if (mCurrentProductId != null) {
             binding.toolbar.title = "Chỉnh sửa Sản phẩm"
             binding.btnSave.text = "Lưu thay đổi"
@@ -85,12 +89,18 @@ class AddEditProductActivity : AppCompatActivity() {
         }
     }
 
-    // --- Các hàm khởi tạo (Không thay đổi) ---
+    // --- Các hàm khởi tạo ---
 
     private fun initToolbar() {
         binding.toolbar.setNavigationOnClickListener { finish() }
     }
 
+    /**
+     * KHÔNG THAY ĐỔI:
+     * Cách làm này (dùng ActivityResultContracts và EXTRA_ALLOW_MULTIPLE)
+     * là cách làm đúng và hiện đại để chọn nhiều ảnh.
+     * Thư viện ImagePicker bạn đề cập tối ưu cho 1 ảnh (avatar).
+     */
     private fun initImagePicker() {
         pickImageLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -124,18 +134,26 @@ class AddEditProductActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * ĐÃ CẬP NHẬT:
+     * - btnAddColor giờ dùng showColorPickerDialog()
+     * - btnAddSize giữ nguyên showAddChipDialog()
+     */
     private fun initListeners() = with(binding) {
         btnAddImage.setOnClickListener { openImagePicker() }
+
+        // Giữ nguyên logic cho Size
         btnAddSize.setOnClickListener {
             showAddChipDialog("Thêm Size", "Nhập size (ví dụ: M)") { sizeText ->
                 createChip(sizeText, sizeChipGroup)
             }
         }
+
+        // THAY ĐỔI: Dùng ColorPickerDialog cho Color
         btnAddColor.setOnClickListener {
-            showAddChipDialog("Thêm Màu", "Nhập tên màu (ví dụ: Đỏ)") { colorText ->
-                createChip(colorText, colorChipGroup)
-            }
+            showColorPickerDialog()
         }
+
         btnSave.setOnClickListener {
             validateAndSaveProduct()
         }
@@ -180,12 +198,36 @@ class AddEditProductActivity : AppCompatActivity() {
             }
     }
 
+    // Giữ nguyên, không thay đổi
     private fun openImagePicker() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         pickImageLauncher.launch(intent)
     }
 
+    /**
+     * HÀM MỚI: Dùng thư viện ColorPicker
+     */
+    @SuppressLint("ResourceType")
+    private fun showColorPickerDialog() {
+        val mDefaultColor = Color.BLACK // Màu mặc định
+
+        ColorPickerDialog
+            .Builder(this)
+            .setTitle("Chọn Màu")
+            .setColorShape(ColorShape.SQAURE)
+            .setDefaultColor(mDefaultColor)
+            .setColorListener { color, colorHex ->
+                // color là Int, colorHex là String (ví dụ: "#FFFFFF")
+                // Lưu mã hex vào chip
+                createChip(colorHex, binding.colorChipGroup)
+            }
+            .show()
+    }
+
+    /**
+     * GIỮ NGUYÊN: Hàm này vẫn cần cho "Thêm Size"
+     */
     private fun showAddChipDialog(title: String, hint: String, onOkClicked: (String) -> Unit) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle(title)
@@ -222,7 +264,7 @@ class AddEditProductActivity : AppCompatActivity() {
         return list
     }
 
-    // --- (THAY ĐỔI) Logic Lưu và Upload ---
+    // --- Logic Lưu và Upload (Không thay đổi) ---
 
     private fun validateAndSaveProduct() {
         val title = binding.etTitle.text.toString().trim()
@@ -261,13 +303,9 @@ class AddEditProductActivity : AppCompatActivity() {
             picUrl = ArrayList() // Sẽ cập nhật sau
         )
 
-        // Bắt đầu quá trình upload và lưu (ĐÃ THAY ĐỔI)
         uploadImagesAndSave(newImageUris, existingImageUrls, item)
     }
 
-    /**
-     * THAY THẾ: Upload bằng Coroutine và OkHttp (Giống EditProfile)
-     */
     private fun uploadImagesAndSave(
         newImageUris: List<Uri>,
         existingImageUrls: List<String>,
@@ -277,39 +315,33 @@ class AddEditProductActivity : AppCompatActivity() {
         val totalNewUploads = newImageUris.size
 
         if (totalNewUploads == 0) {
-            // Không có ảnh mới, lưu luôn
             itemData.picUrl = finalImageUrls
             saveProductToFirestore(itemData)
             return
         }
 
-        // Bắt đầu Coroutine trên Main thread
         CoroutineScope(Dispatchers.Main).launch {
             val uploadedUrls = mutableListOf<String>()
             var hasUploadFailed = false
 
             Toast.makeText(this@AddEditProductActivity, "Đang tải lên $totalNewUploads ảnh...", Toast.LENGTH_SHORT).show()
 
-            // Chuyển sang IO thread để thực hiện upload
             withContext(Dispatchers.IO) {
                 for (uri in newImageUris) {
-                    val newUrl = uploadImageWithOkHttp(uri) // Hàm upload blocking
+                    val newUrl = uploadImageWithOkHttp(uri)
                     if (newUrl != null) {
                         uploadedUrls.add(newUrl)
                     } else {
-                        // Một ảnh bị lỗi, dừng upload
                         hasUploadFailed = true
                         break
                     }
                 }
             }
 
-            // Quay lại Main thread để xử lý kết quả
             if (hasUploadFailed) {
                 showLoading(false)
                 Toast.makeText(this@AddEditProductActivity, "Một ảnh tải lên thất bại, đã hủy lưu.", Toast.LENGTH_LONG).show()
             } else {
-                // Tất cả thành công, gộp URL và lưu
                 finalImageUrls.addAll(uploadedUrls)
                 itemData.picUrl = finalImageUrls
                 saveProductToFirestore(itemData)
@@ -317,11 +349,6 @@ class AddEditProductActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * HÀM MỚI: Upload MỘT ảnh bằng OkHttp (Logic từ EditProfile)
-     * Chạy bên trong Dispatchers.IO, nên có thể là hàm blocking.
-     * Trả về URL (String) nếu thành công, null nếu thất bại.
-     */
     private fun uploadImageWithOkHttp(imageUri: Uri): String? {
         val user = auth.currentUser
         if (user == null) {
@@ -329,7 +356,6 @@ class AddEditProductActivity : AppCompatActivity() {
             return null
         }
 
-        // 1. Đọc file bytes (Giống EditProfile)
         val inputStream = contentResolver.openInputStream(imageUri)
         val fileBytes = inputStream?.readBytes()
         inputStream?.close()
@@ -339,22 +365,19 @@ class AddEditProductActivity : AppCompatActivity() {
         }
 
         val url = "https://api.cloudinary.com/v1_1/$CLOUDINARY_CLOUD_NAME/image/upload"
-        val publicId = "items/${user.uid}/${UUID.randomUUID()}" // Tạo publicId duy nhất
+        val publicId = "items/${user.uid}/${UUID.randomUUID()}"
 
         return try {
-            // 2. Tạo Request Body (Giống EditProfile)
             val requestBody = MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("file", "item_image.jpg",
                     RequestBody.create("image/*".toMediaTypeOrNull(), fileBytes))
                 .addFormDataPart("upload_preset", CLOUDINARY_UPLOAD_PRESET)
-                .addFormDataPart("public_id", publicId) // Thêm public_id
+                .addFormDataPart("public_id", publicId)
                 .build()
 
-            // 3. Tạo Request (Giống EditProfile)
             val request = Request.Builder().url(url).post(requestBody).build()
 
-            // 4. Thực thi request (Giống EditProfile)
             httpClient.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
                     Log.e("OkHttpUpload", "Upload thất bại: ${response.code} ${response.message}")
@@ -362,19 +385,14 @@ class AddEditProductActivity : AppCompatActivity() {
                 }
 
                 val responseBody = response.body?.string()
-                // 5. Parse response (Giống EditProfile)
                 parseCloudinaryResponse(responseBody)
             }
         } catch (e: Exception) {
             Log.e("OkHttpUpload", "Upload failed: ${e.message}", e)
-            null // Trả về null nếu có lỗi
+            null
         }
     }
 
-    /**
-     * HÀM MỚI: Parse JSON bằng Gson (Từ EditProfile)
-     * ĐÃ SỬA: Dùng transformation w_300, h_300 cho sản phẩm
-     */
     private fun parseCloudinaryResponse(responseBody: String?): String? {
         if (responseBody == null) {
             Log.e("Cloudinary", "Response body is null.")
@@ -387,7 +405,6 @@ class AddEditProductActivity : AppCompatActivity() {
                 Log.e("Cloudinary", "Secure URL is missing in the response.")
                 return null
             }
-            // Thay đổi transformation cho phù hợp với ảnh sản phẩm (lớn hơn avatar)
             val transformations = "c_fill,w_300,h_300,f_auto,q_auto"
             val transformedUrl = originalUrl.replace("/upload/", "/upload/$transformations/")
             Log.d("Cloudinary", "Parsed URL: $transformedUrl")
@@ -398,11 +415,8 @@ class AddEditProductActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Lưu vào Firestore (Không thay đổi)
-     */
     private fun saveProductToFirestore(item: ItemsModel) {
-        db.collection("items").document(item.id)
+        db.collection("Items").document(item.id)
             .set(item)
             .addOnSuccessListener {
                 showLoading(false)
