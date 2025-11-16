@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.android_proj.R
 
-class ImagePreviewAdapter(
+class   ImagePreviewAdapter(
     private val context: Context,
     private val onRemoveClicked: (Any) -> Unit
 ) : RecyclerView.Adapter<ImagePreviewAdapter.ImageViewHolder>() {
