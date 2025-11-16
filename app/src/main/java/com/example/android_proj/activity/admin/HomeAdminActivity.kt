@@ -68,7 +68,7 @@ class HomeAdminActivity : AppCompatActivity(), OrderManagementAdapter.OrderClick
                 for (doc in documents) {
                     val order = doc.toObject(Order::class.java)
                     // Chỉ tính doanh thu đơn "Delivered"
-                    if(order.status == "Delivered") {
+                    if(order.status == "Thành công") {
                         revenueToday += order.totalAmount
                     }
                     // Đếm tất cả đơn mới
@@ -86,7 +86,7 @@ class HomeAdminActivity : AppCompatActivity(), OrderManagementAdapter.OrderClick
 
         // 2. Tải các đơn hàng Pending
         db.collection("orders")
-            .whereEqualTo("status", "Pending")
+            .whereEqualTo("status", "Đang chờ")
             .orderBy("orderDate", Query.Direction.DESCENDING)
             .limit(10) // Lấy 10 đơn gần nhất
             .get()
@@ -114,7 +114,7 @@ class HomeAdminActivity : AppCompatActivity(), OrderManagementAdapter.OrderClick
     }
 
     override fun onUpdateStatusClick(order: Order) {
-        val statuses = arrayOf("Pending", "Shipped", "Delivered", "Cancelled")
+        val statuses = arrayOf("Đang chờ", "Đang xử lý", "Thành công", "Hủy bỏ")
         val currentStatusIndex = statuses.indexOf(order.status)
 
         AlertDialog.Builder(this)
